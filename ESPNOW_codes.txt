@@ -1,0 +1,35 @@
+0x01: ledBeam channel 0
+0x02: ledBeam channel 1
+0x03: set id
+0x04: set channel
+0x05: joniskMsg
+0x06: setColorMask
+0x07: jonisk OTA start
+
+// Led beams
+Give 4 channel 0
+	[0x04, 0x01]
+Give 4 channel 1
+	[0x04, 0x02]
+Give each per channel an id to read from in the buffer
+	[0x03, 0x00]
+	[0x03, 0x01]
+	[0x03, 0x02]
+	[0x03, 0x03]
+Then for the other group also
+
+Ledbeam-msg: 
+[0x01, 57 * 4 brightness values]
+Send to Serial as:
+[r, g, b, etc, e, n, d] [end] as 3 closing bytes
+
+Set color w/ 
+	[0x06, 0x00, 0x00, 0x00] for black
+	[0x06, 0xFF, 0x00, 0x00] for red
+
+
+// JoniskMsg
+Give them IDs
+	[0x03, 0x00], etc
+One msg:
+[0x05, R, G, B, W, R, G, B, W, etc]
