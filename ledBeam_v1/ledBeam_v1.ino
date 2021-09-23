@@ -38,7 +38,8 @@ void setup() {
   pinMode(5, OUTPUT); // Small red SMD LED
   digitalWrite(5, HIGH); delay(100); digitalWrite(5, LOW);
   delay(1000);
-  WiFi.mode(WIFI_AP);
+  WiFi.softAP("LEDBEAM", "nonsense", 6, true);
+
   Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress()); // This is the mac address of the Slave in AP Mode
 //  WiFi.begin(ssid, password);
 //  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -49,6 +50,7 @@ void setup() {
 
   Serial.println("Setup ESPNOW");
   WiFi.disconnect();  
+  
   if (esp_now_init() == ESP_OK) {
     Serial.println("ESPNow Init Success");
   } else {
@@ -58,6 +60,7 @@ void setup() {
   }
   Serial.println("Register callback");
   esp_now_register_recv_cb(OnDataRecv);
+ 
   
 //  ArduinoOTA
 //    .onStart([]() {
@@ -123,6 +126,16 @@ void loop() {
       USBSerial.write(WiFi.softAPmacAddress().c_str());
     }
   }
+
+    pixels.clear(); // Set all pixel colors to 'off'
+  for(int i=0; i<NUMPIXELS; i++) { // For each pixel...
+    float b = pow(sin(3.14*((i+(millis()/30)%NUMPIXELS)*(1./NUMPIXELS))), 10.);
+    if(b<0.3){b==0.3;};
+    pixels.setPixelColor(i, pixels.Color(255* b, 255 * b, 255 * b));
+  }
+    pixels.show();   // Send the updated pixel colors to the hardware.
+
+    delay(1000/60); // 60 fps
 }
 
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {

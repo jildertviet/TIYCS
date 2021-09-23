@@ -10,10 +10,26 @@ const char* password = "Priokstraat1";
 
 #define CHANNEL 1
 
-#define R_PIN 16
-#define G_PIN 33
-#define B_PIN 17
-#define W_PIN 32
+#define IS_JONISK
+
+#ifdef  IS_JONISK
+  #define R_PIN 13
+  #define G_PIN 12
+  #define B_PIN 22
+  #define W_PIN 23
+#endif
+#ifdef IS_LED
+  #define R_PIN 16
+  #define G_PIN 33
+  #define B_PIN 17
+  #define W_PIN 32
+#endif
+#ifdef IS_JONISK_NEW
+  #define R_PIN 46
+  #define G_PIN 45
+  #define B_PIN 41
+  #define W_PIN 42
+#endif
 
 unsigned char values[4] = {0, 0, 0, 0};
 bool bUpdate = false;
@@ -47,7 +63,8 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Serial opened, led pwm channels already configured");
   delay(200);
-  WiFi.mode(WIFI_AP);
+//  WiFi.mode(WIFI_AP);
+  WiFi.softAP("TIYCS", "nonsense", 1, true);
   // This is the mac address of the Slave in AP Mode
   Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress());
 
@@ -60,7 +77,9 @@ void setup() {
     Serial.println("failed to initialise EEPROM");
   }
   id = EEPROM.read(0);
-  
+
+  pinMode(5, OUTPUT);
+  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
   Serial.println("Setup done");
 }
 
@@ -165,6 +184,12 @@ void InitESPNow() {
 // callback when data is recv from Master
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
   char msgType = data[0];
+//    digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
+
+//  for(int i=0; i<data_len; i++){
+//    Serial.print((int)data[i]); Serial.print(" ");
+//  }
+//  Serial.println();
   switch(msgType){
     case 0x05: 
       memcpy(values, data + 1 + (id*4), 4); 
