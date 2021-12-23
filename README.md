@@ -1,6 +1,6 @@
 ### TIYCS  
 
-![Jonisk](./images/jonisk.jpg "Jonisk")
+![Jonisk](./images/jonisk.png "Jonisk")
 
 ### Ideas for new version (2022)
 - Set PWM freq in EEPROM, high freq for picture mode, low for performance mode  
