@@ -4,7 +4,7 @@
 #include "ofxJVisuals.hpp"
 //#include "ofxOsc.h"
 #include "ofxBox2d.h"
-#include "ofxPostProcessing.h"
+//#include "ofxPostProcessing.h"
 #include "Star.hpp"
 
 enum State{
@@ -141,8 +141,8 @@ class ofApp : public ofBaseApp{
     float speed = 1;
     ofImage planet;
     
-    ofxPostProcessing post;
-    BloomPass::Ptr bloom;
+//    ofxPostProcessing post;
+//    BloomPass::Ptr bloom;
     vector<Star*> stars;
     void initStars();
     void drawStars();

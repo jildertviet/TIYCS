@@ -592,17 +592,17 @@ void ofApp::initStars(){
 //    ofSetSphereResolution(180);
     
     // Setup post-processing chain
-    post.init(ofGetWidth(), ofGetHeight());
+//    post.init(ofGetWidth(), ofGetHeight());
 //    post.createPass<FxaaPass>()->setEnabled(false);
-    bloom = post.createPass<BloomPass>();
-    bloom->setEnabled(true);
+//    bloom = post.createPass<BloomPass>();
+//    bloom->setEnabled(true);
     
     starsFbo.allocate(WIDTH, HEIGHT, GL_RGB);
 }
 
 void ofApp::drawStars(){
     starsFbo.begin();
-    post.begin();
+//    post.begin();
     
     ofSetColor(255);
     ofFill();
@@ -611,7 +611,7 @@ void ofApp::drawStars(){
     }
     ofSetColor(0, pow(1-(height / 2), 0.5) * 200);
     ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-    post.end();
+//    post.end();
     starsFbo.end();
     
     
