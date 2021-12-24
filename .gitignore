@@ -1,0 +1,15 @@
+**/*.app
+**/*.xcodeproj
+**/*.xcconfig
+
+**/*.mp4
+**/*.mov
+**/*.tiff
+**/*.png
+**/*.ttf
+
+*/addons.make
+*/config.make
+*.mp4
+/bin/exampleSimple
+*.DS_Store

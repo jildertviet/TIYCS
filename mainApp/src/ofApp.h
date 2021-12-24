@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
-#include "ofxOsc.h"
+#include "ofxJVisuals.hpp"
+//#include "ofxOsc.h"
 #include "ofxBox2d.h"
 #include "ofxPostProcessing.h"
 #include "Star.hpp"
