@@ -129,8 +129,12 @@ void ofApp::draw(){
     } else{
         ofBackground(bgColor);
     }
-    ofSetColor(255);
-    ofDrawBitmapString("TIYCS", 100, 100);
+    ofPushMatrix();
+        ofTranslate(-ofGetWidth(), -ofGetHeight());
+        ofRotate(180, 0, 0, 1);
+        ofSetColor(255);
+        ofDrawBitmapString("TIYCS", 100, 100);
+    ofPopMatrix();
     switch(state){
         case Intro:
 //            joniskHover();
