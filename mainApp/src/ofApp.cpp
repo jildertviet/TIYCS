@@ -124,16 +124,23 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
     if(bRedBg){
         ofBackground(ofColor(248, 118, 102));
     } else{
-        ofBackground(bgColor);
+        ofBackground(0);
     }
     ofPushMatrix();
-        ofTranslate(-ofGetWidth(), -ofGetHeight());
-        ofRotate(180, 0, 0, 1);
-        ofSetColor(255);
-        ofDrawBitmapString("TIYCS", 100, 100);
+//        ofScale(0.5);
+        ofTranslate(ofGetWidth(), ofGetHeight());
+        ofRotateDeg(180, 0, 0, 1);
+//        ofTranslate(ofGetWidth() * -0.5, ofGetHeight() * -0.5);
+//        ofSetColor(255, 255, 0);
+//        ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
+        ofSetColor(255, 0, 0);
+        ofDrawRectangle(0,0,100,50);
+    ofSetColor(255);
+//    ofDrawBitmapString("Test", 100, 100);
     ofPopMatrix();
     switch(state){
         case Intro:
