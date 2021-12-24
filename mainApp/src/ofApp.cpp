@@ -76,7 +76,7 @@ void ofApp::setup(){
      */
     ofHideCursor();
 }
-
+//
 //--------------------------------------------------------------
 void ofApp::update(){
 //    ofSetWindowTitle(ofToString(ofGetFrameRate()));
