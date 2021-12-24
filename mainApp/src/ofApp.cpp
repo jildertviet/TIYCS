@@ -130,6 +130,7 @@ void ofApp::draw(){
         ofBackground(bgColor);
     }
     ofSetColor(255);
+    ofDrawBitmapString("TIYCS", 100, 100);
     switch(state){
         case Intro:
 //            joniskHover();
