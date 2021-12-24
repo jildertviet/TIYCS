@@ -8,6 +8,7 @@ void ofApp::setup(){
     state = Intro;
     ofSetFrameRate(30);
     
+    /*
     jonisk.load("joniskLayer.png");
     joniskBig.load("joniskBig.png");
     gradient.load("gradient2.png");
@@ -72,7 +73,8 @@ void ofApp::setup(){
     
     initBingo();
     initStars();
-//    ofHideCursor();
+     */
+    ofHideCursor();
 }
 
 //--------------------------------------------------------------
@@ -130,8 +132,8 @@ void ofApp::draw(){
     ofSetColor(255);
     switch(state){
         case Intro:
-            joniskHover();
-            welcomTxt.draw(0,0);
+//            joniskHover();
+//            welcomTxt.draw(0,0);
             break;
         case Benzine:
             benzine.draw(0,0);
