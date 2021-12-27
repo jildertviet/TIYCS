@@ -1,7 +1,14 @@
 #include "ofApp.h"
 
-#define WIDTH   1920
-#define HEIGHT  1080
+#define WIDTH   1280
+#define HEIGHT  800
+// Width an height are also set in main.cpp
+
+#ifdef  TARGET_RASPBERRY_PI
+    bool bRotate = true;
+#else
+    bool bRotate = false;
+#endif
 //
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -72,13 +79,18 @@ void ofApp::setup(){
     dest = glm::vec2(714, 437);
     
     initBingo();
-    initStars();
+    
      */
+    initStars();
     ofHideCursor();
+    
+    v = new ofxJVisuals(glm::vec2(WIDTH, HEIGHT));
 }
 //
 //--------------------------------------------------------------
 void ofApp::update(){
+    v->update();
+
 //    ofSetWindowTitle(ofToString(ofGetFrameRate()));
     while(receiver.hasWaitingMessages()){
         ofxOscMessage m;
@@ -124,24 +136,21 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    if(bRotate){
+        ofPushMatrix();
+            ofTranslate(ofGetWidth(), ofGetHeight());
+            ofRotateDeg(180, 0, 0, 1);
+    }
     
     if(bRedBg){
         ofBackground(ofColor(248, 118, 102));
     } else{
         ofBackground(0);
     }
-    ofPushMatrix();
-//        ofScale(0.5);
-        ofTranslate(ofGetWidth(), ofGetHeight());
-        ofRotateDeg(180, 0, 0, 1);
-//        ofTranslate(ofGetWidth() * -0.5, ofGetHeight() * -0.5);
-//        ofSetColor(255, 255, 0);
-//        ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
-        ofSetColor(255, 0, 0);
-        ofDrawRectangle(0,0,100,50);
+    
     ofSetColor(255);
-//    ofDrawBitmapString("Test", 100, 100);
-    ofPopMatrix();
+    v->display();
+
     switch(state){
         case Intro:
 //            joniskHover();
@@ -374,9 +383,14 @@ void ofApp::draw(){
         }
         legenda.draw(0,0);
     }
+    
     ofFill();
-    ofSetColor(0, 255-brightness);
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+//    ofSetColor(0, 255-brightness); // This line makes all black, even in the next line is commented :/
+//    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    
+    if(bRotate){
+        ofPopMatrix();
+    }
 }
 
 void ofApp::processMsg(ofxOscMessage &m){
@@ -616,6 +630,7 @@ void ofApp::initStars(){
 
 void ofApp::drawStars(){
     starsFbo.begin();
+    ofClear(0);
 //    post.begin();
     
     ofSetColor(255);

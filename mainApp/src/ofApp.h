@@ -152,5 +152,7 @@ class ofApp : public ofBaseApp{
     int rotStart = 0;
     
     ofImage codeGlow;
+    
+    ofxJVisuals* v;
 };
 
