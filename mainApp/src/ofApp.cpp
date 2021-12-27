@@ -150,7 +150,7 @@ void ofApp::draw(){
     }
     
     ofSetColor(255);
-    v->display();
+//    v->display();
 
     switch(state){
         case Intro:
