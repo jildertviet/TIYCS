@@ -12,20 +12,30 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    state = scenes::Route;
+    scene = scenes::Route;
     ofSetFrameRate(30);
     ofSetWindowShape(WIDTH, HEIGHT);
     
     bingo = new Bingo();
+    
+    // IMAGES
     images["Intro Jonisk"] = ofImage("joniskLayer.png");
+    images["Jonisk big"] = ofImage("joniskBig.png");
+    images["Benzine"] = ofImage("benzine.png");
+    
+    for(int i=0; i<7; i++){
+        instructions[i].load("instructions/" + ofToString(i) + ".png");
+    }
+    
+    // FONTS
+    countFont.load("Helvetica-Bold.ttf", 200);
+
     
     memset(busses, 0, sizeof(float)*NUM_BUSSES); // Busses to 0.
     
     /*
-    joniskBig.load("joniskBig.png"); 
     gradient.load("gradient2.png");
     welcomTxt.load("welkomTxt.png");
-    benzine.load("benzine.png");
     captainPicto.load("captainPicto.png");
 //    scale.load("scale.png");
     
@@ -43,7 +53,6 @@ void ofApp::setup(){
     codeCircle.load("codeCircle.png");
     codeGlow.load("codeGlow2.png");
     
-    wordtVervolgd.load("wordtVervolgd.png");
     planet.load("planet.png");
     
     codeFont.load("Helvetica-Bold.ttf", 60);
@@ -59,14 +68,11 @@ void ofApp::setup(){
         commercial[i].load("commercial/" + ofToString(i) + ".mp4");
         commercial[i].setLoopState(ofLoopType::OF_LOOP_NONE);
     }
-    for(int i=0; i<7; i++){
-        instructions[i].load("instructions/" + ofToString(i) + ".png");
-    }
+
     for(int i=0; i<4; i++){
         returnImages[i].load("return/" + ofToString(i) + ".png");
     }
     
-    countFont.load("Helvetica-Bold.ttf", 200);
     helveticaBold.load("Helvetica-Bold.ttf", 22);
     helveticaRegular.load("Helvetica.ttf", 22);
     
@@ -83,6 +89,7 @@ void ofApp::setup(){
     ofHideCursor();
     
     v = new ofxJVisuals(glm::vec2(WIDTH, HEIGHT));
+    receiver.setup(5000);
 }
 //
 //--------------------------------------------------------------
@@ -96,7 +103,7 @@ void ofApp::update(){
         processMsg(m);
     }
     
-    switch(state){
+    switch(scene){
         case scenes::Commercial0:
         case scenes::Commercial1:
         case scenes::Commercial2:{
@@ -107,7 +114,7 @@ void ofApp::update(){
         case scenes::Stars:
         case scenes::Route:{
             for(int i=0; i<stars.size(); i++){
-                stars[i]->update(speed);
+                stars[i]->update(travelSpeed);
             }
         }
             break;
@@ -121,7 +128,7 @@ void ofApp::update(){
 //    pct += 0.005;
 //    if(pct > 1)
 //        pct = 0;
-    joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * pct + start;
+    joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * routePct + start;
 }
 
 //--------------------------------------------------------------
@@ -141,7 +148,7 @@ void ofApp::draw(){
     ofSetColor(255);
     v->display();
     
-    switch(state){
+    switch(scene){
         case scenes::None:
             break;
         case scenes::Intro:
@@ -149,7 +156,7 @@ void ofApp::draw(){
 //            welcomTxt.draw(0,0);
             break;
         case scenes::JoniskBig:
-            joniskBig.draw(0,0);
+            images["Jonisk big"].draw(0,0);
             break;
         case scenes::Instructions:{
             int imageID = busses[0];
@@ -162,7 +169,7 @@ void ofApp::draw(){
             break;
         case scenes::Countdown:{
             int count = busses[0];
-            if(count >= 0){
+            if(count > 0){
                 ofRectangle r = countFont.getStringBoundingBox(ofToString((int)floor(count)), 0, 0);
                 countFont.drawString(ofToString((int)floor(count)), ofGetWidth()*0.5 - r.getWidth() * 0.5, ofGetHeight()*0.5 + r.getHeight() * 0.5);
             }
@@ -208,7 +215,7 @@ void ofApp::draw(){
         }
             break;
         case scenes::Benzine:
-            benzine.draw(0,0);
+            images["Benzine"].draw(0,0);
             ofPushMatrix();
             ofPushStyle();
                 ofSetLineWidth(215);
@@ -243,7 +250,7 @@ void ofApp::draw(){
 //            captainPicto.draw(0,0, ofGetWindowWidth() * 0.25, ofGetWindowHeight() * 0.25);
         }
             break;
-        case scenes::State::Bingo:
+        case scenes::Scene::Bingo:
             bingo->display((Bingo::DrawMode)busses[0]);
             break;
         case scenes::Code:{
@@ -328,8 +335,8 @@ void ofApp::draw(){
 }
 
 void ofApp::processMsg(ofxOscMessage &m){
-    if(m.getAddress() == "/setMode"){
-        state = (scenes::State)m.getArgAsInt(0);
+    if(m.getAddress() == "/setScene"){
+        scene = (scenes::Scene)m.getArgAsInt(0);
     } else if(m.getAddress() == "/eventById"){
         switch(m.getArgAsInt(0)){
             case 1:{
@@ -359,13 +366,13 @@ void ofApp::processMsg(ofxOscMessage &m){
                 flightInfo.temp = m.getArgAsFloat(3);
                 break;
             case 8:
-                pct = m.getArgAsFloat(1);
+                routePct = m.getArgAsFloat(1);
                 break;
             case 10:
                 bRedBg = m.getArgAsBool(1);
                 break;
             case 14:
-                speed = m.getArgAsFloat(1);
+                travelSpeed = m.getArgAsFloat(1);
                 break;
             case 15:
                 bingo->bRotateBingo = m.getArgAsBool(1);
@@ -380,10 +387,8 @@ void ofApp::processMsg(ofxOscMessage &m){
             waveForm.push_back(m.getArgAsFloat(i));
         }
     } else if(m.getAddress() == "/setBus"){
-        for(int i=0; i<m.getNumArgs(); i++){
-            if(i < NUM_BUSSES){
-                busses[i] = m.getArgAsFloat(i);
-            }
+        if(m.getArgAsInt(0) < NUM_BUSSES){
+            busses[m.getArgAsInt(0)] = m.getArgAsFloat(1);
         }
     }
 }
@@ -419,17 +424,6 @@ void ofApp::joniskHover(){
         ofSetColor(255);
         images["Intro Jonisk"].draw(0,0, WIDTH, HEIGHT);
     ofPopMatrix();
-}
-
-void ofApp::setOsc(int port){
-    receiver.setup(port);
-    ofSetWindowTitle(ofToString(port));
-}
-
-void ofApp::setCommercialAmp(float amp){
-    for(int i=0; i<3; i++){
-        commercial[i].setVolume(amp);
-    }
 }
 
 void ofApp::initStars(){

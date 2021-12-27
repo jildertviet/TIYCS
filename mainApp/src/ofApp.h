@@ -10,7 +10,7 @@
 #define NUM_BUSSES  12
 
 namespace scenes{
-    enum State{
+    enum Scene{
         Intro, // 0, bus: 0 (hoverMul, 0<>2)
         JoniskBig, // 1
 
@@ -52,86 +52,68 @@ class ofApp : public ofBaseApp{
 		void keyPressed(int key);
 		void mousePressed(int x, int y, int button);
 		void windowResized(int w, int h);
-		
+    
+    ofxOscReceiver receiver;
     float busses[NUM_BUSSES];
     
     void processMsg(ofxOscMessage &m);
-    bool bCountDown = false;
-    ofxOscReceiver receiver;
-    scenes::State state;
     
+    scenes::Scene scene;
     std::map<std::string, ofImage> images;
     
-    ofImage jonisk;
-    ofImage joniskBig;
     ofImage welcomTxt;
-    ofImage benzine;
     ofImage martian[3];
     ofImage gradient;
     ofImage captainPicto;
-    ofColor bgColor = ofColor(13);
-    int id = 0;
-    ofVideoPlayer commercial[3];
-//    ofVideoPlayer stars[3];
-    
-    Bingo* bingo;
-    ofTrueTypeFont countFont;
-    
-    vector<float> waveForm;
+    ofImage instructions[7];
+    ofImage scale;
+    ofImage codeTxt;
+    ofImage codeCircle;
+    ofImage autoPilot;
+    ofImage returnImages[4];
+    ofImage planet;
+    ofImage codeGlow;
+    ofImage routeStartEnd, lineGray, planetsGray, legenda, planetNames;
+    ofImage joniskRoute, joniskRouteGlow;
     
     ofTrueTypeFont helveticaBold;
     ofTrueTypeFont helveticaRegular;
+    ofTrueTypeFont countFont;
+    ofTrueTypeFont codeFont;
+    ofTrueTypeFont autoPilotFont;
     
     float brightness = 255;
-    ofImage instructions[7];
+    ofColor bgColor = ofColor(0);
+    bool bRedBg = false;
+
+    int id = 0;
+    ofVideoPlayer commercial[3];
+    
+    vector<float> waveForm;
     
     bool bVluchtInfo = false;
     FlightInfo flightInfo;
-    ofImage scale;
-    
-    ofImage routeStartEnd, lineGray, planetsGray, legenda, planetNames;
-    ofImage joniskRoute, joniskRouteGlow;
     glm::vec2 joniskRoutePos = glm::vec2(466, 555);
     glm::vec2 start = glm::vec2(466, 555);
     glm::vec2 dest;
     ofImage lineWhite;
-    float pct;
-    
-    ofImage codeTxt;
-    ofImage codeCircle;
+    float routePct;
     
     int code[4] = {4, 5, 9, 3};
-    ofTrueTypeFont codeFont;
-    
     
     void joniskHover();
-    ofImage autoPilot;
-    ofTrueTypeFont autoPilotFont;
     
-    bool bRedBg = false;
+    Bingo* bingo;
     
-    ofImage returnImages[4];
-    int returnImageIndex = 0;
-    
-    void setOsc(int port);
-    
-    void setCommercialAmp(float amp);
-    ofImage wordtVervolgd;
-    
-    float speed = 1;
-    ofImage planet;
-    
+    // STARS
+    float travelSpeed = 1;
 //    ofxPostProcessing post;
 //    BloomPass::Ptr bloom;
     vector<Star*> stars;
     void initStars();
     void drawStars();
-    
     ofFbo starsFbo;
 
-    
-    ofImage codeGlow;
-    
     ofxJVisuals* v;
 };
 
