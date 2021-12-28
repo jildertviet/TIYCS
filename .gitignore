@@ -3,6 +3,17 @@
 !.gitignore
 
 !./mainApp
+!./espnowSender
+!./images
+!./joniskLed_v1
+!./ledBeam_v1
+!./audioIn/src
+!./toBeams/src
+!./ESPNOW_codes.txt
+!./README.md
+!./configLights.scd
+!./joniskMain.scd
+!./midiIn.scd
 
 **/*.app
 **/*.xcodeproj
