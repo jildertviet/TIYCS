@@ -1,3 +1,9 @@
+*
+*/
+!.gitignore
+
+!./mainApp
+
 **/*.app
 **/*.xcodeproj
 **/*.xcconfig

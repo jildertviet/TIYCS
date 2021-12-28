@@ -9,6 +9,7 @@
 #else
     bool bRotate = false;
 #endif
+//
 
 //--------------------------------------------------------------
 void ofApp::setup(){
