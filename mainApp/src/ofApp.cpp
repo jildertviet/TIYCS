@@ -18,6 +18,10 @@ void ofApp::setup(){
     
     bingo = new Bingo();
     
+    stars = new Stars(glm::vec2(WIDTH, HEIGHT));
+    stars->height = &busses[0];
+    stars->travelSpeed = &busses[1];
+    
     // IMAGES
     images["Intro Jonisk"] = ofImage("joniskLayer.png");
     images["Jonisk big"] = ofImage("joniskBig.png");
@@ -85,7 +89,6 @@ void ofApp::setup(){
     dest = glm::vec2(714, 437);
         
      */
-    initStars();
     ofHideCursor();
     
     v = new ofxJVisuals(glm::vec2(WIDTH, HEIGHT));
@@ -112,11 +115,8 @@ void ofApp::update(){
         }
             break;
         case scenes::Stars:
-        case scenes::Route:{
-            for(int i=0; i<stars.size(); i++){
-                stars[i]->update(travelSpeed);
-            }
-        }
+        case scenes::Route:
+            stars->update();
             break;
         case scenes::Bingo:{
             bingo->bingoForce = busses[1];
@@ -125,9 +125,7 @@ void ofApp::update(){
         default:
             break;
     }
-//    pct += 0.005;
-//    if(pct > 1)
-//        pct = 0;
+    
     joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * routePct + start;
 }
 
@@ -176,10 +174,10 @@ void ofApp::draw(){
         }
             break;
         case scenes::Stars:
-            drawStars();
+            stars->display(brightness);
             break;
         case scenes::Route:
-            drawStars();
+            stars->display(brightness);
             
             ofSetColor(0, 100);
             ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
@@ -371,9 +369,6 @@ void ofApp::processMsg(ofxOscMessage &m){
             case 10:
                 bRedBg = m.getArgAsBool(1);
                 break;
-            case 14:
-                travelSpeed = m.getArgAsFloat(1);
-                break;
             case 15:
                 bingo->bRotateBingo = m.getArgAsBool(1);
                 bingo->rotStart = ofGetFrameNum();
@@ -424,49 +419,4 @@ void ofApp::joniskHover(){
         ofSetColor(255);
         images["Intro Jonisk"].draw(0,0, WIDTH, HEIGHT);
     ofPopMatrix();
-}
-
-void ofApp::initStars(){
-    for(int i=0; i<500; i++){
-        stars.push_back(new Star());
-        stars.back()->setLoc(
-                             glm::vec3(ofGetWidth() * ofRandom(-1, 2),
-                                    ofRandom(ofGetHeight()), -ofRandom(500, 1500)), true);
-    }
-//    ofSetSphereResolution(180);
-    
-    // Setup post-processing chain
-//    post.init(ofGetWidth(), ofGetHeight());
-//    post.createPass<FxaaPass>()->setEnabled(false);
-//    bloom = post.createPass<BloomPass>();
-//    bloom->setEnabled(true);
-    
-    starsFbo.allocate(WIDTH, HEIGHT, GL_RGB);
-}
-
-void ofApp::drawStars(){
-    ofPushMatrix();
-    ofTranslate(0, ofGetHeight() * busses[0]);
-
-    
-    starsFbo.begin();
-    ofClear(0);
-//    post.begin();
-    
-    ofSetColor(255);
-    ofFill();
-    for(int i=0; i<stars.size(); i++){
-        stars[i]->display();
-    }
-    ofSetColor(0, pow(1-(busses[0] / 2), 0.5) * 200);
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-//    post.end();
-    starsFbo.end();
-    
-    
-    ofSetColor(255, brightness);
-    starsFbo.draw(0, ofGetHeight()*-2);
-
-    planet.draw(0,0);
-    ofPopMatrix;
 }

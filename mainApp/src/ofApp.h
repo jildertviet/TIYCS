@@ -4,7 +4,7 @@
 #include "ofxJVisuals.hpp"
 //#include "ofxOsc.h"
 //#include "ofxPostProcessing.h"
-#include "Star.hpp"
+#include "Stars.hpp"
 #include "Bingo.hpp"
 
 #define NUM_BUSSES  12
@@ -16,7 +16,7 @@ namespace scenes{
 
         Instructions, // 2, bus: 0 (imageID, 0<>5)
         Countdown, // 3, bus: 0 (count)
-        Stars, // 4, bus: 0 (height, 0<>2)
+        Stars, // 4, bus: 0 (height, 0<>2), bus: 1 travelSpeed
         Route,// 5, bus: 0 (height, 0<>2)
         Commercial0, // 6
         Commercial1, // 7
@@ -71,7 +71,6 @@ class ofApp : public ofBaseApp{
     ofImage codeCircle;
     ofImage autoPilot;
     ofImage returnImages[4];
-    ofImage planet;
     ofImage codeGlow;
     ofImage routeStartEnd, lineGray, planetsGray, legenda, planetNames;
     ofImage joniskRoute, joniskRouteGlow;
@@ -104,15 +103,7 @@ class ofApp : public ofBaseApp{
     void joniskHover();
     
     Bingo* bingo;
-    
-    // STARS
-    float travelSpeed = 1;
-//    ofxPostProcessing post;
-//    BloomPass::Ptr bloom;
-    vector<Star*> stars;
-    void initStars();
-    void drawStars();
-    ofFbo starsFbo;
+    Stars* stars;
 
     ofxJVisuals* v;
 };
