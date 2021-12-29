@@ -6,6 +6,9 @@
 //#include "ofxPostProcessing.h"
 #include "Stars.hpp"
 #include "Bingo.hpp"
+#ifdef  TARGET_RASPBERRY_PI
+    #include "ofxOMXPlayer.h"
+#endif
 
 #define NUM_BUSSES  12
 
@@ -62,15 +65,10 @@ class ofApp : public ofBaseApp{
     std::map<std::string, ofImage> images;
     
     ofImage welcomTxt;
-    ofImage martian[3];
-    ofImage gradient;
     ofImage captainPicto;
     ofImage instructions[7];
-    ofImage scale;
-    ofImage codeCircle;
-    ofImage autoPilot;
     ofImage returnImages[4];
-    ofImage codeGlow;
+    
     ofImage routeStartEnd, lineGray, planetsGray, legenda, planetNames;
     ofImage joniskRoute, joniskRouteGlow;
     
@@ -81,11 +79,14 @@ class ofApp : public ofBaseApp{
     ofTrueTypeFont autoPilotFont;
     
     float brightness = 255;
-    ofColor bgColor = ofColor(0);
-    bool bRedBg = false;
 
     int id = 0;
+
+#ifdef  TARGET_RASPBERRY_PI
+    ofxOMXPlayer commercial[3];
+#else
     ofVideoPlayer commercial[3];
+#endif
     
     vector<float> waveForm;
     
@@ -106,4 +107,3 @@ class ofApp : public ofBaseApp{
 
     ofxJVisuals* v;
 };
-
