@@ -33,7 +33,7 @@ namespace scenes{
         Code, // 14, bus: 0 (codeLen, 0<>3)
         Autopilot, // 15, bus: 0 (autoPilotPct 0<>100)
         
-        None,
+        None, // 16
     };
 }
 
@@ -67,7 +67,6 @@ class ofApp : public ofBaseApp{
     ofImage captainPicto;
     ofImage instructions[7];
     ofImage scale;
-    ofImage codeTxt;
     ofImage codeCircle;
     ofImage autoPilot;
     ofImage returnImages[4];

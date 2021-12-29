@@ -44,13 +44,7 @@ Bingo::Bingo(){
     bingoFont.load("Geneva bold.ttf", 40);
     ofSetCircleResolution(64);
     
-    for(int i=0; i<9; i++){ // Create balls
-        auto circle = make_shared<ofxBox2dCircle>();
-        circle->setPhysics(3.0, 0.53, 0.1);
-        circle->setup(box2d.getWorld(), (size.x*0.5) + ofRandom(-50, 50), (size.y*0.5) + ofRandom(-50, 50), 40);
-        circle->name = ofToString(i+1);
-        circles.push_back(circle);
-    }
+    reInit();
 }
 
 void Bingo::update(){
@@ -133,5 +127,16 @@ void Bingo::removeBall(string name){
             circles.erase(circles.begin() + i);
             break;
         }
+    }
+}
+
+void Bingo::reInit(){
+    circles.clear();
+    for(int i=0; i<9; i++){ // Create balls
+        auto circle = make_shared<ofxBox2dCircle>();
+        circle->setPhysics(3.0, 0.53, 0.1);
+        circle->setup(box2d.getWorld(), (size.x*0.5) + ofRandom(-50, 50), (size.y*0.5) + ofRandom(-50, 50), 40);
+        circle->name = ofToString(i+1);
+        circles.push_back(circle);
     }
 }

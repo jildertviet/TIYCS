@@ -27,6 +27,7 @@ private:
 class Stars{
 public:
     Stars(glm::vec2 size);
+    glm::vec2 size;
     
     void update();
     void display(float brightness=255);

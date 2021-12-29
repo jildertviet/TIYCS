@@ -51,7 +51,7 @@ public:
     ofTrueTypeFont countFont;
     float count = 10;
 
-    void initBingo();
+    void reInit();
     
 };
 #endif /* Bingo_hpp */

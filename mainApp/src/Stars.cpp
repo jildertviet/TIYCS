@@ -33,6 +33,8 @@ void Star::setLoc(glm::vec3 loc, bool bSetOrigin){
 
 
 Stars::Stars(glm::vec2 size){
+    planet.load("planet.png");
+
     for(int i=0; i<500; i++){
         stars.push_back(new Star());
         stars.back()->setLoc(
@@ -50,7 +52,7 @@ Stars::Stars(glm::vec2 size){
 //    post.createPass<FxaaPass>()->setEnabled(false);
 //    bloom = post.createPass<BloomPass>();
 //    bloom->setEnabled(true);
-    
+    this->size = size;
     starsFbo.allocate(size.x, size.y, GL_RGB);
 }
 
@@ -82,6 +84,6 @@ void Stars::display(float brightness){
     ofSetColor(255, brightness);
     starsFbo.draw(0, ofGetHeight()*-2);
 
-    planet.draw(0,0);
+    planet.draw(0,0, size.x, size.y);
     ofPopMatrix;
 }

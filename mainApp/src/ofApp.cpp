@@ -9,13 +9,14 @@
 #else
     bool bRotate = false;
 #endif
-//
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     scene = scenes::Route;
     ofSetFrameRate(30);
     ofSetWindowShape(WIDTH, HEIGHT);
+    
+    memset(busses, 0, sizeof(float)*NUM_BUSSES); // Set busses to 0.
     
     bingo = new Bingo();
     
@@ -27,6 +28,7 @@ void ofApp::setup(){
     images["Intro Jonisk"] = ofImage("joniskLayer.png");
     images["Jonisk big"] = ofImage("joniskBig.png");
     images["Benzine"] = ofImage("benzine.png");
+    images["CodeTxt"] = ofImage("codeTxt.png");
     
     for(int i=0; i<7; i++){
         instructions[i].load("instructions/" + ofToString(i) + ".png");
@@ -35,8 +37,13 @@ void ofApp::setup(){
     // FONTS
     countFont.load("Helvetica-Bold.ttf", 200);
 
+    // VIDEOS
+    for(int i=0; i<3; i++){
+        commercial[i].load("commercial/" + ofToString(i) + ".mp4");
+        commercial[i].setLoopState(ofLoopType::OF_LOOP_NONE);
+    }
     
-    memset(busses, 0, sizeof(float)*NUM_BUSSES); // Busses to 0.
+    
     
     /*
     gradient.load("gradient2.png");
@@ -54,7 +61,7 @@ void ofApp::setup(){
     planetNames.load("route/TXT planeetnamen GRIJS_1920x1080.png");
 
     
-    codeTxt.load("codeTxt.png");
+    
     codeCircle.load("codeCircle.png");
     codeGlow.load("codeGlow2.png");
     
@@ -69,10 +76,7 @@ void ofApp::setup(){
     
 //    stars[0].load("stars/" + ofToString(0) + ".mov");
     
-    for(int i=0; i<3; i++){
-        commercial[i].load("commercial/" + ofToString(i) + ".mp4");
-        commercial[i].setLoopState(ofLoopType::OF_LOOP_NONE);
-    }
+
 
     for(int i=0; i<4; i++){
         returnImages[i].load("return/" + ofToString(i) + ".png");
@@ -257,7 +261,7 @@ void ofApp::draw(){
             ofTranslate(ofGetWindowSize()*0.5);
             ofScale(1.4);
             ofTranslate(ofGetWindowSize()*-0.5);
-            codeTxt.draw(0,0);
+            images["CodeTxt"].draw(0,0);
             int m = 60; // margin
             for(int i=0; i<4; i++){
                 ofPushMatrix();
@@ -340,15 +344,25 @@ void ofApp::processMsg(ofxOscMessage &m){
         switch(m.getArgAsInt(0)){
             case 1:{
                 int movieID = m.getArgAsInt(1);
-                for(int i=0; i<3; i++){
-                    commercial[i].stop();
-                    commercial[i].firstFrame();
+                if(movieID==-1){ // Stop
+                    for(int i=0; i<3; i++){
+                        commercial[i].stop();
+                        commercial[i].firstFrame();
+                    }
+                } else{
+                    for(int i=0; i<3; i++){
+                        commercial[i].stop();
+                        commercial[i].firstFrame();
+                    }
+                    commercial[movieID].play();
                 }
-                commercial[movieID].play();
                 }
                 break;
             case 2:
                 bingo->removeBall(ofToString(m.getArgAsInt(1)));
+                break;
+            case 3:
+                bingo->reInit();
                 break;
             }
     } else if(m.getAddress() == "/setValueById"){
