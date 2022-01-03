@@ -58,7 +58,6 @@ void ofApp::setup(){
         settings.enableTexture = false;
         settings.enableLooping = false;
         settings.enableAudio = false;
-        settings.doFlipTexture = true; // ?
             
         commercial[i].setup(settings);
         commercial[i].setPaused(true);
