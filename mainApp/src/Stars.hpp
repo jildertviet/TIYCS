@@ -9,7 +9,7 @@
 #define Stars_hpp
 
 #include <stdio.h>
-//#include "ofMain.h"
+#include "ofMain.h"
 
 class Star{
 public:

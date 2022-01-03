@@ -9,7 +9,7 @@
 #define Bingo_hpp
 
 #include <stdio.h>
-//#include "ofMain.h"
+#include "ofMain.h"
 #include "ofxBox2d.h"
 
 class Bingo{
