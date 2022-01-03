@@ -36,7 +36,7 @@ namespace scenes{
         Code, // 14, bus: 0 (codeLen, 0<>3)
         Autopilot, // 15, bus: 0 (autoPilotPct 0<>100)
         
-        None, // 16
+        Nothing, // 16
     };
 }
 

@@ -196,17 +196,17 @@ void ofApp::draw(){
             break;
         case scenes::Commercial0:{
             if(commercial[0].isPlaying())
-                commercial[0].draw(0,0);
+                commercial[0].draw(0,0, ofGetWidth(), ofGetHeight());
         }
             break;
         case scenes::Commercial1: {
             if(commercial[1].isPlaying())
-                commercial[1].draw(0,0);
+                commercial[1].draw(0,0, ofGetWidth(), ofGetHeight());
         }
             break;
         case scenes::Commercial2: {
             if(commercial[2].isPlaying())
-                commercial[2].draw(0,0);
+                commercial[2].draw(0,0, ofGetWidth(), ofGetHeight());
         }
             break;
         case scenes::Benzine:
