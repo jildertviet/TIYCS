@@ -12,7 +12,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    scene = scenes::None;
+    scene = scenes::Nothing;
     ofSetFrameRate(30);
     ofSetWindowShape(WIDTH, HEIGHT);
     
@@ -144,7 +144,7 @@ void ofApp::draw(){
     v->display();
     
     switch(scene){
-        case scenes::None:
+        case scenes::Nothing:
             break;
         case scenes::Intro:
             joniskHover();
