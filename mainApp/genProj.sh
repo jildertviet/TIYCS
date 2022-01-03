@@ -1,1 +1,1 @@
-projectGenerator -o "../../.." -a "ofxAssimpModelLoader,ofxBox2d,ofxEasing,ofxGui,ofxJSON,ofxJVisuals,ofxMidi,ofxOpenCv,ofxOscBidirectional,ofxPostProcessing,ofxSvg" ../mainApp
+projectGenerator -o"../../.." -a"ofxOMXPlayer,ofxAssimpModelLoader,ofxBox2d,ofxEasing,ofxGui,ofxJSON,ofxJVisuals,ofxMidi,ofxOscBidirectional,ofxPostProcessing,ofxSvg" ../mainApp
