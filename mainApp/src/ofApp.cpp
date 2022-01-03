@@ -108,7 +108,9 @@ void ofApp::update(){
         case scenes::Commercial1:
         case scenes::Commercial2:{
             for(int i=0; i<3; i++)
+#ifndef TARGET_RASPBERRY_PI
                 commercial[i].update();
+#endif
         }
             break;
         case scenes::Stars:
