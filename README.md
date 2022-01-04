@@ -34,26 +34,34 @@ Then run program with:
 The app uses ofAppGLFWWindow to be able to run fullscreen.
 
 ### To test @ OF / Raspberry Pi
-- Star scene on Raspberry Pi. Probably no shaders... (for ofxPostProcessing).
-- Sync video with Ableton Link?
+- [ ] Star scene on Raspberry Pi. Probably no shaders... (for ofxPostProcessing).
+- [ ] Sync video with Ableton Link?
 
 ### Ideas for new version (2022)
-- Set PWM freq in EEPROM, high freq for picture mode, low for performance mode  
-- Battery powered. 4S 18650 circuit  
-- Drive LEDs directly from Battery  
-- Use same voltage regulator to get a 3.3V  
-- Change MOSFETs to logic-level (3.3V) ones, or drive with NPN transistor  
-- Implement gyroscope  
-- Research mic implementation  
+- [x] Battery powered. 4S 18650 circuit  
+- [ ] ~~Drive LEDs directly from Battery~~  
+  - [x] Use a 12V buck converter.
+- [x] Use same voltage regulator to get a 3.3V  
+- [x] Change MOSFETs to logic-level (3.3V) ones, or drive with NPN transistor  
+- [ ] ~~Implement gyroscope~~  
+  - [x] Board has pins for I2C
+- [ ] ~~Research mic implementation~~  // Could be done with i2c board.
 
-- ESP32s2 or ESP32 WROOM?  
-- Rethink LED configuration (Strip + circle-panel for top?)  
+- [x] ESP32s2 or ESP32 WROOM? --> ESP32 WROOM
+- [x] Rethink LED configuration (Strip + circle-panel for top?)
 
-- Build own cement base with screw holes.  
-- Add screw from bottom to cement base  
-- RGBW instead of RGB?  
-- Implement internal lag for lower framerates  
+- [ ] ~~Build own cement base with screw holes~~  
+  - [ ] Use plastic cup that's already in Jonisks to attach PCB
+- [ ] ~~Add screw from bottom to cement base~~  
+- [x] RGBW instead of RGB?  
+  - [ ] Fix LED polarity issues
 
-- Turn on / off  
-  - Button (preferred)
-  - Battery connector
+- [ ] Power on / off  
+  - [ ] ~~Button (preferred)~~
+  - [x] Battery connector
+    - [ ] Test: (wake ESP32 when charger is plugged in)  
+
+#### Software
+- [ ] Set PWM freq in EEPROM, high freq for picture mode, low for performance mode  
+- [ ] Implement internal lag for lower framerates  
+- [ ] Report battery status  
