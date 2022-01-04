@@ -89,6 +89,11 @@ void ofApp::setup(){
     
     v = new ofxJVisuals(glm::vec2(WIDTH, HEIGHT));
     receiver.setup(5000);
+    
+    ofSeedRandom(10);
+    cout << "Random after ofSeedRandom(10): " << endl;
+    for(int i=0; i<4; i++)
+        cout << (float)ofRandom(1.0) << endl;
 }
 //
 //--------------------------------------------------------------
