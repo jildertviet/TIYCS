@@ -3,12 +3,18 @@
 #define WIDTH  57
 #define HEIGHT  57
 
+#define SERIAL_2
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetWindowShape(HEIGHT * 4, WIDTH * 4);
     ofSetFrameRate(30);
     
     serial.setup("/dev/cu.usbserial-01A7ECB2", 230400);
+#ifdef  SERIAL_2
+    serial2.setup("/dev/cu.usbserial-01A7EC63", 230400);
+#endif
+    
     f.allocate(WIDTH, HEIGHT, GL_RED);
     p.allocate(WIDTH, HEIGHT, OF_PIXELS_MONO);
     
@@ -110,22 +116,22 @@ void ofApp::update(){
     for(int i=0; i<4; i++){
         for(int j=0; j<HEIGHT; j++){
             int index = (i*HEIGHT) + j;
-            data[index + 6 + 1] = d[(i * (WIDTH / 8)) + (j*HEIGHT)] * 0.9 + 20; // Does this work...
+            data[index + 6 + 1] = d[(i * (WIDTH / 8)) + (j*HEIGHT)] * 0.9 + 2; // Does this work...
             // Half brightness, add 1
         }
     }
     data[6] = 0x01; // ledBeam channel 0
     serial.writeBytes(data, 6 + 1 + 228 + 3);
     
-#ifdef  SERIAL2
+#ifdef  SERIAL_2
     for(int i=4; i<8; i++){
         for(int j=0; j<HEIGHT; j++){
-            int index = (i*HEIGHT) + j;
-            data[index] = d[(i * (WIDTH / 8)) + (j*HEIGHT)];
+            int index = ((i-4)*HEIGHT) + j;
+            data[index + 6 + 1] = d[(i * (WIDTH / 8)) + (j*HEIGHT)];
         }
     }
     data[6] = 0x02; // ledBeam channel 1
-    serial2.writeBytes(data, 228+3);
+    serial2.writeBytes(data, 6 + 1 + 228 + 3);
 #endif
     
     ofSetWindowTitle(ofToString(ofGetFrameRate()));

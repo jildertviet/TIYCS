@@ -2,7 +2,8 @@
 
 #include "ofMain.h"
 #include "JRectangle.hpp"
-#include "ofxOsc.h"
+#include "ofxJVisuals.hpp"
+//#include "ofxOsc.h"
 
 enum State{
     Mouse,
