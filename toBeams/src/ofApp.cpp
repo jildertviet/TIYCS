@@ -14,6 +14,14 @@ void ofApp::setup(){
 #ifdef  SERIAL_2
     serial2.setup("/dev/cu.usbserial-01A7EC63", 230400);
 #endif
+
+    // Set to RAW
+    unsigned char msg[11] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x10,0x00,101,110,100};
+    serial.writeBytes(msg, 11);
+    
+    // Set colorMul to white (1,1,1)
+    unsigned char colorMsg[13] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x06,1,1,1,101,110,100};
+    serial.writeBytes(colorMsg, 13);
     
     f.allocate(WIDTH, HEIGHT, GL_RED);
     p.allocate(WIDTH, HEIGHT, OF_PIXELS_MONO);
@@ -116,7 +124,7 @@ void ofApp::update(){
     for(int i=0; i<4; i++){
         for(int j=0; j<HEIGHT; j++){
             int index = (i*HEIGHT) + j;
-            data[index + 6 + 1] = d[(i * (WIDTH / 8)) + (j*HEIGHT)] * 0.9 + 2; // Does this work...
+            data[index + 6 + 1] = d[(i * (WIDTH / 8)) + (j*HEIGHT)] * 0.9 + 5; // Does this work...
             // Half brightness, add 1
         }
     }

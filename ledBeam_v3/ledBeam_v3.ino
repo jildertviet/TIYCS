@@ -10,6 +10,7 @@
 #include "Wavetable.h"
 #include "Osc.h"
 #include "pEnv.h"
+#include credentials.h
 
 #define NUM_WAVETABLES  8
 #define NUM_ENV 8
@@ -24,9 +25,6 @@
 Wavetable* wavetables[NUM_WAVETABLES];
 Osc* osc[NUM_OSC];
 pEnv envelopes[NUM_ENV];
-
-const char* ssid = "Hertenkamp";
-const char* password = "Priokstraat1";
 
 unsigned char channel = 0;
 unsigned char id = 0;

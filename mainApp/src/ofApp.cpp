@@ -12,7 +12,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    scene = scenes::Nothing;
+    scene = scenes::Stars;
     ofSetFrameRate(30);
     ofSetWindowShape(WIDTH, HEIGHT);
     
@@ -89,11 +89,6 @@ void ofApp::setup(){
     
     v = new ofxJVisuals(glm::vec2(WIDTH, HEIGHT));
     receiver.setup(5000);
-    
-    ofSeedRandom(10);
-    cout << "Random after ofSeedRandom(10): " << endl;
-    for(int i=0; i<4; i++)
-        cout << (float)ofRandom(1.0) << endl;
 }
 //
 //--------------------------------------------------------------
@@ -140,10 +135,10 @@ void ofApp::draw(){
             ofRotateDeg(180, 0, 0, 1);
     }
     
-    if(busses[2] == 1){
-        ofBackground(255, 0, 0);
-    } else{
-        ofBackground(0);
+    ofBackground(0);
+    if(busses[2] != 0){
+        ofSetColor(255, 0, 0, busses[2] * 255);
+        ofDrawRectangle(0, 0, WIDTH, HEIGHT);
     }
     
     ofSetColor(255);
@@ -177,7 +172,10 @@ void ofApp::draw(){
         }
             break;
         case scenes::Stars:
+            ofPushMatrix();
+            ofTranslate(busses[2], 0);
             stars->display(brightness);
+            ofPopMatrix();
             break;
         case scenes::Route:
             stars->display(brightness);

@@ -7,11 +7,9 @@
 #include <ArduinoOTA.h>
 #include "EEPROM.h"
 #include "USB.h"
+#include "credentials.h"
 
 USBCDC USBSerial;
-
-//const char* ssid = "Hertenkamp";
-//const char* password = "Priokstraat1";
 
 #define CHANNEL 11 // Not used
 

@@ -19,7 +19,7 @@ namespace scenes{
 
         Instructions, // 2, bus: 0 (imageID, 0<>5)
         Countdown, // 3, bus: 0 (count)
-        Stars, // 4, bus: 0 (height, 0<>2), bus: 1 travelSpeed
+        Stars, // 4, bus 0: height 0<>2, bus 1: travelSpeed, bus 2: xOffset (for 3 windows). 
         Route,// 5, bus: 0 (height, 0<>2)
         Commercial0, // 6
         Commercial1, // 7
