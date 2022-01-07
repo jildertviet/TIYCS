@@ -4,9 +4,7 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include "EEPROM.h"
-
-const char* ssid = "Hertenkamp";
-const char* password = "Priokstraat1";
+#include "credentials.h"
 
 #define CHANNEL 1
 
