@@ -536,7 +536,7 @@ def addNets():
 
 # initNets()
 # drawOutlines()
-# drawHole(3)
+# drawHole(3.5)
 # addFootPrintsInCircle()
 # addNets()
 
