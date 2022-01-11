@@ -52,29 +52,31 @@ def connectPinToNet(componentName, pinIndex, netName):
     footprint.Pads()[pinIndex].SetNet(vin)
 
 def placePinHeaders():
-    index = 0
-    offsets = [[0,-12.7],[12.7,0],[0,12.7],[-12.7,0]]
-    for i in [[-1,0],[0,-1],[1,0],[0,1]]:
-        name = 'mainConn_' + str(i)
-        p = i
-        p[0] *= 48
-        p[1] *= 48
-        p[0] += offsets[index][0]
-        p[1] += offsets[index][1]
-        mod = FootprintLoad('/Library/Application Support/kicad/modules/Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x11_P2.54mm_Vertical')
-        mod.SetPosition(wxPoint(FromMM(p[0]), FromMM(p[1])))
-        mod.Rotate(mod.GetPosition(), 900 * -index)
-        mod.SetReference(name)
-        mod.Reference().SetVisible(False)
-        board.Add(mod)
-        # Connect pins: 12V, W, B, G, R, 12V, R, G, B, W, 12V
-        connectPinToNet(name, 5, '12V')
-        j = 0
-        for netName in ['12V','W','B','G','R']:
-            connectPinToNet(name, 10-j, netName)
-            connectPinToNet(name, j, netName)
-            j+=1
-        index += 1
+    for h in range(2):
+        index = 0
+        offsets = [[0,-12.7],[12.7,0],[0,12.7],[-12.7,0]]
+        offsets2 = [[2.54,0],[0,2.54],[-2.54,0],[0,-2.54]]
+        for i in [[-1,0],[0,-1],[1,0],[0,1]]:
+            name = 'mainConn_' + str(index) + '_' + str(h)
+            p = i
+            p[0] *= 48;
+            p[1] *= 48;
+            p[0] += offsets[index][0] + (offsets2[index][0] * h)
+            p[1] += offsets[index][1] + (offsets2[index][1] * h)
+            mod = FootprintLoad('/Library/Application Support/kicad/modules/Connector_PinHeader_2.54mm.pretty', 'PinHeader_1x11_P2.54mm_Vertical')
+            mod.SetPosition(wxPoint(FromMM(p[0]), FromMM(p[1])))
+            mod.Rotate(mod.GetPosition(), 900 * -index)
+            mod.SetReference(name)
+            mod.Reference().SetVisible(False)
+            board.Add(mod)
+            # Connect pins: 12V, W, B, G, R, 12V, R, G, B, W, 12V
+            connectPinToNet(name, 5, '12V')
+            j = 0
+            for netName in ['12V','W','B','G','R']:
+                connectPinToNet(name, 10-j, netName)
+                connectPinToNet(name, j, netName)
+                j+=1
+            index += 1
 
 def placeLEDs(numPerRow=3, spacing=20, color='W', footprintName="LED_RGB_5050-6"):
     leds = []
