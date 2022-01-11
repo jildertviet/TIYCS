@@ -91,7 +91,7 @@ def placeLEDs(numPerRow=3, spacing=20, color='W', footprintName="LED_RGB_5050-6"
 
             mod = FootprintLoad('/Library/Application Support/kicad/modules/LED_SMD.pretty', footprintName)
             mod.SetReference(name)
-            # mod.Reference().SetVisible(False)
+            mod.Reference().SetVisible(False)
             mod.SetPosition(wxPoint(FromMM(p[0]), FromMM(p[1])))
 
             # if j == 0:
@@ -121,8 +121,8 @@ def placeResistors(leds, modulo=3, num=3, color='W'):
                 r.SetPosition(wxPoint(led["led"].GetPosition()[0] - FromMM(6), led["led"].GetPosition()[1] + FromMM(offsets[j])))
                 r.SetReference('R_' + str(led["id"]) + '_' + str(j) + '_' + color) #R_0_0_W
                 r.Rotate(led["led"].GetPosition(), led["rotation"])
-            # r.Reference().SetVisible(False)
-            #
+                r.Reference().SetVisible(False)
+
                 board.Add(r)
                 resistors.append(r)
         index+=1
@@ -200,6 +200,13 @@ rgbLEDs = placeLEDs(6, 40, 'RGB')
 whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W')
 rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
 placeRGBNets(rgbLEDs, rgbResistors)
+placeWhiteNets(whiteLEDs, whiteResistors)
+
+rgbLEDs = placeLEDs(3, 30, 'RGB2')
+rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
+placeRGBNets(rgbLEDs, rgbResistors)
+whiteLEDs = placeLEDs(1, 7.5, 'W2')
+whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W2')
 placeWhiteNets(whiteLEDs, whiteResistors)
 
 Refresh()
