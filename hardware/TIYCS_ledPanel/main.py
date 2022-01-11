@@ -76,10 +76,43 @@ def placePinHeaders():
             j+=1
         index += 1
 
+def placeLEDs(numPerRow=3, spacing=20, footprintName="LED_RGB_5050-6"):
+    index = 0
+    for i in range(4):
+        p = [[-1,-1],[1,-1],[1,1],[-1,1]][i]
+        p[0] *= spacing
+        p[1] *= spacing
+        dir = [[1,0],[0,1],[-1,0],[0,-1]][i]
+        p[0] += dir[0] * 1 # Offsets
+        p[1] += dir[1] * 1
+        for j in range(numPerRow):
+            name = 'LED_W_' + str(index)
+
+            mod = FootprintLoad('/Library/Application Support/kicad/modules/LED_SMD.pretty', footprintName)
+            mod.SetReference(name)
+            # mod.Reference().SetVisible(False)
+            mod.SetPosition(wxPoint(FromMM(p[0]), FromMM(p[1])))
+
+            # if j == 0:
+                # mod.Rotate(mod.GetPosition(), 450 + (900*-i))
+                # mod.SetPosition(wxPoint(mod.GetPosition()[0]*0.85, mod.GetPosition()[1]*0.85))
+            # else:
+            mod.Rotate(mod.GetPosition(), 900*-i)
+
+            board.Add(mod)
+
+            p[0] += dir[0] * ((spacing*2) / numPerRow)
+            p[1] += dir[1] * ((spacing*2) / numPerRow)
+            index += 1
+
 initNets()
 drawOutline()
 placeMountingHoles()
 drawHole(3.25)
 placePinHeaders()
+# placeWhiteLEDs()
+# placeRGBLEDs()
+placeLEDs(3, 20)
+placeLEDs(7, 40)
 
 Refresh()
