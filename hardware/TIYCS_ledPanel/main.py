@@ -76,7 +76,7 @@ def placePinHeaders():
             j+=1
         index += 1
 
-def placeLEDs(numPerRow=3, spacing=20, footprintName="LED_RGB_5050-6"):
+def placeLEDs(numPerRow=3, spacing=20, color='W', footprintName="LED_RGB_5050-6"):
     leds = []
     index = 0
     for i in range(4):
@@ -87,7 +87,7 @@ def placeLEDs(numPerRow=3, spacing=20, footprintName="LED_RGB_5050-6"):
         p[0] += dir[0] * 1 # Offsets
         p[1] += dir[1] * 1
         for j in range(numPerRow):
-            name = 'LED_W_' + str(index)
+            name = 'LED_' + color + '_' + str(index)
 
             mod = FootprintLoad('/Library/Application Support/kicad/modules/LED_SMD.pretty', footprintName)
             mod.SetReference(name)
@@ -109,7 +109,7 @@ def placeLEDs(numPerRow=3, spacing=20, footprintName="LED_RGB_5050-6"):
             index += 1
     return leds
 
-def placeResistors(leds, modulo=3, num=3):
+def placeResistors(leds, modulo=3, num=3, color='W'):
     index = 0
     resistors = []
     for led in leds:
@@ -119,7 +119,7 @@ def placeResistors(leds, modulo=3, num=3):
                 footprint_lib = '/Library/Application Support/kicad/modules/Resistor_SMD.pretty'
                 r = FootprintLoad(footprint_lib, 'R_0603_1608Metric')
                 r.SetPosition(wxPoint(led["led"].GetPosition()[0] - FromMM(6), led["led"].GetPosition()[1] + FromMM(offsets[j])))
-                r.SetReference('R_' + str(led["id"]) + '_' + str(j)) #R_0_0
+                r.SetReference('R_' + str(led["id"]) + '_' + str(j) + '_' + color) #R_0_0_W
                 r.Rotate(led["led"].GetPosition(), led["rotation"])
             # r.Reference().SetVisible(False)
             #
@@ -161,11 +161,31 @@ def placeRGBNets(leds, resistors):
                 # Connect Led2 to pins
                 connectPinToNet(leds[index+2]["led"].GetReference(), [5,4,3][indexTemp], ['G','R','B'][indexTemp])
                 indexTemp+=1
+        index+=1
 
+def placeWhiteNets(leds, resistors):
+    index = 0
+    for led in leds:
+        if index % 2 == 0:
+            #Connect Resistor both pads
+            connectPinToNet(resistors[int(index/2)].GetReference(), 0, '12V')
 
-            # led["led"]
-            # leds[index + 1]["led"]
-            # leds[index + 2]["led"]
+            netName = 'RtoD' + str(led["id"]) + '_W'
+            createNet(netName)
+            connectPinToNet(resistors[int(index/2)].GetReference(), 1, netName)
+            indexTemp = 0
+            for i in range(3):
+                #Connect Led0 pads 1-3
+                connectPinToNet(leds[index]["led"].GetReference(), [0, 1, 2][i], netName) # Map to pins 1, 0, 2 instead of 0, 1, 2
+                # Connect Led0 to Led1
+            for i in range(3):
+                netName = 'D' + str(leds[index]["id"]) + 'toD' + str(leds[index+1]["id"]) + '_W'
+                createNet(netName)
+                connectPinToNet(leds[index]["led"].GetReference(), [4,5,3][i], netName)
+                connectPinToNet(leds[index+1]["led"].GetReference(), [1,0,2][i], netName)
+            for i in range(3):
+                # # Connect Led1 to W net
+                connectPinToNet(leds[index+1]["led"].GetReference(), [5,4,3][i], 'W')
         index+=1
 
 initNets()
@@ -175,10 +195,11 @@ drawHole(3.25)
 placePinHeaders()
 # placeWhiteLEDs()
 # placeRGBLEDs()
-whiteLEDs = placeLEDs(3, 20)
-rgbLEDs = placeLEDs(6, 40)
-whiteResistors = placeResistors(whiteLEDs, 2, 1)
-rgbResistors = placeResistors(rgbLEDs, 3, 3)
+whiteLEDs = placeLEDs(3, 20, 'W')
+rgbLEDs = placeLEDs(6, 40, 'RGB')
+whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W')
+rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
 placeRGBNets(rgbLEDs, rgbResistors)
+placeWhiteNets(whiteLEDs, whiteResistors)
 
 Refresh()
