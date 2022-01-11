@@ -134,7 +134,7 @@ def createNet(netName):
     net = NETINFO_ITEM(board, netName, len(board.GetNetsByName()))
     board.Add(net)
 
-def placeRGBNets(leds, resistors):
+def placeRGBNets(leds, resistors, appendix):
     index = 0
     for led in leds:
         if index % 3 == 0:
@@ -145,18 +145,18 @@ def placeRGBNets(leds, resistors):
 
             indexTemp = 0
             for color in ['Red','Green','Blue']: # This is already swapped when reading the leds (ordered: center, top, bottom)
-                netName = 'RtoD' + str(led["id"]) + '_' + color
+                netName = 'RtoD' + str(led["id"]) + '_' + color + appendix
                 createNet(netName)
                 connectPinToNet(resistors[index+indexTemp].GetReference(), 1, netName)
                 #Connect Led0 pads 1-3
                 connectPinToNet(leds[index]["led"].GetReference(), [1, 0, 2][indexTemp], netName) # Map to pins 1, 0, 2 instead of 0, 1, 2
                 # Connect Led0 to Led1
-                netName = 'D' + str(leds[index]["id"]) + 'toD' + str(leds[index+1]["id"]) + '_' + color
+                netName = 'D' + str(leds[index]["id"]) + 'toD' + str(leds[index+1]["id"]) + '_' + color + appendix
                 createNet(netName)
                 connectPinToNet(leds[index]["led"].GetReference(), [4,5,3][indexTemp], netName)
                 connectPinToNet(leds[index+1]["led"].GetReference(), [1,0,2][indexTemp], netName)
                 # Connect Led1 to Led2
-                netName = 'D' + str(leds[index+1]["id"]) + 'toD' + str(leds[index+2]["id"]) + '_' + color
+                netName = 'D' + str(leds[index+1]["id"]) + 'toD' + str(leds[index+2]["id"]) + '_' + color + appendix
                 createNet(netName)
                 connectPinToNet(leds[index+1]["led"].GetReference(), [4,5,3][indexTemp], netName)
                 connectPinToNet(leds[index+2]["led"].GetReference(), [1,0,2][indexTemp], netName)
@@ -165,14 +165,14 @@ def placeRGBNets(leds, resistors):
                 indexTemp+=1
         index+=1
 
-def placeWhiteNets(leds, resistors):
+def placeWhiteNets(leds, resistors, appendix):
     index = 0
     for led in leds:
         if index % 2 == 0:
             #Connect Resistor both pads
             connectPinToNet(resistors[int(index/2)].GetReference(), 0, '12V')
 
-            netName = 'RtoD' + str(led["id"]) + '_W'
+            netName = 'RtoD' + str(led["id"]) + '_W' + appendix
             createNet(netName)
             connectPinToNet(resistors[int(index/2)].GetReference(), 1, netName)
             indexTemp = 0
@@ -181,7 +181,7 @@ def placeWhiteNets(leds, resistors):
                 connectPinToNet(leds[index]["led"].GetReference(), [0, 1, 2][i], netName) # Map to pins 1, 0, 2 instead of 0, 1, 2
                 # Connect Led0 to Led1
             for i in range(3):
-                netName = 'D' + str(leds[index]["id"]) + 'toD' + str(leds[index+1]["id"]) + '_W'
+                netName = 'D' + str(leds[index]["id"]) + 'toD' + str(leds[index+1]["id"]) + '_W' + appendix
                 createNet(netName)
                 connectPinToNet(leds[index]["led"].GetReference(), [4,5,3][i], netName)
                 connectPinToNet(leds[index+1]["led"].GetReference(), [1,0,2][i], netName)
@@ -201,14 +201,14 @@ whiteLEDs = placeLEDs(3, 20, 'W')
 rgbLEDs = placeLEDs(6, 40, 'RGB')
 whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W')
 rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
-placeRGBNets(rgbLEDs, rgbResistors)
-placeWhiteNets(whiteLEDs, whiteResistors)
+placeRGBNets(rgbLEDs, rgbResistors, '_1')
+placeWhiteNets(whiteLEDs, whiteResistors, '_1')
 
 rgbLEDs = placeLEDs(3, 30, 'RGB2')
-rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
-placeRGBNets(rgbLEDs, rgbResistors)
+rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB2')
+placeRGBNets(rgbLEDs, rgbResistors, '_2')
 whiteLEDs = placeLEDs(1, 7.5, 'W2')
 whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W2')
-placeWhiteNets(whiteLEDs, whiteResistors)
+placeWhiteNets(whiteLEDs, whiteResistors, '_2')
 
 Refresh()
