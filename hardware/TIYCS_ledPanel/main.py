@@ -77,6 +77,7 @@ def placePinHeaders():
         index += 1
 
 def placeLEDs(numPerRow=3, spacing=20, footprintName="LED_RGB_5050-6"):
+    leds = []
     index = 0
     for i in range(4):
         p = [[-1,-1],[1,-1],[1,1],[-1,1]][i]
@@ -97,13 +98,35 @@ def placeLEDs(numPerRow=3, spacing=20, footprintName="LED_RGB_5050-6"):
                 # mod.Rotate(mod.GetPosition(), 450 + (900*-i))
                 # mod.SetPosition(wxPoint(mod.GetPosition()[0]*0.85, mod.GetPosition()[1]*0.85))
             # else:
-            mod.Rotate(mod.GetPosition(), 900*-i)
+            rotation = 900*-i
+            mod.Rotate(mod.GetPosition(), rotation)
 
             board.Add(mod)
 
             p[0] += dir[0] * ((spacing*2) / numPerRow)
             p[1] += dir[1] * ((spacing*2) / numPerRow)
             index += 1
+            leds.append({"led":mod, "rotation": rotation})
+    return leds
+
+def placeResistors(leds, modulo=3, num=3):
+    index = 0
+    resistors = []
+    for led in leds:
+        offsets = [0, -2, 2]
+        if index % modulo == 0:
+            for j in range(num):
+                footprint_lib = '/Library/Application Support/kicad/modules/Resistor_SMD.pretty'
+                r = FootprintLoad(footprint_lib, 'R_0603_1608Metric')
+                r.SetPosition(wxPoint(led["led"].GetPosition()[0] - FromMM(5.5), led["led"].GetPosition()[1] + FromMM(offsets[j])))
+                # r.SetReference(name)
+                r.Rotate(led["led"].GetPosition(), led["rotation"])
+            # r.Reference().SetVisible(False)
+            #
+                board.Add(r)
+                resistors.append(r)
+        index+=1
+    return resistors
 
 initNets()
 drawOutline()
@@ -112,7 +135,10 @@ drawHole(3.25)
 placePinHeaders()
 # placeWhiteLEDs()
 # placeRGBLEDs()
-placeLEDs(3, 20)
-placeLEDs(7, 40)
+whiteLEDs = placeLEDs(3, 20)
+rgbLEDs = placeLEDs(7, 40)
+whiteResistors = placeResistors(whiteLEDs, 2, 1)
+rgbResistors = placeResistors(rgbLEDs, 3, 3)
+
 
 Refresh()
