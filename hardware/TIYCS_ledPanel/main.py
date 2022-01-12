@@ -2,6 +2,7 @@
 import math
 # from math import cos, sin
 from pcbnew import *
+from random import *
 
 board = GetBoard()
 
@@ -20,9 +21,10 @@ def drawOutline():
         drawEdgeLine(a[0] * 50, a[1] * 50, b[0] * 50, b[1] * 50)
 
 def placeMousebite(x, y, rotation):
+    i = int(random() * 1000)
     mod = FootprintLoad('/Users/jildertviet/Documents/kiCadLibs/Panelization.pretty', 'mouseBiteCustom')
     mod.SetPosition(wxPoint(FromMM(x), FromMM(y)))
-    # mod.SetReference('H_' + str(i))
+    mod.SetReference('mouseBite_' + str(i))
     mod.Reference().SetVisible(False)
     mod.Rotate(mod.GetPosition(), rotation * 10)
     board.Add(mod)
@@ -261,24 +263,24 @@ def placeWhiteNets(leds, resistors, appendix):
                 connectPinToNet(leds[index+1]["led"].GetReference(), [5,4,3][i], 'W')
         index+=1
 
-# initNets()
+initNets()
 # drawOutline()
 drawOutlinePanalized()
-# placeMountingHoles()
-# drawHole(3.25)
-# placePinHeaders()
-# whiteLEDs = placeLEDs(3, 20, 'W')
-# rgbLEDs = placeLEDs(6, 40, 'RGB')
-# whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W')
-# rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
-# placeRGBNets(rgbLEDs, rgbResistors, '_1')
-# placeWhiteNets(whiteLEDs, whiteResistors, '_1')
+placeMountingHoles()
+drawHole(3.25)
+placePinHeaders()
+whiteLEDs = placeLEDs(3, 20, 'W')
+rgbLEDs = placeLEDs(6, 40, 'RGB')
+whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W')
+rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
+placeRGBNets(rgbLEDs, rgbResistors, '_1')
+placeWhiteNets(whiteLEDs, whiteResistors, '_1')
 
-# rgbLEDs = placeLEDs(3, 30, 'RGB2')
-# rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB2')
-# placeRGBNets(rgbLEDs, rgbResistors, '_2')
-# whiteLEDs = placeLEDs(1, 7.5, 'W2')
-# whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W2')
-# placeWhiteNets(whiteLEDs, whiteResistors, '_2')
+rgbLEDs = placeLEDs(3, 30, 'RGB2')
+rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB2')
+placeRGBNets(rgbLEDs, rgbResistors, '_2')
+whiteLEDs = placeLEDs(1, 7.5, 'W2')
+whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W2')
+placeWhiteNets(whiteLEDs, whiteResistors, '_2')
 
 Refresh()

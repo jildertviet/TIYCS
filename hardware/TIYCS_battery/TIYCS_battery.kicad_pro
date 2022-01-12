@@ -380,7 +380,9 @@
         "name": "pwrClass",
         "nets": [
           "+12V",
+          "GND",
           "Net-(C3-Pad2)",
+          "Net-(C6-Pad1)",
           "Net-(D2-Pad1)",
           "Net-(U1-Pad1)",
           "Net-(U1-Pad2)",
@@ -392,7 +394,7 @@
         ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.8,
+        "track_width": 0.9,
         "via_diameter": 0.8,
         "via_drill": 0.4,
         "wire_width": 6.0
