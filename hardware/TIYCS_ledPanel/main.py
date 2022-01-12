@@ -19,6 +19,67 @@ def drawOutline():
         b = points[i+1]
         drawEdgeLine(a[0] * 50, a[1] * 50, b[0] * 50, b[1] * 50)
 
+def drawOutlinePanalized():
+    biteWidth = 5
+    spaceBetween = 20
+    padding = 0
+    for i in range(2):
+        drawEdgeLine(-50, -50 + 103 * i, -50, 50 + 103 * i) # Vertical left
+        drawEdgeLine(50 + 3 + 100, -50 + 103*i, 50 + 3 + 100, 50 + 103 * i) # Vertical right
+
+        drawEdgeLine(-50 + 103 * i, -50, 50 + 103 * i, -50) # Horizontal top
+        drawEdgeLine(-50 + 103 * i, 50 + 103, 50 + 103 * i, 50 + 103) # Horizontal bottom
+
+        for m in range(2):
+            xOffset = [0,3][m]
+            l = 100 - (2*padding)
+            numTabs = l / (biteWidth + spaceBetween)
+            numTabs = int(numTabs)
+            leftOverSize = l - (numTabs * (biteWidth + spaceBetween))
+            tabs = []
+            for j in range(numTabs): # Slices...
+                yStart = -50 + 103 * i
+
+                yOffset = padding + j * (spaceBetween + biteWidth)
+                yOffset += leftOverSize * 0.5
+                yOffset += spaceBetween * 0.5
+                tabs.append([yStart + yOffset, yStart + yOffset + biteWidth])
+
+            for k in range(len(tabs)-1):
+                drawEdgeLine(50+xOffset, tabs[k][1], 50+xOffset, tabs[k+1][0]) # Connect from edge to first tab
+                if k == 0:
+                    drawEdgeLine(50 + xOffset, yStart, 50 + xOffset, tabs[k][0]) # Connect to from end of tab to begin of next tab
+            drawEdgeLine(50 + xOffset, tabs[-1][1], 50 + xOffset, 50 + 103 * i) # Connect from last tab (end) to edge
+            if m == 0:
+                for tab in tabs:
+                    for tabPoint in tab:
+                        drawEdgeLine(50+xOffset, tabPoint, 50+xOffset+3, tabPoint) # Draw horizontal line on each tab point
+
+            yOffset = [0,3][m]
+            l = 100 - (2*padding)
+            numTabs = l / (biteWidth + spaceBetween)
+            numTabs = int(numTabs)
+            leftOverSize = l - (numTabs * (biteWidth + spaceBetween))
+            tabs = []
+            for j in range(numTabs): # Slices...
+                xStart = -50 + 103 * i
+
+                xOffset = padding + j * (spaceBetween + biteWidth)
+                xOffset += leftOverSize * 0.5
+                xOffset += spaceBetween * 0.5
+                tabs.append([xStart + xOffset, xStart + xOffset + biteWidth])
+
+            for k in range(len(tabs)-1):
+                drawEdgeLine(tabs[k][1], 50+yOffset, tabs[k+1][0], 50+yOffset) # Connect from edge to first tab
+                if k == 0:
+                    drawEdgeLine(yStart, 50 + yOffset, tabs[k][0], 50 + yOffset) # Connect to from end of tab to begin of next tab
+            drawEdgeLine(tabs[-1][1], 50 + yOffset, 50 + 103 * i, 50 + yOffset) # Connect from last tab (end) to edge
+            if m == 0:
+                for tab in tabs:
+                    for tabPoint in tab:
+                        drawEdgeLine(tabPoint, 50, tabPoint, 50+3) # Draw horizontal line on each tab point
+
+
 def placeMountingHoles():
     points = [[-1,-1],[1,-1],[1,1],[-1,1]]
     i = 0
@@ -190,25 +251,24 @@ def placeWhiteNets(leds, resistors, appendix):
                 connectPinToNet(leds[index+1]["led"].GetReference(), [5,4,3][i], 'W')
         index+=1
 
-initNets()
-drawOutline()
-placeMountingHoles()
-drawHole(3.25)
-placePinHeaders()
-# placeWhiteLEDs()
-# placeRGBLEDs()
-whiteLEDs = placeLEDs(3, 20, 'W')
-rgbLEDs = placeLEDs(6, 40, 'RGB')
-whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W')
-rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
-placeRGBNets(rgbLEDs, rgbResistors, '_1')
-placeWhiteNets(whiteLEDs, whiteResistors, '_1')
+# initNets()
+# drawOutline()
+drawOutlinePanalized()
+# placeMountingHoles()
+# drawHole(3.25)
+# placePinHeaders()
+# whiteLEDs = placeLEDs(3, 20, 'W')
+# rgbLEDs = placeLEDs(6, 40, 'RGB')
+# whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W')
+# rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
+# placeRGBNets(rgbLEDs, rgbResistors, '_1')
+# placeWhiteNets(whiteLEDs, whiteResistors, '_1')
 
-rgbLEDs = placeLEDs(3, 30, 'RGB2')
-rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB2')
-placeRGBNets(rgbLEDs, rgbResistors, '_2')
-whiteLEDs = placeLEDs(1, 7.5, 'W2')
-whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W2')
-placeWhiteNets(whiteLEDs, whiteResistors, '_2')
+# rgbLEDs = placeLEDs(3, 30, 'RGB2')
+# rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB2')
+# placeRGBNets(rgbLEDs, rgbResistors, '_2')
+# whiteLEDs = placeLEDs(1, 7.5, 'W2')
+# whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W2')
+# placeWhiteNets(whiteLEDs, whiteResistors, '_2')
 
 Refresh()
