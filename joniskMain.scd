@@ -1,6 +1,6 @@
 SerialPort.listDevices
-// p = SerialPort.new("/dev/cu.wchusbserial1410", 230400, crtscts: true);
-p = SerialPort.new("/dev/tty.wchusbserial14120", 230400, crtscts: true);
+p = SerialPort.new("/dev/cu.wchusbserial1410", 230400, crtscts: true);
+// p = SerialPort.new("/dev/tty.wchusbserial14120", 230400, crtscts: true);
 p.close
 
 (
@@ -32,7 +32,7 @@ j = Array.fill(~numJonisk, {|i| Synth(\jonisk, [out: ~values.subBus(i*4)])});
 			var w = 0;
 			var end = [101,110,100];
 			var msg = (0xFF!6) ++ [0x05] ++ ((v*255).asInteger) ++ end;
-			// msg.postln;
+			msg.postln;
 			p.putAll(msg);
 		});
 		(1/30).wait;
@@ -47,7 +47,7 @@ j = Array.fill(~numJonisk, {|i| Synth(\jonisk, [out: ~values.subBus(i*4)])});
 	}, {
 		j[id].set(\b, b);
 	});
-	~joniskBrightness.value = b;
+	// ~joniskBrightness.value = b;
 };
 ~setRGB = {
 	|id, rgb|
@@ -80,7 +80,7 @@ j = Array.fill(~numJonisk, {|i| Synth(\jonisk, [out: ~values.subBus(i*4)])});
 
 // #################################################################################################### TEST
 ~setBrightness.value(-1, 1);
-~setBrightness.value(-1, 0.0);
+~setBrightness.value(-1, 0.2);
 
 ~setRGB.value(-1, Color.white.asArray);
 ~setRGB.value(-1, Color.blue.asArray);

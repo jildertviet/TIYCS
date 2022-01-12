@@ -16,8 +16,8 @@ unsigned char startByte;
 #define CHANNEL 11
 
 
-#define LEDBEAM_0
-//#define JONISK
+//#define LEDBEAM_0
+#define JONISK
 
 #ifdef  LEDBEAM_0
 #define NUM 5
@@ -31,7 +31,7 @@ const uint8_t mac[NUM][6] = {
 #endif
 
 #ifdef  JONISK
-#define NUM 18
+#define NUM 19
 const uint8_t mac[NUM][6] = {
   {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF},
   {0x24,0x6F,0x28,0xDD,0x47,0xFD},
@@ -52,6 +52,7 @@ const uint8_t mac[NUM][6] = {
   {0x24,0x6F,0x28,0xDC,0xC0,0x61},
   {0x7C,0xDF,0xA1,0x17,0x40,0xFD},
   {0x24,0x6F,0x28,0xF2,0x83,0x41},
+  {0xE8,0x9F,0x6D,0xB9,0xF2,0xD9} // 2022 
 };
 #endif
 
@@ -122,7 +123,12 @@ void setup() {
   memset(serialBuffer, 256, 0);
   Serial.begin(230400);
 
+
+#ifdef  JONISK
+  WiFi.softAP("TIYCS", "nonsense", 1, true);
+#else
   WiFi.softAP("TIYCS", "nonsense", 6, true);
+#endif
 
   WiFi.mode(WIFI_STA);
   Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());

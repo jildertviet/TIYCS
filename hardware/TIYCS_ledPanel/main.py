@@ -19,8 +19,16 @@ def drawOutline():
         b = points[i+1]
         drawEdgeLine(a[0] * 50, a[1] * 50, b[0] * 50, b[1] * 50)
 
+def placeMousebite(x, y, rotation):
+    mod = FootprintLoad('/Users/jildertviet/Documents/kiCadLibs/Panelization.pretty', 'mouseBiteCustom')
+    mod.SetPosition(wxPoint(FromMM(x), FromMM(y)))
+    # mod.SetReference('H_' + str(i))
+    mod.Reference().SetVisible(False)
+    mod.Rotate(mod.GetPosition(), rotation * 10)
+    board.Add(mod)
+
 def drawOutlinePanalized():
-    biteWidth = 5
+    biteWidth = 5.2
     spaceBetween = 20
     padding = 0
     for i in range(2):
@@ -31,7 +39,7 @@ def drawOutlinePanalized():
         drawEdgeLine(-50 + 103 * i, 50 + 103, 50 + 103 * i, 50 + 103) # Horizontal bottom
 
         for m in range(2):
-            xOffset = [0,3][m]
+            xOffset = [0,3][m] # Vertical lines
             l = 100 - (2*padding)
             numTabs = l / (biteWidth + spaceBetween)
             numTabs = int(numTabs)
@@ -52,6 +60,7 @@ def drawOutlinePanalized():
             drawEdgeLine(50 + xOffset, tabs[-1][1], 50 + xOffset, 50 + 103 * i) # Connect from last tab (end) to edge
             if m == 0:
                 for tab in tabs:
+                    placeMousebite(50 + (3*0.5), tab[0] + ((tab[1] - tab[0])*0.5), 90)
                     for tabPoint in tab:
                         drawEdgeLine(50+xOffset, tabPoint, 50+xOffset+3, tabPoint) # Draw horizontal line on each tab point
 
@@ -76,6 +85,7 @@ def drawOutlinePanalized():
             drawEdgeLine(tabs[-1][1], 50 + yOffset, 50 + 103 * i, 50 + yOffset) # Connect from last tab (end) to edge
             if m == 0:
                 for tab in tabs:
+                    placeMousebite(tab[0] + ((tab[1] - tab[0])*0.5), 50 + (3*0.5), 0)
                     for tabPoint in tab:
                         drawEdgeLine(tabPoint, 50, tabPoint, 50+3) # Draw horizontal line on each tab point
 

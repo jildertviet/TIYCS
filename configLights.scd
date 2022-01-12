@@ -1,4 +1,4 @@
-p = SerialPort.new("/dev/cu.wchusbserial1420", 230400, crtscts: true);
+p = SerialPort.new("/dev/cu.wchusbserial1410", 230400, crtscts: true);
 p.close;
 
 ( // LEDBEAM
@@ -59,6 +59,9 @@ var setup = [
 
 
 	// 24:6F:28:DD:48:15 BACKUP no 17
+
+
+	[[0xE8,0x9F,0x6D,0xB9,0xF2,0xD9], 0] // 2022
 ];
 
 {

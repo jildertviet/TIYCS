@@ -10,7 +10,7 @@
 #include "Wavetable.h"
 #include "Osc.h"
 #include "pEnv.h"
-#include credentials.h
+#include "credentials.h"
 
 #define NUM_WAVETABLES  8
 #define NUM_ENV 8

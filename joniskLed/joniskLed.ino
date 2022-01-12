@@ -67,7 +67,8 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println("Serial opened, led pwm channels already configured");
-  delay(200);
+  
+  delay(8000);
 //  WiFi.mode(WIFI_AP);
   WiFi.softAP("TIYCS", "nonsense", 1, true);
   // This is the mac address of the Slave in AP Mode
@@ -85,6 +86,7 @@ void setup() {
 
   pinMode(5, OUTPUT);
   digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
+  testLed();
   Serial.println("Setup done");
 }
 
@@ -224,4 +226,18 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 void writeEEPROM(){
   EEPROM.write(0, id);
   EEPROM.commit();
+}
+
+void testLed(){
+  for(char i=0; i<4; i++){
+    ledcWrite(i+1, 50);
+    delay(500);
+    turnLedOff();
+  }
+}
+
+void turnLedOff(){
+  for(char i=0; i<4; i++){
+    ledcWrite(i+1, 0);
+  }
 }
