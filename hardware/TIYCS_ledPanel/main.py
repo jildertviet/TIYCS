@@ -91,7 +91,6 @@ def drawOutlinePanalized():
                     for tabPoint in tab:
                         drawEdgeLine(tabPoint, 50, tabPoint, 50+3) # Draw horizontal line on each tab point
 
-
 def placeMountingHoles():
     points = [[-1,-1],[1,-1],[1,1],[-1,1]]
     i = 0
@@ -151,7 +150,7 @@ def placePinHeaders():
                 j+=1
             index += 1
 
-def placeLEDs(numPerRow=3, spacing=20, color='W', footprintName="LED_RGB_5050-6"):
+def placeLEDs(numPerRow=3, spacing=20, color='W', footprintName="LED_RGB_5050-6", rotationOffset=0):
     leds = []
     index = 0
     for i in range(4):
@@ -174,7 +173,7 @@ def placeLEDs(numPerRow=3, spacing=20, color='W', footprintName="LED_RGB_5050-6"
                 # mod.SetPosition(wxPoint(mod.GetPosition()[0]*0.85, mod.GetPosition()[1]*0.85))
             # else:
             rotation = 900*-i
-            mod.Rotate(mod.GetPosition(), rotation)
+            mod.Rotate(mod.GetPosition(), rotation + rotationOffset)
 
             board.Add(mod)
 
@@ -263,24 +262,44 @@ def placeWhiteNets(leds, resistors, appendix):
                 connectPinToNet(leds[index+1]["led"].GetReference(), [5,4,3][i], 'W')
         index+=1
 
+def placeWhiteNetsPLCC(leds, resistors, appendix):
+    index = 0
+    for led in leds:
+        if index % 2 == 0:
+            #Connect Resistor both pads
+            connectPinToNet(resistors[int(index/2)].GetReference(), 0, '12V')
+            netName = 'RtoD' + str(led["id"]) + '_W' + appendix
+            createNet(netName)
+            connectPinToNet(resistors[int(index/2)].GetReference(), 1, netName)
+            #Connect Led0 pad 0
+            connectPinToNet(leds[index]["led"].GetReference(), 1, netName)
+            # Connect Led0 to Led1
+            netName = 'D' + str(leds[index]["id"]) + 'toD' + str(leds[index+1]["id"]) + '_W' + appendix
+            createNet(netName)
+            connectPinToNet(leds[index]["led"].GetReference(), 0, netName)
+            connectPinToNet(leds[index+1]["led"].GetReference(), 1, netName)
+            # Connect Led1 to W net
+            connectPinToNet(leds[index+1]["led"].GetReference(), 0, 'W')
+        index+=1
+
 initNets()
 # drawOutline()
 drawOutlinePanalized()
 placeMountingHoles()
 drawHole(3.25)
 placePinHeaders()
-whiteLEDs = placeLEDs(3, 20, 'W')
+whiteLEDs = placeLEDs(3, 20, 'W', 'LED_PLCC_2835', 1800)
 rgbLEDs = placeLEDs(6, 40, 'RGB')
 whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W')
 rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB')
 placeRGBNets(rgbLEDs, rgbResistors, '_1')
-placeWhiteNets(whiteLEDs, whiteResistors, '_1')
+placeWhiteNetsPLCC(whiteLEDs, whiteResistors, '_1')
 
 rgbLEDs = placeLEDs(3, 30, 'RGB2')
 rgbResistors = placeResistors(rgbLEDs, 3, 3, 'RGB2')
 placeRGBNets(rgbLEDs, rgbResistors, '_2')
-whiteLEDs = placeLEDs(1, 7.5, 'W2')
+whiteLEDs = placeLEDs(1, 7.5, 'W2', 'LED_PLCC_2835', 1800)
 whiteResistors = placeResistors(whiteLEDs, 2, 1, 'W2')
-placeWhiteNets(whiteLEDs, whiteResistors, '_2')
+placeWhiteNetsPLCC(whiteLEDs, whiteResistors, '_2')
 
 Refresh()
