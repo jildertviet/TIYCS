@@ -1,4 +1,4 @@
-p = SerialPort.new("/dev/cu.wchusbserial1410", 230400, crtscts: true);
+p = SerialPort.new("/dev/cu.wchusbserial1420", 230400, crtscts: true);
 p.close;
 
 ( // LEDBEAM
@@ -80,3 +80,9 @@ p.putAll((0xFF!6) ++ [0x09] ++ [101, 110, 100]); // Set to OTA
 p.putAll((0xFF!6) ++ [0x10, 0x00] ++ [101, 110, 100]); // Set to mode: RAW
 p.putAll((0xFF!6) ++ [0x04, 0x01] ++ [101, 110, 100]); // Set channel to first
 p.putAll((0xFF!6) ++ [0x03, 0x00] ++ [101, 110, 100]); // Set all to ID 0
+
+j = Jonisk.new(nil, 0, p);
+j.testLed
+j.setColor([255,0,0,0]);
+j.off
+// j.ota

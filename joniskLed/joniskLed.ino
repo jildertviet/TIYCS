@@ -9,6 +9,7 @@
 #define CHANNEL 1
 
 #define IS_JONISK_2022
+#define   PWM_10_BIT
 
 #ifdef  IS_JONISK
   #define R_PIN 13
@@ -40,7 +41,7 @@ unsigned char values[4] = {0, 0, 0, 0};
 bool bUpdate = false;
 char staticIndex = 0;
 
-enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA};
+enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY};
 Mode mode = NOLAG;
 unsigned short lagTime = 100;
 unsigned char startValues[4];
@@ -48,10 +49,11 @@ unsigned char endValues[4];
 unsigned long envEndTime = 0;
 unsigned long envStartTime = 0;
 bool bLagDone = false;
-
+Mode modeToReturnTo = Mode::NOLAG;
 unsigned char id = 0;
 
 void setup() { 
+  pinMode(23, OUTPUT); digitalWrite(23, LOW);
   ledcAttachPin(R_PIN, 1); // assign RGB led pins to channels
   ledcAttachPin(G_PIN, 2);
   ledcAttachPin(B_PIN, 3);
@@ -61,14 +63,18 @@ void setup() {
   // channels 0-15, resolution 1-16 bits, freq limits depend on resolution
   // ledcSetup(uint8_t channel, uint32_t freq, uint8_t resolution_bits);
   for(char i=0; i<4; i++){
+#ifdef  PWM_10_BIT
     ledcSetup(i+1, 9000, 10); // Hz / bitdepth
+#else
+    ledcSetup(i+1, 12000, 8); // Hz / bitdepth
+#endif
     ledcWrite(i+1, 0);// Turn all off
   }
 
   Serial.begin(115200);
   Serial.println("Serial opened, led pwm channels already configured");
   
-  delay(8000);
+  delay(200);
 //  WiFi.mode(WIFI_AP);
   WiFi.softAP("TIYCS", "nonsense", 1, true);
   // This is the mac address of the Slave in AP Mode
@@ -90,12 +96,23 @@ void setup() {
   Serial.println("Setup done");
 }
 
+void blinkLed(int channel, int delayTime, int num=1){
+  for(int i=0; i<num; i++){
+      setLED(channel, 255);
+      delay(delayTime);
+      setLED(channel, 0);
+      delay(delayTime);
+  }
+  setLED(channel, 0);
+}
+
 void loop() { 
   switch(mode){
     case NOLAG:{ // Just set the PWM-channels 
       if(bUpdate){
-       for(staticIndex=0; staticIndex<4; staticIndex++) // 1, 2, 3, 4
-         ledcWrite(staticIndex+1, values[staticIndex]); // 0, 1, 2, 3
+       for(staticIndex=0; staticIndex<4; staticIndex++){ 
+        setLED(staticIndex, values[staticIndex]);
+       }
       bUpdate = false;
       }
     }
@@ -125,14 +142,12 @@ void loop() {
       WiFi.begin(ssid, password);
       while (WiFi.waitForConnectResult() != WL_CONNECTED) {
         Serial.println("Connection Failed! Go to normal state...");
-        ledcWrite(0+1, 255);
-        delay(50);
-        ledcWrite(0+1, 0);
-        delay(50);
-        ledcWrite(0+1, 255);
-        delay(50);
+        blinkLed(0, 50, 1);
         ESP.restart();
       }
+      
+      blinkLed(1, 250, 3);
+      setLED(1, 50);
       
       ArduinoOTA
         .onStart([]() {
@@ -170,6 +185,59 @@ void loop() {
     break;
     case HANDLE_OTA:{
         ArduinoOTA.handle();
+        delay(10);
+    }
+    break;
+    case SEND_BATTERY:{ // Test ... 
+      uint8_t addr[6] = {0x30,0xae,0xa4,0x84,0x1c,0xbc}; // Can't reply, since it isn't registered?
+      esp_now_peer_info_t slave;
+
+      slave.channel = CHANNEL;
+      slave.encrypt = 0;
+      memcpy(slave.peer_addr, addr, 6);      
+      if (slave.channel == CHANNEL) {
+    Serial.print("Slave Status: ");
+    const esp_now_peer_info_t *peer = &slave;
+    const uint8_t *peer_addr = slave.peer_addr;
+    bool exists = esp_now_is_peer_exist(peer_addr);
+    if ( exists) {
+      Serial.println("Already Paired");
+    } else {
+      // Slave not paired, attempt pair
+      esp_err_t addStatus = esp_now_add_peer(peer);
+      if (addStatus == ESP_OK) {
+        // Pair success
+        Serial.println("Pair success");
+      } else if (addStatus == ESP_ERR_ESPNOW_NOT_INIT) {
+        Serial.println("ESPNOW Not Init");
+      } else if (addStatus == ESP_ERR_ESPNOW_ARG) {
+        Serial.println("Invalid Argument");
+      } else if (addStatus == ESP_ERR_ESPNOW_FULL) {
+        Serial.println("Peer list full");
+      } else if (addStatus == ESP_ERR_ESPNOW_NO_MEM) {
+        Serial.println("Out of memory");
+      } else if (addStatus == ESP_ERR_ESPNOW_EXIST) {
+        Serial.println("Peer Exists");
+      } else {
+        Serial.println("Not sure what happened");
+      }
+    }
+  } else {
+    // No slave found to process
+    Serial.println("No Slave found to process");
+  }
+      
+      uint8_t msg[4] = {'t', 'e', 's', 't'};
+//      float v = measureBattery();
+//      memcpy(&msg, &v, 4);
+      
+      esp_err_t result = esp_now_send(addr, msg, 4);
+      if (result == ESP_OK) {
+        blinkLed(2, 100, 1);
+      } else {
+        blinkLed(0, 50, 2);
+      }
+      mode = modeToReturnTo;
     }
     break;
   }
@@ -188,10 +256,12 @@ void InitESPNow() {
   }
 }
 
+
+
 // callback when data is recv from Master
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
   char msgType = data[0];
-//    digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
+//  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
 
 //  for(int i=0; i<data_len; i++){
 //    Serial.print((int)data[i]); Serial.print(" ");
@@ -218,7 +288,10 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       writeEEPROM();
       break;
     case 0x07: 
-      mode = START_WIFI; 
+      mode = Mode::START_WIFI; 
+      break;
+    case 0x08: // Reply with battery voltage
+      mode = Mode::SEND_BATTERY;
       break;
   }
 }
@@ -230,7 +303,7 @@ void writeEEPROM(){
 
 void testLed(){
   for(char i=0; i<4; i++){
-    ledcWrite(i+1, 50);
+    setLED(i, 50);
     delay(500);
     turnLedOff();
   }
@@ -240,4 +313,20 @@ void turnLedOff(){
   for(char i=0; i<4; i++){
     ledcWrite(i+1, 0);
   }
+}
+
+
+
+void setLED(int channel, int value){
+#ifdef PWM_10_BIT
+  float v = value / 255.;
+  v = pow(v, 2.0);
+  ledcWrite(channel + 1, v * 1024);
+#else
+  ledcWrite(channel + 1, v);
+#endif
+}
+
+float measureBattery(){
+  return analogRead(34); // 0 <> 4095
 }

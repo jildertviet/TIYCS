@@ -13,7 +13,7 @@ unsigned char startByte;
 
 //#define J_LOG true
 
-#define CHANNEL 11
+#define CHANNEL 1
 
 
 //#define LEDBEAM_0
@@ -119,6 +119,15 @@ void onDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 #endif
 }
 
+void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
+  digitalWrite(5, HIGH);
+  digitalWrite(5, LOW); delay(50); digitalWrite(5, HIGH);
+//  for(int i=0; i<data_len; i++){
+//    Serial.print((int)data[i]); Serial.print(" ");
+//  }
+  Serial.println(".");
+}
+
 void setup() {
   memset(serialBuffer, 256, 0);
   Serial.begin(230400);
@@ -135,6 +144,8 @@ void setup() {
 
   initESPNow();
   esp_now_register_send_cb(onDataSent);
+  esp_now_register_recv_cb(OnDataRecv);
+
 
   slave.channel = CHANNEL;
   slave.encrypt = 0;
@@ -145,6 +156,13 @@ void setup() {
   pinMode(5, OUTPUT);
   digitalWrite(5, HIGH);
   digitalWrite(5, LOW); delay(50); digitalWrite(5, HIGH);
+
+// Test 
+//  uint8_t addr[6] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+//  uint8_t msg[1] = {0x08};
+//  esp_now_send(addr, msg, 1);
+
+  Serial.println("Setup done");
 }
 
 void loop() {
