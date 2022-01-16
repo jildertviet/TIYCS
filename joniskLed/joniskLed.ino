@@ -52,6 +52,8 @@ bool bLagDone = false;
 Mode modeToReturnTo = Mode::NOLAG;
 unsigned char id = 0;
 
+uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+
 void setup() { 
   pinMode(23, OUTPUT); digitalWrite(23, LOW);
   ledcAttachPin(R_PIN, 1); // assign RGB led pins to channels
@@ -104,6 +106,44 @@ void blinkLed(int channel, int delayTime, int num=1){
       delay(delayTime);
   }
   setLED(channel, 0);
+}
+
+void addPeer(){
+    esp_now_peer_info_t slave;
+    slave.channel = CHANNEL;
+    slave.encrypt = 0;
+    memcpy(slave.peer_addr, replyAddr, 6);      
+    if (slave.channel == CHANNEL) {
+    Serial.print("Slave Status: ");
+    const esp_now_peer_info_t *peer = &slave;
+    const uint8_t *peer_addr = slave.peer_addr;
+    bool exists = esp_now_is_peer_exist(peer_addr);
+    if ( exists) {
+      Serial.println("Already Paired");
+    } else {
+    // Slave not paired, attempt pair
+    esp_err_t addStatus = esp_now_add_peer(peer);
+    if (addStatus == ESP_OK) {
+      // Pair success
+      Serial.println("Pair success");
+    } else if (addStatus == ESP_ERR_ESPNOW_NOT_INIT) {
+      Serial.println("ESPNOW Not Init");
+    } else if (addStatus == ESP_ERR_ESPNOW_ARG) {
+      Serial.println("Invalid Argument");
+    } else if (addStatus == ESP_ERR_ESPNOW_FULL) {
+      Serial.println("Peer list full");
+    } else if (addStatus == ESP_ERR_ESPNOW_NO_MEM) {
+      Serial.println("Out of memory");
+    } else if (addStatus == ESP_ERR_ESPNOW_EXIST) {
+      Serial.println("Peer Exists");
+    } else {
+      Serial.println("Not sure what happened");
+    }
+  }
+  } else {
+    // No slave found to process
+    Serial.println("No Slave found to process");
+  }
 }
 
 void loop() { 
@@ -189,13 +229,25 @@ void loop() {
     }
     break;
     case SEND_BATTERY:{ // Test ... 
-      uint8_t addr[6] = {0x30,0xae,0xa4,0x84,0x1c,0xbc}; // Can't reply, since it isn't registered?
-      esp_now_peer_info_t slave;
+      WiFi.mode(WIFI_OFF);
+      delay(1000);
+      WiFi.mode(WIFI_STA);
+      Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
 
-      slave.channel = CHANNEL;
-      slave.encrypt = 0;
-      memcpy(slave.peer_addr, addr, 6);      
-      if (slave.channel == CHANNEL) {
+      WiFi.disconnect();
+      if (esp_now_init() == ESP_OK) {
+        Serial.println("ESPNow Init Success");
+      } else {
+      Serial.println("ESPNow Init Failed");
+       ESP.restart();
+      }
+      esp_now_register_recv_cb(OnDataRecv);
+        
+      esp_now_peer_info_t slave;
+    slave.channel = CHANNEL;
+    slave.encrypt = 0;
+    memcpy(slave.peer_addr, replyAddr, 6);      
+    if (slave.channel == CHANNEL) {
     Serial.print("Slave Status: ");
     const esp_now_peer_info_t *peer = &slave;
     const uint8_t *peer_addr = slave.peer_addr;
@@ -203,40 +255,52 @@ void loop() {
     if ( exists) {
       Serial.println("Already Paired");
     } else {
-      // Slave not paired, attempt pair
-      esp_err_t addStatus = esp_now_add_peer(peer);
-      if (addStatus == ESP_OK) {
-        // Pair success
-        Serial.println("Pair success");
-      } else if (addStatus == ESP_ERR_ESPNOW_NOT_INIT) {
-        Serial.println("ESPNOW Not Init");
-      } else if (addStatus == ESP_ERR_ESPNOW_ARG) {
-        Serial.println("Invalid Argument");
-      } else if (addStatus == ESP_ERR_ESPNOW_FULL) {
-        Serial.println("Peer list full");
-      } else if (addStatus == ESP_ERR_ESPNOW_NO_MEM) {
-        Serial.println("Out of memory");
-      } else if (addStatus == ESP_ERR_ESPNOW_EXIST) {
-        Serial.println("Peer Exists");
-      } else {
-        Serial.println("Not sure what happened");
-      }
+    // Slave not paired, attempt pair
+    esp_err_t addStatus = esp_now_add_peer(peer);
+    if (addStatus == ESP_OK) {
+      // Pair success
+      Serial.println("Pair success");
+    } else if (addStatus == ESP_ERR_ESPNOW_NOT_INIT) {
+      Serial.println("ESPNOW Not Init");
+    } else if (addStatus == ESP_ERR_ESPNOW_ARG) {
+      Serial.println("Invalid Argument");
+    } else if (addStatus == ESP_ERR_ESPNOW_FULL) {
+      Serial.println("Peer list full");
+    } else if (addStatus == ESP_ERR_ESPNOW_NO_MEM) {
+      Serial.println("Out of memory");
+    } else if (addStatus == ESP_ERR_ESPNOW_EXIST) {
+      Serial.println("Peer Exists");
+    } else {
+      Serial.println("Not sure what happened");
     }
+  }
   } else {
     // No slave found to process
     Serial.println("No Slave found to process");
   }
       
-      uint8_t msg[4] = {'t', 'e', 's', 't'};
-//      float v = measureBattery();
-//      memcpy(&msg, &v, 4);
+      uint8_t msg[5] = {'b','t', 'e', 's', 't'};
+      int v = measureBattery();
+      memcpy(msg+1, &v, 4); // Prefix is 'b'
       
-      esp_err_t result = esp_now_send(addr, msg, 4);
+      esp_err_t result = esp_now_send(replyAddr, msg, 5);
       if (result == ESP_OK) {
         blinkLed(2, 100, 1);
       } else {
         blinkLed(0, 50, 2);
       }
+
+      delay(500);
+      WiFi.mode(WIFI_OFF);
+      WiFi.softAP("TIYCS", "nonsense", 1, true);
+  // This is the mac address of the Slave in AP Mode
+  Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress());
+
+  Serial.println("Setup ESPNOW");
+  InitESPNow(); // Init ESPNow with a fallback logic
+  Serial.println("Register callback");
+  esp_now_register_recv_cb(OnDataRecv);
+    delay(500);
       mode = modeToReturnTo;
     }
     break;
@@ -289,6 +353,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       break;
     case 0x07: 
       mode = Mode::START_WIFI; 
+      memcpy(&replyAddr, mac_addr, 6);
       break;
     case 0x08: // Reply with battery voltage
       mode = Mode::SEND_BATTERY;
@@ -327,6 +392,7 @@ void setLED(int channel, int value){
 #endif
 }
 
-float measureBattery(){
-  return analogRead(34); // 0 <> 4095
+int measureBattery(){
+  return (int)analogRead(34); // 0 <> 4095
+//  return 1024;
 }
