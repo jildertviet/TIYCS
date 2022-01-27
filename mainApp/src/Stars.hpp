@@ -20,8 +20,10 @@ public:
     glm::vec3 speed;
     glm::vec3 originalLoc;
     void setLoc(glm::vec3 loc, bool bSetOrigin = false);
+    void translate(glm::vec3 t);
 private:
     glm::vec3 loc;
+    glm::vec3 locToDraw;
 };
 
 class Stars{

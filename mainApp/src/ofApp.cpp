@@ -25,15 +25,15 @@ void ofApp::setup(){
     stars->travelSpeed = &busses[1];
     
     // IMAGES
-    images["Intro Jonisk"] = ofImage("joniskLayer.png");
-    images["Intro gradient"] = ofImage("gradient2.png");
-    images["Jonisk big"] = ofImage("joniskBig.png");
-    images["Benzine"] = ofImage("benzine.png");
-    images["CodeTxt"] = ofImage("codeTxt.png");
-    images["Code Circle"] = ofImage("codeCircle.png");
-    images["Code Glow"] = ofImage("codeGlow2.png");
-    images["Autopilot"] = ofImage("loading.png");
-    images["Captain"] = ofImage("captainPicto.png");
+    images["Intro Jonisk"] =    ofImage("joniskLayer.png");
+    images["Intro gradient"] =  ofImage("gradient2.png");
+    images["Jonisk big"] =      ofImage("joniskBig.png");
+    images["Benzine"] =         ofImage("benzine.png");
+    images["CodeTxt"] =         ofImage("codeTxt.png");
+    images["Code Circle"] =     ofImage("codeCircle.png");
+    images["Code Glow"] =       ofImage("codeGlow2.png");
+    images["Autopilot"] =       ofImage("loading.png");
+    images["Captain"] =         ofImage("captainPicto.png");
 
     for(int i=0; i<7; i++){
         instructions[i].load("instructions/" + ofToString(i) + ".png");
@@ -50,24 +50,14 @@ void ofApp::setup(){
 //    helveticaRegular.load("Helvetica.ttf", 22);
     
     // VIDEOS
-#ifdef TARGET_RASPBERRY_PI
-    for(int i=0; i<3; i++){
-        string videoPath = ofToDataPath("commercial/" + ofToString(i) + ".mp4", true);
-        ofxOMXPlayerSettings settings;
-        settings.videoPath = videoPath;
-        settings.enableTexture = false;
-        settings.enableLooping = false;
-        settings.enableAudio = false;
-            
-        commercial[i].setup(settings);
-        commercial[i].setPaused(true);
-    }
-#else
-    for(int i=0; i<3; i++){
-        commercial[i].load("commercial/" + ofToString(i) + ".mp4");
-        commercial[i].setLoopState(ofLoopType::OF_LOOP_NONE);
-    }
-#endif
+//#ifdef TARGET_RASPBERRY_PI
+//    for(int i=0; i<3; i++){
+        
+//    }
+//#else
+//        commercial[i].load("commercial/" + ofToString(i) + ".mp4");
+//        commercial[i].setLoopState(ofLoopType::OF_LOOP_NONE);
+//#endif
     
     /*
     welcomTxt.load("welkomTxt.png");
@@ -103,12 +93,9 @@ void ofApp::update(){
     }
     
     switch(scene){
-        case scenes::Commercial0:
-        case scenes::Commercial1:
-        case scenes::Commercial2:{
+        case scenes::Commercial:{
 #ifndef TARGET_RASPBERRY_PI
-            for(int i=0; i<3; i++)
-                commercial[i].update();
+            commercial.update();
 #endif
         }
             break;
@@ -198,19 +185,9 @@ void ofApp::draw(){
             ofPopMatrix();
             joniskRoute.draw(joniskRoutePos - glm::vec2(joniskRoute.getWidth()*0.5, joniskRoute.getHeight() * 0.5));
             break;
-        case scenes::Commercial0:{
-            if(commercial[0].isPlaying())
-                commercial[0].draw(0,0, ofGetWidth(), ofGetHeight());
-        }
-            break;
-        case scenes::Commercial1: {
-            if(commercial[1].isPlaying())
-                commercial[1].draw(0,0, ofGetWidth(), ofGetHeight());
-        }
-            break;
-        case scenes::Commercial2: {
-            if(commercial[2].isPlaying())
-                commercial[2].draw(0,0, ofGetWidth(), ofGetHeight());
+        case scenes::Commercial:{
+            if(commercial.isPlaying())
+                commercial.draw(0,0, ofGetWidth(), ofGetHeight());
         }
             break;
         case scenes::Benzine:
@@ -340,22 +317,32 @@ void ofApp::processMsg(ofxOscMessage &m){
         switch(m.getArgAsInt(0)){
             case 1:{
                 int movieID = m.getArgAsInt(1);
-                for(int i=0; i<3; i++){ // STOP ALL
 #ifdef TARGET_RASPBERRY_PI
-                    commercial[i].setPaused(true);
+                string videoPath = ofToDataPath("commercial/" + ofToString(movieID) + ".mp4", true);
+                ofxOMXPlayerSettings settings;
+                settings.videoPath = videoPath;
+                settings.enableTexture = false;
+                settings.enableLooping = false;
+                settings.enableAudio = false;
+                    
+                commercial.setup(settings);
+                commercial.setPaused(false);
 #else
-                    commercial[i].stop();
-                    commercial[i].firstFrame();
+                commercial.load("commercial/" + ofToString(movieID) + ".mp4");
+                commercial.setLoopState(ofLoopType::OF_LOOP_NONE);
+                commercial.play();
+#endif
+
+                if(movieID == -1){
+#ifdef TARGET_RASPBERRY_PI
+                    commercial.setPaused(true);
+                    commercial.close();
+#else
+                    commercial.stop();
+
 #endif
                 }
-                if(movieID!=-1){ // PLAY MOVIE BY ID
-#ifdef TARGET_RASPBERRY_PI
-                    commercial[movieID].restartMovie();
-#else
-                    commercial[movieID].play();
-#endif
-                }
-                }
+            }
                 break;
             case 2:
                 bingo->removeBall(ofToString(m.getArgAsInt(1)));

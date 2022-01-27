@@ -21,7 +21,7 @@ namespace scenes{
         Countdown, // 3, bus: 0 (count)
         Stars, // 4, bus 0: height 0<>2, bus 1: travelSpeed, bus 2: xOffset (for 3 windows). 
         Route,// 5, bus: 0 (height, 0<>2)
-        Commercial0, // 6
+        Commercial, // 6
         Commercial1, // 7
         Commercial2, // 8
         
@@ -83,9 +83,9 @@ class ofApp : public ofBaseApp{
     int id = 0;
 
 #ifdef  TARGET_RASPBERRY_PI
-    ofxOMXPlayer commercial[3];
+    ofxOMXPlayer commercial;
 #else
-    ofVideoPlayer commercial[3];
+    ofVideoPlayer commercial;
 #endif
     
     vector<float> waveForm;

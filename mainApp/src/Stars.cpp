@@ -22,25 +22,37 @@ void Star::update(float speedMul){
 
 void Star::display(){
     ofSetColor(255);
-    ofDrawSphere(loc, r);
+    ofDrawSphere(locToDraw, r);
 }
 
 void Star::setLoc(glm::vec3 loc, bool bSetOrigin){
     if(bSetOrigin)
         originalLoc = loc;
     this->loc = loc;
+    this->locToDraw = loc;
+}
+
+void Star::translate(glm::vec3 t){
+    locToDraw = loc;
+    locToDraw += t;
+    locToDraw.x = (int)locToDraw.x % 1280;
+    locToDraw.y = (int)locToDraw.y % 800;
+    locToDraw.z = (int)locToDraw.z % 100;
 }
 
 
 Stars::Stars(glm::vec2 size){
     planet.load("planet.png");
 
-    for(int i=0; i<500; i++){
+    for(int i=0; i<1; i++){
         stars.push_back(new Star());
         stars.back()->setLoc(
                             glm::vec3(
-                                      ofGetWidth() * ofRandom(-1, 2),
-                                      ofRandom(ofGetHeight()), -ofRandom(500, 1500)
+//                                      ofGetWidth() * ofRandom(-1, 2),
+//                                      ofRandom(ofGetHeight()),
+//                                      -ofRandom(500, 1500)
+                                      0, 0,
+                                      100
                                       ),
                              true
                              );
@@ -57,8 +69,10 @@ Stars::Stars(glm::vec2 size){
 }
 
 void Stars::update(){
-    for(int i=0; i<stars.size(); i++)
-        stars[i]->update(*travelSpeed);
+    for(int i=0; i<stars.size(); i++){
+        stars[i]->translate(glm::vec3(0,0,ofGetFrameNum()));
+//        stars[i]->update(*travelSpeed);
+    }
 }
 
 void Stars::display(float brightness){
