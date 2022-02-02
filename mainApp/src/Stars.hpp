@@ -28,10 +28,10 @@ private:
 
 class Stars{
 public:
-    Stars(glm::vec2 size);
+    Stars(glm::vec2 size, string prefix);
     glm::vec2 size;
     
-    void update();
+    void update(glm::vec3 t);
     void display(float brightness=255);
 
     float* height;

@@ -4,6 +4,8 @@
 #define HEIGHT  800
 // Width an height are also set in main.cpp
 
+string prefix = "1280/";
+
 #ifdef  TARGET_RASPBERRY_PI
     bool bRotate = true;
 #else
@@ -12,7 +14,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    scene = scenes::Stars;
+    scene = scenes::Intro;
     ofSetFrameRate(30);
     ofSetWindowShape(WIDTH, HEIGHT);
     
@@ -20,32 +22,36 @@ void ofApp::setup(){
     
     bingo = new Bingo();
     
-    stars = new Stars(glm::vec2(WIDTH, HEIGHT));
+    stars = new Stars(glm::vec2(WIDTH, HEIGHT), prefix);
     stars->height = &busses[0];
     stars->travelSpeed = &busses[1];
     
     // IMAGES
-    images["Intro Jonisk"] =    ofImage("joniskLayer.png");
-    images["Intro gradient"] =  ofImage("gradient2.png");
-    images["Jonisk big"] =      ofImage("joniskBig.png");
-    images["Benzine"] =         ofImage("benzine.png");
-    images["CodeTxt"] =         ofImage("codeTxt.png");
-    images["Code Circle"] =     ofImage("codeCircle.png");
-    images["Code Glow"] =       ofImage("codeGlow2.png");
-    images["Autopilot"] =       ofImage("loading.png");
-    images["Captain"] =         ofImage("captainPicto.png");
+    images["Intro Jonisk"] =    ofImage(prefix + "joniskLayer.png");
+    images["Intro gradient"] =  ofImage(prefix + "gradient2.png");
+    images["Jonisk big"] =      ofImage(prefix + "joniskBig.png");
+    images["Benzine"] =         ofImage(prefix + "benzine.png");
+    images["CodeTxt"] =         ofImage(prefix + "codeTxt.png");
+    images["Code Circle"] =     ofImage(prefix + "codeCircle.png");
+    images["Code Glow"] =       ofImage(prefix +"codeGlow2.png");
+    images["Autopilot"] =       ofImage(prefix + "loading.png");
+    images["Captain"] =         ofImage(prefix + "captainPicto.png");
 
     for(int i=0; i<7; i++){
-        instructions[i].load("instructions/" + ofToString(i) + ".png");
+        instructions[i].load(prefix + "instructions/" + ofToString(i) + ".png");
     }
     for(int i=0; i<4; i++){
         returnImages[i].load("return/" + ofToString(i) + ".png");
     }
     
     // FONTS
-    countFont.load("Helvetica-Bold.ttf", 200);
-    codeFont.load("Helvetica-Bold.ttf", 60);
-    autoPilotFont.load("Geneva Normal.ttf", 36);
+    ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 200px");
+    countFont.load("fonts/Helvetica-Bold.ttf", 200);
+    ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 260px");
+    codeFont.load("fonts/Helvetica-Bold.ttf", 60);
+    ofLog(OF_LOG_NOTICE, "Loading Geneva Normal, 36px");
+    autoPilotFont.load("fonts/Geneva Normal.ttf", 36);
+    
 //    helveticaBold.load("Helvetica-Bold.ttf", 22); // Overlay
 //    helveticaRegular.load("Helvetica.ttf", 22);
     
@@ -101,7 +107,7 @@ void ofApp::update(){
             break;
         case scenes::Stars:
         case scenes::Route:
-            stars->update();
+            stars->update(glm::vec3(busses[3], busses[4], busses[5]));
             break;
         case scenes::Bingo:{
             bingo->bingoForce = busses[1];
@@ -164,26 +170,29 @@ void ofApp::draw(){
             stars->display(brightness);
             ofPopMatrix();
             break;
-        case scenes::Route:
-            stars->display(brightness);
-            
-            ofSetColor(0, 100);
-            ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-            
-            ofSetColor(255);
-            lineGray.draw(0,0);
-            lineWhite.drawSubsection(0, 0, joniskRoutePos.x, HEIGHT, 0, 0);
-            routeStartEnd.draw(0,0);
-            planetNames.draw(0,0);
-            planetsGray.draw(0,0);
-            
-//            joniskRoutePos
-            ofPushMatrix();
-            ofTranslate(joniskRoutePos);
-            ofScale((sin(ofGetFrameNum() * 0.02) * 0.2) + 1.2);
-            joniskRouteGlow.draw(glm::vec2(joniskRouteGlow.getWidth() * -0.5, joniskRouteGlow.getHeight() * -0.5));
-            ofPopMatrix();
-            joniskRoute.draw(joniskRoutePos - glm::vec2(joniskRoute.getWidth()*0.5, joniskRoute.getHeight() * 0.5));
+        case scenes::Route:{
+//            stars->display(brightness);
+//
+//            ofSetColor(0, 100);
+//            ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+//
+//            ofSetColor(255);
+//
+//            float widthRatio = ofGetWidth() / lineGray.getWidth();
+//            lineGray.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
+//            lineWhite.drawSubsection(0, 0, joniskRoutePos.x, HEIGHT, 0, 0);
+//            routeStartEnd.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
+//            planetNames.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
+//            planetsGray.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
+//
+////            joniskRoutePos
+//            ofPushMatrix();
+//            ofTranslate(joniskRoutePos);
+//            ofScale((sin(ofGetFrameNum() * 0.02) * 0.2) + 1.2);
+//            joniskRouteGlow.draw(glm::vec2(joniskRouteGlow.getWidth() * -0.5, joniskRouteGlow.getHeight() * -0.5));
+//            ofPopMatrix();
+//            joniskRoute.draw(joniskRoutePos - glm::vec2(joniskRoute.getWidth()*0.5, joniskRoute.getHeight() * 0.5));
+        }
             break;
         case scenes::Commercial:{
             if(commercial.isPlaying())
@@ -318,7 +327,7 @@ void ofApp::processMsg(ofxOscMessage &m){
             case 1:{
                 int movieID = m.getArgAsInt(1);
 #ifdef TARGET_RASPBERRY_PI
-                string videoPath = ofToDataPath("commercial/" + ofToString(movieID) + ".mp4", true);
+                string videoPath = ofToDataPath(prefix + "commercial/" + ofToString(movieID) + ".mp4", true);
                 ofxOMXPlayerSettings settings;
                 settings.videoPath = videoPath;
                 settings.enableTexture = false;
@@ -328,7 +337,7 @@ void ofApp::processMsg(ofxOscMessage &m){
                 commercial.setup(settings);
                 commercial.setPaused(false);
 #else
-                commercial.load("commercial/" + ofToString(movieID) + ".mp4");
+                commercial.load(prefix + "commercial/" + ofToString(movieID) + ".mp4");
                 commercial.setLoopState(ofLoopType::OF_LOOP_NONE);
                 commercial.play();
 #endif

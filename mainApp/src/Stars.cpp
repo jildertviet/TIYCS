@@ -9,6 +9,7 @@
 
 Star::Star(){
     r = pow(ofRandom(1.0), 4.0) * 5;
+    r = 5;
     speed = glm::vec3(0,0,1);
     speed.z = ofRandom(1.5, 4);
 }
@@ -37,26 +38,37 @@ void Star::translate(glm::vec3 t){
     locToDraw += t;
     locToDraw.x = (int)locToDraw.x % 1280;
     locToDraw.y = (int)locToDraw.y % 800;
-    locToDraw.z = (int)locToDraw.z % 100;
+    
+    if(locToDraw.z >= 1000){
+        locToDraw.z = locToDraw.z - 2000;
+    }
 }
 
 
-Stars::Stars(glm::vec2 size){
-    planet.load("planet.png");
+Stars::Stars(glm::vec2 size, string prefix){
+    planet.load(prefix + "planet.png");
 
-    for(int i=0; i<1; i++){
+    for(int i=0; i<100; i++){
         stars.push_back(new Star());
         stars.back()->setLoc(
                             glm::vec3(
-//                                      ofGetWidth() * ofRandom(-1, 2),
-//                                      ofRandom(ofGetHeight()),
-//                                      -ofRandom(500, 1500)
-                                      0, 0,
-                                      100
+                                      ofGetWidth() * ofRandom(-1, 2), // Left screen, mid screen, right screen. This will be set from SC eventually
+                                      ofRandom(ofGetHeight()),
+                                      ofRandom(-500, 500)
+//                                      0, 0,
+//                                      100
                                       ),
                              true
                              );
     }
+    
+//    for(int x=0; x<10; x++){
+//        for(int y=0; y<10; y++){
+//            stars.push_back(new Star());
+//            stars.back()->setLoc(glm::vec3(x * (1280/10), y * (800/10), -500));
+//        }
+//    }
+    
 //    ofSetSphereResolution(180);
     
     // Setup post-processing chain
@@ -68,9 +80,9 @@ Stars::Stars(glm::vec2 size){
     starsFbo.allocate(size.x, size.y, GL_RGB);
 }
 
-void Stars::update(){
+void Stars::update(glm::vec3 t){
     for(int i=0; i<stars.size(); i++){
-        stars[i]->translate(glm::vec3(0,0,ofGetFrameNum()));
+        stars[i]->translate(t);
 //        stars[i]->update(*travelSpeed);
     }
 }
@@ -98,6 +110,7 @@ void Stars::display(float brightness){
     ofSetColor(255, brightness);
     starsFbo.draw(0, ofGetHeight()*-2);
 
-    planet.draw(0,0, size.x, size.y);
+    cout << ofGetHeight() - planet.getHeight() << endl;
+    planet.draw(0,ofGetHeight() - planet.getHeight());
     ofPopMatrix;
 }
