@@ -14,7 +14,7 @@ string prefix = "1280/";
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    scene = scenes::Intro;
+    scene = scenes::Nothing;
     ofSetFrameRate(30);
     ofSetWindowShape(WIDTH, HEIGHT);
     
@@ -89,7 +89,7 @@ void ofApp::setup(){
 #endif
     
     v = new ofxJVisuals(glm::vec2(WIDTH, HEIGHT));
-    receiver.setup(5000);
+    receiver.setup(PORT + portNumAdd);
 }
 //
 //--------------------------------------------------------------

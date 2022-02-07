@@ -11,6 +11,7 @@
 #endif
 
 #define NUM_BUSSES  12
+#define PORT    5000
 
 namespace scenes{
     enum Scene{
@@ -57,6 +58,7 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
     
     ofxOscReceiver receiver;
+    int portNumAdd = 0;
     float busses[NUM_BUSSES];
     
     void processMsg(ofxOscMessage &m);
