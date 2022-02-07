@@ -28,7 +28,7 @@ void ofApp::setup(){
     
     // IMAGES
     images["Intro Jonisk"] =    ofImage(prefix + "joniskLayer.png");
-    images["Intro gradient"] =  ofImage(prefix + "gradient2.png");
+    images["Intro gradient"] =  ofImage(prefix + "gradient3.jpg");
     images["Jonisk big"] =      ofImage(prefix + "joniskBig.png");
     images["Benzine"] =         ofImage(prefix + "benzine.png");
     images["CodeTxt"] =         ofImage(prefix + "codeTxt.png");
@@ -41,16 +41,18 @@ void ofApp::setup(){
         instructions[i].load(prefix + "instructions/" + ofToString(i) + ".png");
     }
     for(int i=0; i<4; i++){
-        returnImages[i].load("return/" + ofToString(i) + ".png");
+        returnImages[i].load(prefix + "return/" + ofToString(i) + ".png");
     }
     
     // FONTS
-    ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 200px");
-    countFont.load("fonts/Helvetica-Bold.ttf", 200);
-    ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 260px");
+    ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 100px");
+    countFont.load("fonts/Helvetica-Bold.ttf", 100);
+    ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 60px");
     codeFont.load("fonts/Helvetica-Bold.ttf", 60);
-    ofLog(OF_LOG_NOTICE, "Loading Geneva Normal, 36px");
-    autoPilotFont.load("fonts/Geneva Normal.ttf", 36);
+    
+    // CRASH
+//    ofLog(OF_LOG_NOTICE, "Loading Geneva Normal, 36px");
+//    autoPilotFont.load("fonts/Geneva Normal.ttf", 36);
     
 //    helveticaBold.load("Helvetica-Bold.ttf", 22); // Overlay
 //    helveticaRegular.load("Helvetica.ttf", 22);
@@ -81,7 +83,10 @@ void ofApp::setup(){
 
     dest = glm::vec2(714, 437);
      */
-//    ofHideCursor();
+    
+#ifdef  TARGET_RASPBERRY_PI
+    ofHideCursor();
+#endif
     
     v = new ofxJVisuals(glm::vec2(WIDTH, HEIGHT));
     receiver.setup(5000);
@@ -417,7 +422,7 @@ void ofApp::joniskHover(){
     ofPushMatrix();
         ofTranslate(0, pow(sin(ofGetFrameNum()/50.), 2.) * 30 * busses[0]);
         
-        ofSetColor(255, 100);
+        ofSetColor(255);
             ofPushMatrix(); // Note: the zoom is not fixed to jonisk center
                 ofTranslate(ofGetWidth()*0.5, ofGetHeight()*0.25);
                 ofScale(sin(ofGetFrameNum()/50.) * (0.1 * 1.) + 1.);

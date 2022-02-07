@@ -14,7 +14,9 @@ Bingo::Bingo(){
     bingoSwirl[0].load("bingo_swirl.png");
     bingoSwirl[1].load("bingo_swirlMirror.png");
     bingoBase.load("bingoWheel.png");
-    countFont.load("Helvetica-Bold.ttf", 200);
+    
+    ofLog(OF_LOG_NOTICE, "Loading Helvatica-Bold, 100px");
+    countFont.load("Helvetica-Bold.ttf", 100);
         
     box2d.init();
     box2d.setGravity(0, 10);

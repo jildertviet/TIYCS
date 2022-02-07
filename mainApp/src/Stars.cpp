@@ -76,8 +76,10 @@ Stars::Stars(glm::vec2 size, string prefix){
 //    post.createPass<FxaaPass>()->setEnabled(false);
 //    bloom = post.createPass<BloomPass>();
 //    bloom->setEnabled(true);
+    
     this->size = size;
-    starsFbo.allocate(size.x, size.y, GL_RGB);
+//    starsFbo.allocate(size.x, size.y, GL_RGB); // Memory issue @ RBP?
+    
 }
 
 void Stars::update(glm::vec3 t){
