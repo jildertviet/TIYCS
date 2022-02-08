@@ -37,6 +37,7 @@
   #define W_PIN 19
 #endif
 
+float brightnessCurve[256];
 unsigned char values[4] = {0, 0, 0, 0};
 bool bUpdate = false;
 char staticIndex = 0;
@@ -96,6 +97,21 @@ void setup() {
   digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
   testLed();
   Serial.println("Setup done");
+
+  initCurve();
+}
+
+void initCurve(){
+  for(int i=0; i<256; i++){
+    if(i < 30){
+      float v = i / 30.0;
+      v = pow(v, 0.5);
+      v *= 30.0;
+      brightnessCurve[i] = pow((v / 256.), 2.0);
+    } else{
+      brightnessCurve[i] = pow((i / 256.), 2.0);
+    }
+  }
 }
 
 void blinkLed(int channel, int delayTime, int num=1){
@@ -106,44 +122,6 @@ void blinkLed(int channel, int delayTime, int num=1){
       delay(delayTime);
   }
   setLED(channel, 0);
-}
-
-void addPeer(){
-    esp_now_peer_info_t slave;
-    slave.channel = CHANNEL;
-    slave.encrypt = 0;
-    memcpy(slave.peer_addr, replyAddr, 6);      
-    if (slave.channel == CHANNEL) {
-    Serial.print("Slave Status: ");
-    const esp_now_peer_info_t *peer = &slave;
-    const uint8_t *peer_addr = slave.peer_addr;
-    bool exists = esp_now_is_peer_exist(peer_addr);
-    if ( exists) {
-      Serial.println("Already Paired");
-    } else {
-    // Slave not paired, attempt pair
-    esp_err_t addStatus = esp_now_add_peer(peer);
-    if (addStatus == ESP_OK) {
-      // Pair success
-      Serial.println("Pair success");
-    } else if (addStatus == ESP_ERR_ESPNOW_NOT_INIT) {
-      Serial.println("ESPNOW Not Init");
-    } else if (addStatus == ESP_ERR_ESPNOW_ARG) {
-      Serial.println("Invalid Argument");
-    } else if (addStatus == ESP_ERR_ESPNOW_FULL) {
-      Serial.println("Peer list full");
-    } else if (addStatus == ESP_ERR_ESPNOW_NO_MEM) {
-      Serial.println("Out of memory");
-    } else if (addStatus == ESP_ERR_ESPNOW_EXIST) {
-      Serial.println("Peer Exists");
-    } else {
-      Serial.println("Not sure what happened");
-    }
-  }
-  } else {
-    // No slave found to process
-    Serial.println("No Slave found to process");
-  }
 }
 
 void loop() { 
@@ -320,8 +298,6 @@ void InitESPNow() {
   }
 }
 
-
-
 // callback when data is recv from Master
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
   char msgType = data[0];
@@ -337,7 +313,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       mode = NOLAG; 
       bUpdate = true;
       break;
-//    case 1: 
+    case 0x09: 
 //      mode = LAG; 
 //      if(data_len > 6) // [R, G, B, W, mode, lagTime, lagTime
 //        memcpy(&lagTime, data+5, 2); // Copy the last two char's, and write to unsigned short. 
@@ -346,7 +322,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 //      envStartTime = millis();
 //      envEndTime = millis() + lagTime;
 //      bLagDone = false;
-//    break;
+    break;
     case 0x03:
       id = data[1];
       writeEEPROM();
@@ -380,19 +356,22 @@ void turnLedOff(){
   }
 }
 
-
-
 void setLED(int channel, int value){
+  float v = brightnessCurve[value];
 #ifdef PWM_10_BIT
-  float v = value / 255.;
-  v = pow(v, 2.0);
   ledcWrite(channel + 1, v * 1024);
 #else
-  ledcWrite(channel + 1, v);
+  ledcWrite(channel + 1, value);
 #endif
 }
 
 int measureBattery(){
-  return (int)analogRead(34); // 0 <> 4095
-//  return 1024;
+  int numSamples = 5;
+  int total = 0;
+  for(int i=0; i<numSamples; i++){
+    total += analogRead(34);
+    delay(20);
+  }
+  total /= numSamples;
+  return total; // 0 <> 4095
 }
