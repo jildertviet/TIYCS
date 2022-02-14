@@ -3856,7 +3856,7 @@
     (uuid d13e8b6d-8b82-4ae1-a8ab-4cc22756669a)
     (property "Reference" "SW3" (id 0) (at 108.585 133.4475 0))
     (property "Value" "BTN" (id 1) (at 108.585 136.2226 0))
-    (property "Footprint" "Switches:TACTILE_SWITCH_SMD_6.0X3.5MM" (id 2) (at 108.585 142.875 0)
+    (property "Footprint" "Button_Switch_SMD:SW_SPST_CK_RS282G05A3" (id 2) (at 108.585 142.875 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 108.585 142.875 0)
@@ -4584,7 +4584,7 @@
       (reference "SW2") (unit 1) (value "BOOT") (footprint "Switches:TACTILE_SWITCH_SMD_6.0X3.5MM")
     )
     (path "/d13e8b6d-8b82-4ae1-a8ab-4cc22756669a"
-      (reference "SW3") (unit 1) (value "BTN") (footprint "Switches:TACTILE_SWITCH_SMD_6.0X3.5MM")
+      (reference "SW3") (unit 1) (value "BTN") (footprint "Button_Switch_SMD:SW_SPST_CK_RS282G05A3")
     )
     (path "/f3889d7e-5766-4016-abdb-86011b33eeb0"
       (reference "U1") (unit 1) (value "ESP32-WROOM-32U") (footprint "RF_Module:ESP32-WROOM-32U")
