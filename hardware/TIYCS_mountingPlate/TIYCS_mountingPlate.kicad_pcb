@@ -169,6 +169,6 @@
   )
 
   (gr_rect (start 0 0) (end 100 100) (layer "Edge.Cuts") (width 0.1) (fill none) (tstamp 6ac3ab53-7523-4805-bfd2-5de19dff127e))
-  (gr_circle (center 50 50) (end 55.25 50) (layer "Edge.Cuts") (width 0.1) (fill none) (tstamp 93d4d131-a9f1-4257-bd4f-e06ad27b3631))
+  (gr_circle (center 50 50) (end 53.25 50) (layer "Edge.Cuts") (width 0.1) (fill none) (tstamp 93d4d131-a9f1-4257-bd4f-e06ad27b3631))
 
 )
