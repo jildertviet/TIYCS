@@ -56,7 +56,8 @@ unsigned char id = 0;
 uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 void setup() { 
-  pinMode(23, OUTPUT); digitalWrite(23, LOW);
+//  delay(1000);
+//  pinMode(23, OUTPUT); digitalWrite(23, LOW);
   ledcAttachPin(R_PIN, 1); // assign RGB led pins to channels
   ledcAttachPin(G_PIN, 2);
   ledcAttachPin(B_PIN, 3);
@@ -93,12 +94,21 @@ void setup() {
   }
   id = EEPROM.read(0);
 
+  pinMode(34, INPUT);
+  pinMode(14, INPUT);
+  pinMode(4, OUTPUT);
+  
+  delay(50);
   pinMode(5, OUTPUT);
   digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
-  testLed();
-  Serial.println("Setup done");
-
+  delay(50);
+  Serial.println("init curve");
   initCurve();
+  delay(50);
+  Serial.println("test led");
+  testLed();
+//  ledcWrite(1, 1024*0.25);
+  Serial.println("Setup done");
 }
 
 void initCurve(){
@@ -126,7 +136,7 @@ void blinkLed(int channel, int delayTime, int num=1){
 
 void loop() { 
   switch(mode){
-    case NOLAG:{ // Just set the PWM-channels 
+    case NOLAG:{ // Just set the PWM-channels
       if(bUpdate){
        for(staticIndex=0; staticIndex<4; staticIndex++){ 
         setLED(staticIndex, values[staticIndex]);
@@ -356,8 +366,17 @@ void turnLedOff(){
   }
 }
 
-void setLED(int channel, int value){
+void setLED(int channel, int value){ // Receives 0 - 255
   float v = brightnessCurve[value];
+  if(channel = 3){
+    int sumOfRGB = values[0] + values[1] + values[2];
+    if(sumOfRGB >= 300){
+      if(value>225){
+        value = 225; // Limit (RGB255 + W225 = 4.0A)
+      }
+    }
+  }
+  values[channel] = value;
 #ifdef PWM_10_BIT
   ledcWrite(channel + 1, v * 1024);
 #else
