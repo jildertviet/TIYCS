@@ -7,53 +7,140 @@
 #include "credentials.h"
 
 #define CHANNEL 1
-
 #define IS_JONISK_2022
 #define   PWM_10_BIT
 
-#ifdef  IS_JONISK
-  #define R_PIN 13
-  #define G_PIN 12
-  #define B_PIN 22
-  #define W_PIN 23
-#endif
-
-#ifdef IS_LED // Used for 
-  #define R_PIN 16
-  #define G_PIN 33
-  #define B_PIN 17
-  #define W_PIN 32
-#endif
-#ifdef IS_JONISK_NEW
-  #define R_PIN 46
-  #define G_PIN 45
-  #define B_PIN 41
-  #define W_PIN 42
-#endif
-#ifdef IS_JONISK_2022
-  #define R_PIN 16
-  #define G_PIN 17
-  #define B_PIN 18
-  #define W_PIN 19
-#endif
-
-float brightnessCurve[256];
 unsigned char values[4] = {0, 0, 0, 0};
-bool bUpdate = false;
-char staticIndex = 0;
+uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY};
 Mode mode = NOLAG;
+Mode modeToReturnTo = Mode::NOLAG;
+unsigned char id = 0;
+bool bUpdate = false;
+unsigned long lastReceived = 0;
+
+void blinkLed(int channel, int delayTime, int num, int brightness=50);
+
+#include "pinMap.h"
+#include "espnowFunctions.h"
+#include "batteryStatus.h"
+
+float brightnessCurve[256];
+char staticIndex = 0;
+
 unsigned short lagTime = 100;
 unsigned char startValues[4];
 unsigned char endValues[4];
 unsigned long envEndTime = 0;
 unsigned long envStartTime = 0;
 bool bLagDone = false;
-Mode modeToReturnTo = Mode::NOLAG;
-unsigned char id = 0;
 
-uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+unsigned long lastBlinked = 0;
+int blinkInterval[2] = {30, 1300};
+char blinkIndex = 0;
+
+
+void testLed(){
+  for(char i=0; i<4; i++){
+    setLED(i, 50);
+    delay(500);
+    turnLedOff();
+  }
+}
+
+void turnLedOff(){
+  for(char i=0; i<4; i++){
+    ledcWrite(i+1, 0);
+  }
+}
+
+void setLED(int channel, int value){ // Receives 0 - 255
+  float v = brightnessCurve[value];
+  if(channel == 3){
+    int sumOfRGB = values[0] + values[1] + values[2];
+    if(sumOfRGB >= 290){
+      if(value>225){
+        value = 225; // Limit (RGB255 + W225 = 4.0A)
+      }
+    }
+  }
+  values[channel] = value;
+#ifdef PWM_10_BIT
+  value = v * 1024;
+#endif
+
+  ledcWrite(channel + 1, value);
+}
+
+void aliveBlink(){
+  if(millis() > lastBlinked + blinkInterval[blinkIndex]){
+    lastBlinked = millis();
+    digitalWrite(5, blinkIndex);
+    blinkIndex = (blinkIndex + 1) % 2; // 0, 1, 0, etc
+  }
+}
+
+void sendPing(){
+  // Only send when no msg is received for x seconds
+  if(millis() > lastReceived + 60000 && millis() > 10000){
+    WiFi.mode(WIFI_OFF);
+    WiFi.mode(WIFI_STA);
+    Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
+  
+    initESPNow();
+    esp_now_register_recv_cb(OnDataRecv);
+    uint8_t broadcastAddr[6] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
+    memcpy(replyAddr, &broadcastAddr, 6);
+    addPeer(replyAddr);
+  
+    uint8_t msg[5] = {'a','l', 'i', 'v', 'e'};
+//    int v = measureBattery();
+//    memcpy(msg+1, &v, 4); // Prefix is 'b'
+    
+    esp_err_t result = esp_now_send(replyAddr, msg, 5);
+//    if (result == ESP_OK) {
+//      blinkLed(1, 100, 1);
+//    } else {
+//      blinkLed(0, 50, 2);
+//    }
+    WiFi.mode(WIFI_OFF);
+    WiFi.softAP("TIYCS", "nonsense", 1, true);
+    Serial.println("Setup ESPNOW");
+    initESPNow();
+    Serial.println("Register callback");
+    esp_now_register_recv_cb(OnDataRecv);
+    lastReceived = millis();
+  }
+}
+
+void blinkLed(int channel, int delayTime, int num=1, int brightness){
+  for(int i=0; i<num; i++){
+      setLED(channel, brightness);
+      delay(delayTime);
+      setLED(channel, 0);
+      delay(delayTime);
+  }
+  setLED(channel, 0);
+}
+
+void writeEEPROM(){
+  EEPROM.write(0, id);
+  EEPROM.commit();
+}
+
+void initCurve(){
+  for(int i=0; i<256; i++){
+    if(i < 30){
+      float v = i / 30.0;
+      v = pow(v, 0.5);
+      v *= 30.0;
+      brightnessCurve[i] = pow((v / 256.), 2.0);
+    } else{
+      brightnessCurve[i] = pow((i / 256.), 2.0);
+    }
+  }
+}
 
 void setup() { 
 //  delay(1000);
@@ -84,11 +171,10 @@ void setup() {
   // This is the mac address of the Slave in AP Mode
   Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress());
 
-  Serial.println("Setup ESPNOW");
-  InitESPNow(); // Init ESPNow with a fallback logic
+  initESPNow(); 
   Serial.println("Register callback");
   esp_now_register_recv_cb(OnDataRecv);
-
+  
   if (!EEPROM.begin(64)){
     Serial.println("failed to initialise EEPROM");
   }
@@ -111,30 +197,9 @@ void setup() {
   Serial.println("Setup done");
 }
 
-void initCurve(){
-  for(int i=0; i<256; i++){
-    if(i < 30){
-      float v = i / 30.0;
-      v = pow(v, 0.5);
-      v *= 30.0;
-      brightnessCurve[i] = pow((v / 256.), 2.0);
-    } else{
-      brightnessCurve[i] = pow((i / 256.), 2.0);
-    }
-  }
-}
-
-void blinkLed(int channel, int delayTime, int num=1){
-  for(int i=0; i<num; i++){
-      setLED(channel, 255);
-      delay(delayTime);
-      setLED(channel, 0);
-      delay(delayTime);
-  }
-  setLED(channel, 0);
-}
-
 void loop() { 
+  aliveBlink();
+  sendPing();
   switch(mode){
     case NOLAG:{ // Just set the PWM-channels
       if(bUpdate){
@@ -216,181 +281,16 @@ void loop() {
         delay(10);
     }
     break;
-    case SEND_BATTERY:{ // Test ... 
-      WiFi.mode(WIFI_OFF);
-      delay(1000);
-      WiFi.mode(WIFI_STA);
-      Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
-
-      WiFi.disconnect();
-      if (esp_now_init() == ESP_OK) {
-        Serial.println("ESPNow Init Success");
-      } else {
-      Serial.println("ESPNow Init Failed");
-       ESP.restart();
-      }
-      esp_now_register_recv_cb(OnDataRecv);
-        
-      esp_now_peer_info_t slave;
-    slave.channel = CHANNEL;
-    slave.encrypt = 0;
-    memcpy(slave.peer_addr, replyAddr, 6);      
-    if (slave.channel == CHANNEL) {
-    Serial.print("Slave Status: ");
-    const esp_now_peer_info_t *peer = &slave;
-    const uint8_t *peer_addr = slave.peer_addr;
-    bool exists = esp_now_is_peer_exist(peer_addr);
-    if ( exists) {
-      Serial.println("Already Paired");
-    } else {
-    // Slave not paired, attempt pair
-    esp_err_t addStatus = esp_now_add_peer(peer);
-    if (addStatus == ESP_OK) {
-      // Pair success
-      Serial.println("Pair success");
-    } else if (addStatus == ESP_ERR_ESPNOW_NOT_INIT) {
-      Serial.println("ESPNOW Not Init");
-    } else if (addStatus == ESP_ERR_ESPNOW_ARG) {
-      Serial.println("Invalid Argument");
-    } else if (addStatus == ESP_ERR_ESPNOW_FULL) {
-      Serial.println("Peer list full");
-    } else if (addStatus == ESP_ERR_ESPNOW_NO_MEM) {
-      Serial.println("Out of memory");
-    } else if (addStatus == ESP_ERR_ESPNOW_EXIST) {
-      Serial.println("Peer Exists");
-    } else {
-      Serial.println("Not sure what happened");
-    }
-  }
-  } else {
-    // No slave found to process
-    Serial.println("No Slave found to process");
-  }
-      
-      uint8_t msg[5] = {'b','t', 'e', 's', 't'};
-      int v = measureBattery();
-      memcpy(msg+1, &v, 4); // Prefix is 'b'
-      
-      esp_err_t result = esp_now_send(replyAddr, msg, 5);
-      if (result == ESP_OK) {
-        blinkLed(2, 100, 1);
-      } else {
-        blinkLed(0, 50, 2);
-      }
-
-      delay(500);
+    case SEND_BATTERY:{
+      sendBatteryStatus();
       WiFi.mode(WIFI_OFF);
       WiFi.softAP("TIYCS", "nonsense", 1, true);
-  // This is the mac address of the Slave in AP Mode
-  Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress());
-
-  Serial.println("Setup ESPNOW");
-  InitESPNow(); // Init ESPNow with a fallback logic
-  Serial.println("Register callback");
-  esp_now_register_recv_cb(OnDataRecv);
-    delay(500);
+      Serial.println("Setup ESPNOW");
+      initESPNow();
+      Serial.println("Register callback");
+      esp_now_register_recv_cb(OnDataRecv);
       mode = modeToReturnTo;
-    }
     break;
-  }
-
-}
-
-// Init ESP Now with fallback
-void InitESPNow() {
-  WiFi.disconnect();
-  if (esp_now_init() == ESP_OK) {
-    Serial.println("ESPNow Init Success");
-  } else {
-    Serial.println("ESPNow Init Failed");
-    // Retry InitESPNow, add a counte and then restart?
-    ESP.restart();     // or Simply Restart
-  }
-}
-
-// callback when data is recv from Master
-void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
-  char msgType = data[0];
-//  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
-
-//  for(int i=0; i<data_len; i++){
-//    Serial.print((int)data[i]); Serial.print(" ");
-//  }
-//  Serial.println();
-  switch(msgType){
-    case 0x05: 
-      memcpy(values, data + 1 + (id*4), 4); 
-      mode = NOLAG; 
-      bUpdate = true;
-      break;
-    case 0x09: 
-//      mode = LAG; 
-//      if(data_len > 6) // [R, G, B, W, mode, lagTime, lagTime
-//        memcpy(&lagTime, data+5, 2); // Copy the last two char's, and write to unsigned short. 
-//      memcpy(endValues, data, 4);
-//      memcpy(startValues, values, 4);
-//      envStartTime = millis();
-//      envEndTime = millis() + lagTime;
-//      bLagDone = false;
-    break;
-    case 0x03:
-      id = data[1];
-      writeEEPROM();
-      break;
-    case 0x07: 
-      mode = Mode::START_WIFI; 
-      memcpy(&replyAddr, mac_addr, 6);
-      break;
-    case 0x08: // Reply with battery voltage
-      mode = Mode::SEND_BATTERY;
-      break;
-  }
-}
-
-void writeEEPROM(){
-  EEPROM.write(0, id);
-  EEPROM.commit();
-}
-
-void testLed(){
-  for(char i=0; i<4; i++){
-    setLED(i, 50);
-    delay(500);
-    turnLedOff();
-  }
-}
-
-void turnLedOff(){
-  for(char i=0; i<4; i++){
-    ledcWrite(i+1, 0);
-  }
-}
-
-void setLED(int channel, int value){ // Receives 0 - 255
-  float v = brightnessCurve[value];
-  if(channel = 3){
-    int sumOfRGB = values[0] + values[1] + values[2];
-    if(sumOfRGB >= 300){
-      if(value>225){
-        value = 225; // Limit (RGB255 + W225 = 4.0A)
-      }
     }
   }
-  values[channel] = value;
-#ifdef PWM_10_BIT
-  ledcWrite(channel + 1, v * 1024);
-#else
-  ledcWrite(channel + 1, value);
-#endif
-}
-
-int measureBattery(){
-  int numSamples = 5;
-  int total = 0;
-  for(int i=0; i<numSamples; i++){
-    total += analogRead(34);
-    delay(20);
-  }
-  total /= numSamples;
-  return total; // 0 <> 4095
 }
