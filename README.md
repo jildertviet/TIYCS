@@ -51,10 +51,10 @@ The app uses ofAppGLFWWindow to be able to run fullscreen.
 - [x] Rethink LED configuration (Strip + circle-panel for top?)
 
 - [ ] ~~Build own cement base with screw holes~~  
-  - [ ] Use plastic cup that's already in Jonisks to attach PCB
+  - [x] Use plastic cup that's already in Jonisks to attach PCB
 - [ ] ~~Add screw from bottom to cement base~~  
 - [x] RGBW instead of RGB?  
-  - [ ] Fix LED polarity issues
+  - [x] Fix LED polarity issues
 
 - [ ] Power on / off  
   - [ ] ~~Button (preferred)~~
@@ -64,4 +64,4 @@ The app uses ofAppGLFWWindow to be able to run fullscreen.
 #### Software
 - [ ] Set PWM freq in EEPROM, high freq for picture mode, low for performance mode  
 - [ ] Implement internal lag for lower framerates  
-- [ ] Report battery status  
+- [x] Report battery status  
