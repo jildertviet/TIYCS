@@ -14,10 +14,9 @@ unsigned char startByte;
 //#define J_LOG true
 
 #define CHANNEL 1
-
-
 //#define LEDBEAM_0
-#define JONISK
+//#define JONISK
+#define JONISK_2022
 
 #ifdef  LEDBEAM_0
 #define NUM 5
@@ -31,7 +30,7 @@ const uint8_t mac[NUM][6] = {
 #endif
 
 #ifdef  JONISK
-#define NUM 19
+#define NUM 20
 const uint8_t mac[NUM][6] = {
   {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF},
   {0x24,0x6F,0x28,0xDD,0x47,0xFD},
@@ -52,7 +51,28 @@ const uint8_t mac[NUM][6] = {
   {0x24,0x6F,0x28,0xDC,0xC0,0x61},
   {0x7C,0xDF,0xA1,0x17,0x40,0xFD},
   {0x24,0x6F,0x28,0xF2,0x83,0x41},
-  {0xE8,0x9F,0x6D,0xB9,0xF2,0xD9} // 2022 
+  {0xE8,0x9F,0x6D,0xB9,0xF2,0xD9}, // 2022 
+  {0x34,0x94,0x54,0x14,0xFF,0x59} // 2022, rev 2
+  {0x34,0x94,0x54,0x14,0xE3,0xCD},
+  {0x8C,0x4B,0x14,0x4E,0x7F,0xBD},
+  {0x58,0xBF,0x25,0xF8,0x70,0x59},
+  {0x24,0x6F,0x28,0xDB,0x15,0x11},
+  {0x24,0x6F,0x28,0xD8,0x90,0xCD},
+  {0x8C,0x4B,0x14,0x2B,0xB9,0xB5},
+};
+#endif
+
+#ifdef  JONISK_2022
+#define NUM 8
+const uint8_t mac[NUM][6] = {
+  {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF},
+  {0x34,0x94,0x54,0x14,0xFF,0x59},
+  {0x34,0x94,0x54,0x14,0xE3,0xCD},
+  {0x8C,0x4B,0x14,0x4E,0x7F,0xBD},
+  {0x58,0xBF,0x25,0xF8,0x70,0x59},
+  {0x24,0x6F,0x28,0xDB,0x15,0x11},
+  {0x24,0x6F,0x28,0xD8,0x90,0xCD},
+  {0x8C,0x4B,0x14,0x2B,0xB9,0xB5},
 };
 #endif
 
@@ -125,15 +145,41 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 //  for(int i=0; i<data_len; i++){
 //    Serial.print((int)data[i]); Serial.print(" ");
 //  }
-  Serial.println(".");
+  switch(data[0]){
+    case 'b':{
+      int v;
+      memcpy(&v, data+1, 4);
+      Serial.print("msg");
+      Serial.print('b'); // Msg type
+      for(int i=0; i<6; i++){
+        Serial.print((int)mac_addr[i]);
+        Serial.print(":");
+      }
+      Serial.print(v);
+      Serial.print("end"); // msg a 012345 value end // Value will be parsed from string
+    }
+    break;
+    case 'a':{
+        int v;
+        memcpy(&v, data+1, 4);
+        Serial.print("msg");
+        Serial.print('a'); // Msg type
+        for(int i=0; i<6; i++){
+          Serial.print((int)mac_addr[i]);
+          Serial.print(":");
+        }
+        Serial.print(v);
+        Serial.print("end"); // msg a 012345 value end // Value will be parsed from string
+    }
+    break;
+  }
 }
 
 void setup() {
   memset(serialBuffer, 256, 0);
   Serial.begin(230400);
 
-
-#ifdef  JONISK
+#if defined(JONISK) || defined(JONISK_2022)
   WiFi.softAP("TIYCS", "nonsense", 1, true);
 #else
   WiFi.softAP("TIYCS", "nonsense", 6, true);
@@ -178,14 +224,14 @@ void loop() {
 //        }
 //        Serial.println();
         memcpy(addr, serialBuffer, 6);
-        for(int i=0; i<6; i++){
-          Serial.print((int)addr[i]); Serial.print(" ");
-        }
-        Serial.println();
-        for(int i=0; i<len; i++){
-          Serial.print((int)serialBuffer[i+6]); Serial.print(" ");
-        }
-        Serial.println();
+//        for(int i=0; i<6; i++){
+//          Serial.print((int)addr[i]); Serial.print(" ");
+//        }
+//        Serial.println();
+//        for(int i=0; i<len; i++){
+//          Serial.print((int)serialBuffer[i+6]); Serial.print(" ");
+//        }
+//        Serial.println();
         esp_now_send(addr, serialBuffer+6, len);
 //        digitalWrite(5, LOW); delay(50); digitalWrite(5, HIGH);
         writePos = 0;
