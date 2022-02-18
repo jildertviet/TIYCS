@@ -1,4 +1,4 @@
-p = SerialPort.new("/dev/cu.wchusbserial1420", 230400, crtscts: true);
+p = SerialPort.new("/dev/cu.wchusbserial1410", 230400, crtscts: true);
 p.close;
 
 ( // LEDBEAM
@@ -61,7 +61,8 @@ var setup = [
 	// 24:6F:28:DD:48:15 BACKUP no 17
 
 
-	[[0xE8,0x9F,0x6D,0xB9,0xF2,0xD9], 0] // 2022
+	[[0xE8,0x9F,0x6D,0xB9,0xF2,0xD9], 0], // 2022
+	[[0x34,0x94,0x54,0x14,0xFF,0x59], 0]
 ];
 
 {
@@ -81,8 +82,47 @@ p.putAll((0xFF!6) ++ [0x10, 0x00] ++ [101, 110, 100]); // Set to mode: RAW
 p.putAll((0xFF!6) ++ [0x04, 0x01] ++ [101, 110, 100]); // Set channel to first
 p.putAll((0xFF!6) ++ [0x03, 0x00] ++ [101, 110, 100]); // Set all to ID 0
 
-j = Jonisk.new(nil, 0, p);
+j = Jonisk.new(0, nil);
+j.gui
 j.testLed
 j.setColor([255,0,0,0]);
 j.off
 // j.ota
+Integer
+p.putAll((0xFF!6) ++ [0x08, 0x00, 0x00] ++ [101, 110, 100]); // Request battery
+1.do{(p.read.asAscii).post}
+[98,116,101,
+'.'.ascii
+[116,101,115,116].asAscii
+98.asAscii
+// MSG: [98, 0, 160, 107, 6]
+
+(w = Window.new;
+w.layout = VLayout(
+    [Button().states_([["Foo"]]), stretch:1, align:\bottomLeft],
+    20,
+	[EZSlider()],
+    [nil, s:1]
+);
+w.front;
+)
+
+(
+x.stop;
+x = {
+	inf.do{
+		|i|
+		var val = sin(i/100).abs * 255;
+		// if(i % 512 > 255, {
+			val = (i / 0.5) % 255;
+		// val = 255 - val.asInteger;
+	// }, {
+		// val = (i / 0.5) % 255;
+			val = val.asInteger;
+// });
+		val.postln;
+		j.setColor([val, 0, 0, 0].rotate(0));
+		(1/60).wait
+	}
+}.fork;
+)

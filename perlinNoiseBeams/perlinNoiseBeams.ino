@@ -1,8 +1,10 @@
 #include <esp_now.h>
 #include <WiFi.h>
 #include <FastLED.h>
+#include <ArduinoOSCWiFi.h>
 #include "espnowFunctions.h"
 
+#define PORT  6235
 #define NUM 1
 const uint8_t mac[NUM][6] = {
   {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF},
@@ -28,6 +30,12 @@ void setup() {
   
   WiFi.softAP("TIYCS", "nonsense", 6, true);
   WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, pwd);
+  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    Serial.println("Connection Failed! Go to normal state...");
+//    ESP.restart();
+  }
+  
   Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
 
   initESPNow();
@@ -40,6 +48,8 @@ void setup() {
 
   unsigned char msg[2] = {0x10,0x00};
   esp_now_send(mac[0], msg, 2);
+
+  OscWiFi.subscribe(PORT, "/setNoiseValues", beamSpacing, scale, speed);
 }
 
 void fillnoise8() {

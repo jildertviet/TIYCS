@@ -213,7 +213,7 @@ void loop() {
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
   //  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
   unsigned char msgType = data[0];
-  if (msgType == channel) { // Receive raw pixels (causes jitter in pixels)
+  if (msgType == channel) { // Receive raw pixels
     memcpy(msg, data + 1 + (NUMPIXELS * id), NUMPIXELS);
     bNewMsg = true;
   } else {
