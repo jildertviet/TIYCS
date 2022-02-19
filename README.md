@@ -67,6 +67,6 @@ The app uses ofAppGLFWWindow to be able to run fullscreen.
 - [x] Report battery status  
 
 #### Barrier
-Notes using Barrier, to control Linux machine with MacBook:  
+Notes using [Barrier](https://github.com/debauchee/barrier), to control Linux machine with MacBook:  
 Set MacBook to server, create the screens + names.  
 Set Linux as client, with matching name.  
