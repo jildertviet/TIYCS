@@ -65,3 +65,8 @@ The app uses ofAppGLFWWindow to be able to run fullscreen.
 - [ ] Set PWM freq in EEPROM, high freq for picture mode, low for performance mode  
 - [ ] Implement internal lag for lower framerates  
 - [x] Report battery status  
+
+#### Barrier
+Notes using Barrier, to control Linux machine with MacBook:  
+Set MacBook to server, create the screens + names.  
+Set Linux as client, with matching name.  
