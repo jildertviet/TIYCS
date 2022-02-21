@@ -38,6 +38,9 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     case 0x08: // Reply with battery voltage
       mode = Mode::SEND_BATTERY;
       break;
+    case 0x10:
+      mode = Mode::DEEP_SLEEP;
+      break;
   }
 }
 

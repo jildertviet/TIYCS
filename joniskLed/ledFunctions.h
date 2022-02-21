@@ -59,6 +59,9 @@ void aliveBlink(){ // GPIO_5
 }
 
 void sendPing(){
+  if(mode ==HANDLE_OTA)
+    return;
+    
   // Only send when no msg is received for x seconds
   if(millis() > lastReceived + 60000 && millis() > 10000){
     WiFi.mode(WIFI_OFF);

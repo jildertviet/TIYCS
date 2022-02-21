@@ -11,7 +11,7 @@ void initESPNow() {
 }
 
 bool manageSlave() {
-  if (slave.channel == 6) {
+  if (slave.channel == CHANNEL) {
     Serial.print("Slave Status: ");
     const esp_now_peer_info_t *peer = &slave;
     const uint8_t *peer_addr = slave.peer_addr;

@@ -13,12 +13,13 @@
 unsigned char values[4] = {0, 0, 0, 0};
 uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY};
+enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY, DEEP_SLEEP};
 Mode mode = NOLAG;
 Mode modeToReturnTo = Mode::NOLAG;
 unsigned char id = 0;
 bool bUpdate = false;
 unsigned long lastReceived = 0;
+unsigned long lastChecked = 0;
 
 void blinkLed(int channel, int delayTime, int num, int brightness=50);
 
@@ -43,7 +44,7 @@ void writeEEPROM(){
 }
 
 void setup() { 
-//  delay(1000);
+  delay(500);
 //  pinMode(23, OUTPUT); digitalWrite(23, LOW);
   ledcAttachPin(R_PIN, 1); // assign RGB led pins to channels
   ledcAttachPin(G_PIN, 2);
@@ -81,6 +82,7 @@ void setup() {
   pinMode(34, INPUT);
   pinMode(14, INPUT);
   pinMode(4, OUTPUT);
+  pinMode(5, OUTPUT);
   
   aliveBlink();
   initCurve();
@@ -91,6 +93,7 @@ void setup() {
 void loop() { 
   aliveBlink();
   sendPing();
+  checkPins();
   switch(mode){
     case NOLAG:{ // Just set the PWM-channels
       if(bUpdate){
@@ -145,13 +148,15 @@ void loop() {
           Serial.println("Start updating " + type);
         })
         .onEnd([]() {
-          Serial.println("\nEnd");
+          blinkLed(1, 500, 1, 100);
         })
         .onProgress([](unsigned int progress, unsigned int total) {
-          Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+          int percentage = (progress / (total / 100));
+          setLED(1, percentage / 2); // 0 - 50
         })
         .onError([](ota_error_t error) {
           Serial.printf("Error[%u]: ", error);
+          blinkLed(0, 30, 3, 40);
           if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
           else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
           else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
@@ -183,5 +188,33 @@ void loop() {
       mode = modeToReturnTo;
     break;
     }
+    case DEEP_SLEEP:{
+      // Go to deep sleep
+      blinkLed(3, 250, 2, 20);
+      turnLedOff();
+      esp_sleep_enable_ext0_wakeup(GPIO_NUM_14,1);
+      esp_deep_sleep_start();
+    }
+  }
+}
+
+void checkPins(){
+#ifndef  IS_JONISK_2022
+  return;
+#endif
+  if(millis() > lastChecked + 100){
+    if(digitalRead(15) == LOW){
+      digitalWrite(5, HIGH);
+      delay(100);
+      mode = START_WIFI;
+    }
+    if(digitalRead(14) == HIGH){
+      blinkInterval[0] = 130;
+      blinkInterval[1] = 300;
+    } else{
+      blinkInterval[0] = 30;
+      blinkInterval[1] = 1500;
+    }
+    lastChecked = millis();
   }
 }
