@@ -29,7 +29,7 @@ void checkPins();
 #include "espnowFunctions.h"
 #include "batteryStatus.h"
 
-char staticIndex = 0;
+uint8_t staticIndex = 0;
 
 unsigned short lagTime = 100;
 unsigned char startValues[4];

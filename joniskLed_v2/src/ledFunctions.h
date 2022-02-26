@@ -2,7 +2,7 @@ float brightnessCurve[256];
 
 unsigned long lastBlinked = 0;
 int blinkInterval[2] = {30, 1500};
-char blinkIndex = 0;
+uint8_t blinkIndex = 0;
 
 void initCurve(){
   for(int i=0; i<256; i++){
@@ -61,24 +61,25 @@ void aliveBlink(){ // GPIO_5
 void sendPing(){
   if(mode ==HANDLE_OTA)
     return;
-    
+
   // Only send when no msg is received for x seconds
   if(millis() > lastReceived + 60000 && millis() > 10000){
     WiFi.mode(WIFI_OFF);
     WiFi.mode(WIFI_STA);
     Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
-  
+
     initESPNow();
     esp_now_register_recv_cb(OnDataRecv);
     uint8_t broadcastAddr[6] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
     memcpy(replyAddr, &broadcastAddr, 6);
     addPeer(replyAddr);
-  
+
     uint8_t msg[5] = {'a','l', 'i', 'v', 'e'};
     int v = measureBattery();
     memcpy(msg+1, &v, 4); // Prefix is 'a'
-    
-    esp_err_t result = esp_now_send(replyAddr, msg, 5);
+
+    // esp_err_t result = 
+    esp_now_send(replyAddr, msg, 5);
 //    if (result == ESP_OK) {
 //      blinkLed(1, 100, 1);
 //    } else {
