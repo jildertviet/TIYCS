@@ -9,6 +9,8 @@ void ofApp::setup(){
     scene = scenes::Stars;
     ofSetFrameRate(30);
     ofSetWindowShape(width, height);
+    renderFbo.allocate(width, height);
+    initMesh();
     
     memset(busses, 0, sizeof(float)*NUM_BUSSES); // Set busses to 0.
     
@@ -116,203 +118,228 @@ void ofApp::update(){
     }
     
     joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * routePct + start;
+    
+    
+    
+    
+    renderFbo.begin();
+        if(bRotate){
+            ofPushMatrix();
+                ofTranslate(ofGetWidth(), ofGetHeight());
+                ofRotateDeg(180, 0, 0, 1);
+        }
+        
+        ofBackground(0);
+        if(busses[2] != 0){
+            ofSetColor(255, 0, 0, busses[2] * 255);
+            ofDrawRectangle(0, 0, width, height);
+        }
+        
+        ofSetColor(255);
+        v->display();
+        
+        switch(scene){
+            case scenes::Nothing:
+                break;
+            case scenes::Intro:
+                joniskHover();
+    //            welcomTxt.draw(0,0);
+                break;
+            case scenes::JoniskBig:
+                images["Jonisk big"].draw(0,0);
+                break;
+            case scenes::Instructions:{
+                int imageID = busses[0];
+                ofPushMatrix();
+                    ofTranslate(ofGetWindowSize() * 0.5);
+                    if(imageID <= 6)
+                        instructions[imageID].draw(instructions[imageID].getWidth() * -0.5, instructions[imageID].getHeight() * -0.5);
+                ofPopMatrix();
+            }
+                break;
+            case scenes::Countdown:{
+                int count = busses[0];
+                if(count > 0){
+                    ofRectangle r = countFont.getStringBoundingBox(ofToString((int)floor(count)), 0, 0);
+                    countFont.drawString(ofToString((int)floor(count)), ofGetWidth()*0.5 - r.getWidth() * 0.5, ofGetHeight()*0.5 + r.getHeight() * 0.5);
+                }
+            }
+                break;
+            case scenes::Stars:
+                ofPushMatrix();
+                stars->display(brightness);
+                ofPopMatrix();
+                break;
+            case scenes::Route:{
+    //            stars->display(brightness);
+    //
+    //            ofSetColor(0, 100);
+    //            ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    //
+    //            ofSetColor(255);
+    //
+    //            float widthRatio = ofGetWidth() / lineGray.getWidth();
+    //            lineGray.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
+    //            lineWhite.drawSubsection(0, 0, joniskRoutePos.x, HEIGHT, 0, 0);
+    //            routeStartEnd.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
+    //            planetNames.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
+    //            planetsGray.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
+    //
+    ////            joniskRoutePos
+    //            ofPushMatrix();
+    //            ofTranslate(joniskRoutePos);
+    //            ofScale((sin(ofGetFrameNum() * 0.02) * 0.2) + 1.2);
+    //            joniskRouteGlow.draw(glm::vec2(joniskRouteGlow.getWidth() * -0.5, joniskRouteGlow.getHeight() * -0.5));
+    //            ofPopMatrix();
+    //            joniskRoute.draw(joniskRoutePos - glm::vec2(joniskRoute.getWidth()*0.5, joniskRoute.getHeight() * 0.5));
+            }
+                break;
+            case scenes::Commercial:{
+                if(commercial.isPlaying())
+                    commercial.draw(0,0, ofGetWidth(), ofGetHeight());
+            }
+                break;
+            case scenes::Benzine:
+                images["Benzine"].draw(0,0);
+                ofPushMatrix();
+                ofPushStyle();
+                    ofSetLineWidth(215);
+                    ofTranslate(959, 705);
+                    ofRotateDeg(180 + 17.5 + busses[0] + ofNoise((float)(ofGetFrameNum()/50.) * 10));
+                    ofDrawLine(0, 0, 340, 0);
+                ofPopStyle();
+                ofPopMatrix();
+                break;
+            case scenes::ReturnToShip:{
+                int imgIndex = busses[0];
+                if(imgIndex < 4){
+                    returnImages[imgIndex].draw(0,0, ofGetWidth(), ofGetHeight());
+                }
+            }
+                break;
+            case scenes::CaptainPicto:
+                images["Captain"].draw(0,0);
+                break;
+            case scenes::Waveform:{
+                ofSetColor(255);
+                ofSetLineWidth(3);
+                ofNoFill();
+                ofBeginShape();
+                for (unsigned int i = 0; i < waveForm.size(); i++){
+                    ofVertex(
+                             (i*((float)ofGetWidth()/waveForm.size())),
+                             waveForm[i]
+                             );
+                }
+                ofEndShape(false);
+    //            captainPicto.draw(0,0, ofGetWindowWidth() * 0.25, ofGetWindowHeight() * 0.25);
+            }
+                break;
+            case scenes::Scene::Bingo:
+                bingo->display((Bingo::DrawMode)busses[0]);
+                break;
+            case scenes::Code:{
+                ofPushMatrix();
+                ofTranslate(ofGetWindowSize()*0.5);
+                ofScale(1.4);
+                ofTranslate(ofGetWindowSize()*-0.5);
+                images["CodeTxt"].draw(0,0, width, height);
+                int m = 60; // margin
+                for(int i=0; i<4; i++){
+                    ofPushMatrix();
+                    ofTranslate(ofGetWidth()*0.5, ofGetHeight()*0.5 + 50);
+                    ofTranslate(((images["Code Circle"].getWidth() + m)*0.5) + (i-2) * (images["Code Circle"].getWidth() + m), 0);
+                    
+                    if(busses[0]-1 >= i){
+                        ofPushMatrix();
+    //                    ofScale(1.1);
+                        ofSetColor(255);
+                        images["Code Glow"].draw(images["Code Glow"].getWidth()*-0.5, images["Code Glow"].getHeight()*-0.5);
+    //                    ofScale(1/1.1);
+                        ofPopMatrix();
+                        
+                        ofSetColor(38);
+                        ofDrawCircle(0,0,70);
+                        ofSetColor(255);
+                        ofDrawCircle(0,0,50);
+                        ofSetColor(0);
+                        string txt = ofToString(code[i]);
+                        codeFont.drawString(
+                                             txt,
+                                             codeFont.getStringBoundingBox(txt, 0, 0).getWidth()*-0.5,
+                                             codeFont.getStringBoundingBox(txt, 0, 0).getHeight()*0.5
+                                             );
+                    } else{
+                        ofSetColor(255);
+                        ofRotateDeg(ofGetFrameNum()*0.2);
+                        images["Code Circle"].draw(images["Code Circle"].getWidth()*-0.5, images["Code Circle"].getHeight()*-0.5);
+                    }
+                    ofPopMatrix();
+                }
+                ofPopMatrix();
+            }
+                break;
+            case scenes::Autopilot:{
+                ofSetColor(255); ofFill();
+                ofDrawRectangle(416, 536, (busses[1]/100.)*(866-416), ofGetHeight());
+                images["Autopilot"].draw(0,0, ofGetWidth(), ofGetHeight());
+                joniskHover();
+                string txt = "Starten automatische piloot...";
+                ofRectangle r = autoPilotFont.getStringBoundingBox(txt, 0, 0);
+                autoPilotFont.drawString(txt, ofGetWidth() * 0.5 - (r.getWidth()*0.5), ofGetHeight() * 0.625);
+                if(busses[0] <= 10){
+                    string str = " " + ofToString((int)busses[1]) + "%";
+    //                ofRectangle box = autoPilotFont.getStringBoundingBox(str, 0, 0);
+                    autoPilotFont.drawString(str, ofGetWidth() * 0.5 - 20, ofGetHeight() * 0.85);
+                } else{
+                    string str = ofToString((int)busses[0]) + "%";
+                    autoPilotFont.drawString(ofToString((int)busses[1]) + "%", ofGetWidth() * 0.5 - 20, ofGetHeight() * 0.85);
+                }
+            }
+                break;
+        }
+        
+        if(bVluchtInfo){ // Overlay
+            vector<string> names = {"Hoogte", "Snelheid", "Buitentemperatuur"};
+            vector<string> units = {" km", " ziljard km/u", "°C"};
+            vector<string> values = {ofToString(flightInfo.height), ofToString(flightInfo.speed), ofToString(flightInfo.temp)};
+            for(int i=0; i<3; i++){
+                helveticaBold.drawString(names[i], 120 + (i*300), ofGetWindowHeight() - 70);
+                helveticaRegular.drawString(values[i] + units[i], 120 + (i*300), ofGetWindowHeight() - 30);
+            }
+            legenda.draw(0,0);
+        }
+        
+        ofFill();
+        ofSetColor(0, 255-brightness); // This line makes all black, even in the next line is commented :/
+        ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+        
+        if(bRotate){
+            ofPopMatrix();
+        }
+    renderFbo.end();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    if(bRotate){
-        ofPushMatrix();
-            ofTranslate(ofGetWidth(), ofGetHeight());
-            ofRotateDeg(180, 0, 0, 1);
-    }
-    
-    ofBackground(0);
-    if(busses[2] != 0){
-        ofSetColor(255, 0, 0, busses[2] * 255);
-        ofDrawRectangle(0, 0, width, height);
-    }
-    
-    ofSetColor(255);
-    v->display();
-    
-    switch(scene){
-        case scenes::Nothing:
-            break;
-        case scenes::Intro:
-            joniskHover();
-//            welcomTxt.draw(0,0);
-            break;
-        case scenes::JoniskBig:
-            images["Jonisk big"].draw(0,0);
-            break;
-        case scenes::Instructions:{
-            int imageID = busses[0];
-            ofPushMatrix();
-                ofTranslate(ofGetWindowSize() * 0.5);
-                if(imageID <= 6)
-                    instructions[imageID].draw(instructions[imageID].getWidth() * -0.5, instructions[imageID].getHeight() * -0.5);
-            ofPopMatrix();
-        }
-            break;
-        case scenes::Countdown:{
-            int count = busses[0];
-            if(count > 0){
-                ofRectangle r = countFont.getStringBoundingBox(ofToString((int)floor(count)), 0, 0);
-                countFont.drawString(ofToString((int)floor(count)), ofGetWidth()*0.5 - r.getWidth() * 0.5, ofGetHeight()*0.5 + r.getHeight() * 0.5);
+    switch(fboDisplayMode){
+        case 0:
+            ofBackground(0);
+            renderFbo.getTexture().bind();
+            mesh.draw();
+            renderFbo.getTexture().unbind();
+            if(bEditMode){
+                for(char i=0; i<4; i++)
+                    ofDrawCircle(meshVertices[i], 10);
             }
-        }
             break;
-        case scenes::Stars:
-            ofPushMatrix();
-            stars->display(brightness);
-            ofPopMatrix();
+        case 1: // Stretch
+            renderFbo.draw(0, 0);
             break;
-        case scenes::Route:{
-//            stars->display(brightness);
-//
-//            ofSetColor(0, 100);
-//            ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-//
-//            ofSetColor(255);
-//
-//            float widthRatio = ofGetWidth() / lineGray.getWidth();
-//            lineGray.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
-//            lineWhite.drawSubsection(0, 0, joniskRoutePos.x, HEIGHT, 0, 0);
-//            routeStartEnd.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
-//            planetNames.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
-//            planetsGray.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
-//
-////            joniskRoutePos
-//            ofPushMatrix();
-//            ofTranslate(joniskRoutePos);
-//            ofScale((sin(ofGetFrameNum() * 0.02) * 0.2) + 1.2);
-//            joniskRouteGlow.draw(glm::vec2(joniskRouteGlow.getWidth() * -0.5, joniskRouteGlow.getHeight() * -0.5));
-//            ofPopMatrix();
-//            joniskRoute.draw(joniskRoutePos - glm::vec2(joniskRoute.getWidth()*0.5, joniskRoute.getHeight() * 0.5));
-        }
+        case 2: //
+            cout << "Display mode not supported" << endl;
+//            fbo.draw(0, ofGetHeight() * 0.5 - (0.5 * (ofGetHeight() / (f.getWidth() / ofGetWidth()))), ofGetWidth(), ofGetHeight() / (f.getWidth() / ofGetWidth()));
             break;
-        case scenes::Commercial:{
-            if(commercial.isPlaying())
-                commercial.draw(0,0, ofGetWidth(), ofGetHeight());
-        }
-            break;
-        case scenes::Benzine:
-            images["Benzine"].draw(0,0);
-            ofPushMatrix();
-            ofPushStyle();
-                ofSetLineWidth(215);
-                ofTranslate(959, 705);
-                ofRotateDeg(180 + 17.5 + busses[0] + ofNoise((float)(ofGetFrameNum()/50.) * 10));
-                ofDrawLine(0, 0, 340, 0);
-            ofPopStyle();
-            ofPopMatrix();
-            break;
-        case scenes::ReturnToShip:{
-            int imgIndex = busses[0];
-            if(imgIndex < 4){
-                returnImages[imgIndex].draw(0,0, ofGetWidth(), ofGetHeight());
-            }
-        }
-            break;
-        case scenes::CaptainPicto:
-            images["Captain"].draw(0,0);
-            break;
-        case scenes::Waveform:{
-            ofSetColor(255);
-            ofSetLineWidth(3);
-            ofNoFill();
-            ofBeginShape();
-            for (unsigned int i = 0; i < waveForm.size(); i++){
-                ofVertex(
-                         (i*((float)ofGetWidth()/waveForm.size())),
-                         waveForm[i]
-                         );
-            }
-            ofEndShape(false);
-//            captainPicto.draw(0,0, ofGetWindowWidth() * 0.25, ofGetWindowHeight() * 0.25);
-        }
-            break;
-        case scenes::Scene::Bingo:
-            bingo->display((Bingo::DrawMode)busses[0]);
-            break;
-        case scenes::Code:{
-            ofPushMatrix();
-            ofTranslate(ofGetWindowSize()*0.5);
-            ofScale(1.4);
-            ofTranslate(ofGetWindowSize()*-0.5);
-            images["CodeTxt"].draw(0,0, width, height);
-            int m = 60; // margin
-            for(int i=0; i<4; i++){
-                ofPushMatrix();
-                ofTranslate(ofGetWidth()*0.5, ofGetHeight()*0.5 + 50);
-                ofTranslate(((images["Code Circle"].getWidth() + m)*0.5) + (i-2) * (images["Code Circle"].getWidth() + m), 0);
-                
-                if(busses[0]-1 >= i){
-                    ofPushMatrix();
-//                    ofScale(1.1);
-                    ofSetColor(255);
-                    images["Code Glow"].draw(images["Code Glow"].getWidth()*-0.5, images["Code Glow"].getHeight()*-0.5);
-//                    ofScale(1/1.1);
-                    ofPopMatrix();
-                    
-                    ofSetColor(38);
-                    ofDrawCircle(0,0,70);
-                    ofSetColor(255);
-                    ofDrawCircle(0,0,50);
-                    ofSetColor(0);
-                    string txt = ofToString(code[i]);
-                    codeFont.drawString(
-                                         txt,
-                                         codeFont.getStringBoundingBox(txt, 0, 0).getWidth()*-0.5,
-                                         codeFont.getStringBoundingBox(txt, 0, 0).getHeight()*0.5
-                                         );
-                } else{
-                    ofSetColor(255);
-                    ofRotateDeg(ofGetFrameNum()*0.2);
-                    images["Code Circle"].draw(images["Code Circle"].getWidth()*-0.5, images["Code Circle"].getHeight()*-0.5);
-                }
-                ofPopMatrix();
-            }
-            ofPopMatrix();
-        }
-            break;
-        case scenes::Autopilot:{
-            ofSetColor(255); ofFill();
-            ofDrawRectangle(416, 536, (busses[1]/100.)*(866-416), ofGetHeight());
-            images["Autopilot"].draw(0,0, ofGetWidth(), ofGetHeight());
-            joniskHover();
-            string txt = "Starten automatische piloot...";
-            ofRectangle r = autoPilotFont.getStringBoundingBox(txt, 0, 0);
-            autoPilotFont.drawString(txt, ofGetWidth() * 0.5 - (r.getWidth()*0.5), ofGetHeight() * 0.625);
-            if(busses[0] <= 10){
-                string str = " " + ofToString((int)busses[1]) + "%";
-//                ofRectangle box = autoPilotFont.getStringBoundingBox(str, 0, 0);
-                autoPilotFont.drawString(str, ofGetWidth() * 0.5 - 20, ofGetHeight() * 0.85);
-            } else{
-                string str = ofToString((int)busses[0]) + "%";
-                autoPilotFont.drawString(ofToString((int)busses[1]) + "%", ofGetWidth() * 0.5 - 20, ofGetHeight() * 0.85);
-            }
-        }
-            break;
-    }
-    
-    if(bVluchtInfo){ // Overlay
-        vector<string> names = {"Hoogte", "Snelheid", "Buitentemperatuur"};
-        vector<string> units = {" km", " ziljard km/u", "°C"};
-        vector<string> values = {ofToString(flightInfo.height), ofToString(flightInfo.speed), ofToString(flightInfo.temp)};
-        for(int i=0; i<3; i++){
-            helveticaBold.drawString(names[i], 120 + (i*300), ofGetWindowHeight() - 70);
-            helveticaRegular.drawString(values[i] + units[i], 120 + (i*300), ofGetWindowHeight() - 30);
-        }
-        legenda.draw(0,0);
-    }
-    
-    ofFill();
-    ofSetColor(0, 255-brightness); // This line makes all black, even in the next line is commented :/
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-    
-    if(bRotate){
-        ofPopMatrix();
     }
 }
 
@@ -398,12 +425,43 @@ void ofApp::keyPressed(int key){
         case 'f':
             ofSetFullscreen(true);
             break;
+        case 'q':
+            fboDisplayMode = 0;
+            break;
+        case 'w':
+            fboDisplayMode = 1;
+            break;
+        case 'e':
+            fboDisplayMode = 2;
+            break;
+        case 'a':
+            bEditMode = !bEditMode;
+            break;
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     cout << x << " " << y << endl;
+    if(bEditMode){
+        unsigned char indexOfClosest = 0;
+        float minDistance = 99999999;
+        for(char i=0; i<4; i++){
+            if(ofVec2f(x, y).distance(meshVertices[i]) < minDistance){
+                minDistance = ofVec2f(x, y).distance(meshVertices[i]);
+                indexOfClosest = i;
+            }
+        }
+        cout << "Selected: " << (int)indexOfClosest << endl;
+        meshVertices[indexOfClosest] = glm::vec3(x, y, 0);
+        mesh.clear();
+        mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+
+        for(char i=0; i<4; i++){
+            mesh.addTexCoord(texCoords[i]);
+            mesh.addVertex(meshVertices[i]);
+        }
+    }
 }
 
 
@@ -423,4 +481,15 @@ void ofApp::joniskHover(){
         ofSetColor(255);
         images["Intro Jonisk"].draw(0,0, width, height);
     ofPopMatrix();
+}
+
+void ofApp::initMesh(){
+    mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+    texCoords = {glm::vec2(0,0), glm::vec2(width, 0), glm::vec2(width, height), glm::vec2(0, height)};
+    meshVertices = {glm::vec3(0, 0, 0), glm::vec3(width, 0, 0), glm::vec3(width, height, 0), glm::vec3(0, height, 0)};
+    for(char i=0; i<4; i++){
+//        mesh.addTexCoord(texCoords[i] + glm::vec2(size.x, 0)); // Center piece
+        mesh.addTexCoord(texCoords[i]); // Center piece
+        mesh.addVertex(meshVertices[i]);
+    }
 }

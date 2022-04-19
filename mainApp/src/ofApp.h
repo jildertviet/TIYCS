@@ -115,4 +115,12 @@ class ofApp : public ofBaseApp{
 #else
     bool bRotate = false;
 #endif
+    
+    bool bEditMode = false;
+    char fboDisplayMode = 1;
+    vector<glm::vec3> meshVertices;
+    vector<glm::vec2> texCoords;
+    ofMesh mesh;
+    void initMesh();
+    ofFbo renderFbo;
 };
