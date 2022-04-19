@@ -36,31 +36,34 @@ void Star::setLoc(glm::vec3 loc, bool bSetOrigin){
 void Star::translate(glm::vec3 t){
     locToDraw = loc;
     locToDraw += t;
-    locToDraw.x = (int)locToDraw.x % 1280;
-    locToDraw.y = (int)locToDraw.y % 800;
-    
-    if(locToDraw.z >= 1000){
-        locToDraw.z = locToDraw.z - 2000;
-    }
+    locToDraw.x = (int)locToDraw.x % (ofGetWidth() * 3); // numScreens ...
+    locToDraw.y = (int)locToDraw.y % ofGetHeight();
+    locToDraw.z = ((int)locToDraw.z % 2000) - 1000;
+//    if(locToDraw.z >= 1000){
+//        locToDraw.z = locToDraw.z - 2000;
+//    }
 }
 
-
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------||
 Stars::Stars(glm::vec2 size, string prefix){
     planet.load(prefix + "planet.png");
 
-    for(int i=0; i<100; i++){
-        stars.push_back(new Star());
-        stars.back()->setLoc(
-                            glm::vec3(
-                                      ofGetWidth() * ofRandom(-1, 2), // Left screen, mid screen, right screen. This will be set from SC eventually
-                                      ofRandom(ofGetHeight()),
-                                      ofRandom(-500, 500)
-//                                      0, 0,
-//                                      100
-                                      ),
-                             true
-                             );
-    }
+//    for(int i=0; i<3; i++){ // Happens in main.cpp
+//        stars.push_back(new Star());
+//        stars.back()->setLoc(
+//                            glm::vec3(
+//                                      ofGetWidth() * ofRandom(1), // Left screen, mid screen, right screen. This will be set from SC eventually
+////                                      ofGetWidth()*i,
+//                                      i*10,
+////                                      ofRandom(ofGetHeight()),
+////                                      ofRandom(-500, 500)
+//                                      0
+////                                      0, 0,
+////                                      100
+//                                      ),
+//                             true
+//                             );
+//    }
     
 //    for(int x=0; x<10; x++){
 //        for(int y=0; y<10; y++){
@@ -78,21 +81,16 @@ Stars::Stars(glm::vec2 size, string prefix){
 //    bloom->setEnabled(true);
     
     this->size = size;
-//    starsFbo.allocate(size.x, size.y, GL_RGB); // Memory issue @ RBP?
+    starsFbo.allocate(size.x, size.y, GL_RGB); // Memory issue @ RBP?
     
 }
 
 void Stars::update(glm::vec3 t){
+    t.x += ofGetWidth() * (*hOffset);
     for(int i=0; i<stars.size(); i++){
         stars[i]->translate(t);
 //        stars[i]->update(*travelSpeed);
     }
-}
-
-void Stars::display(float brightness){
-    ofPushMatrix();
-    ofTranslate(0, ofGetHeight() * (*height));
-
     
     starsFbo.begin();
     ofClear(0);
@@ -103,16 +101,21 @@ void Stars::display(float brightness){
     for(int i=0; i<stars.size(); i++){
         stars[i]->display();
     }
-    ofSetColor(0, pow(1-((*height) / 2), 0.5) * 200);
+    ofSetColor(0, pow(1-((*height) / 2), 0.5) * 200); // Black fade when lowering
     ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    
 //    post.end();
     starsFbo.end();
-    
+}
+
+void Stars::display(float brightness){
+    ofPushMatrix();
+
+    ofTranslate(0, ofGetHeight() * (*height));
     
     ofSetColor(255, brightness);
-    starsFbo.draw(0, ofGetHeight()*-2);
+    starsFbo.draw(0, ofGetHeight() * -2);
 
-    cout << ofGetHeight() - planet.getHeight() << endl;
-    planet.draw(0,ofGetHeight() - planet.getHeight());
+    planet.draw(ofGetWidth() * (*hOffset), ofGetHeight() - planet.getHeight());
     ofPopMatrix;
 }

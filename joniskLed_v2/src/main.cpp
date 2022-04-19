@@ -13,6 +13,7 @@
 
 unsigned char values[4] = {0, 0, 0, 0};
 uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+uint8_t myAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY, DEEP_SLEEP};
 Mode mode = NOLAG;
@@ -71,6 +72,7 @@ void setup() {
   delay(200);
   WiFi.softAP("TIYCS", "nonsense", 1, true);
   Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress());
+  WiFi.softAPmacAddress(myAddr);
 
   initESPNow();
   Serial.println("Register callback");
@@ -83,6 +85,8 @@ void setup() {
 
   pinMode(34, INPUT);
   pinMode(14, INPUT);
+  pinMode(15, INPUT_PULLUP);
+  pinMode(2, INPUT_PULLUP); // Fix for board that has pin2 shorted to 15...
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
 

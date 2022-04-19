@@ -1,30 +1,23 @@
 #include "ofApp.h"
 
-#define WIDTH   1280
-#define HEIGHT  800
 // Width an height are also set in main.cpp
 
 string prefix = "1280/";
 
-#ifdef  TARGET_RASPBERRY_PI
-    bool bRotate = true;
-#else
-    bool bRotate = false;
-#endif
-
 //--------------------------------------------------------------
 void ofApp::setup(){
-    scene = scenes::Nothing;
+    scene = scenes::Stars;
     ofSetFrameRate(30);
-    ofSetWindowShape(WIDTH, HEIGHT);
+    ofSetWindowShape(width, height);
     
     memset(busses, 0, sizeof(float)*NUM_BUSSES); // Set busses to 0.
     
     bingo = new Bingo();
     
-    stars = new Stars(glm::vec2(WIDTH, HEIGHT), prefix);
+    stars = new Stars(glm::vec2(width, height), prefix);
     stars->height = &busses[0];
     stars->travelSpeed = &busses[1];
+    stars->hOffset = &busses[6];
     
     // IMAGES
     images["Intro Jonisk"] =    ofImage(prefix + "joniskLayer.png");
@@ -88,7 +81,7 @@ void ofApp::setup(){
     ofHideCursor();
 #endif
     
-    v = new ofxJVisuals(glm::vec2(WIDTH, HEIGHT));
+    v = new ofxJVisuals(glm::vec2(width, height));
     receiver.setup(PORT + portNumAdd);
 }
 //
@@ -136,7 +129,7 @@ void ofApp::draw(){
     ofBackground(0);
     if(busses[2] != 0){
         ofSetColor(255, 0, 0, busses[2] * 255);
-        ofDrawRectangle(0, 0, WIDTH, HEIGHT);
+        ofDrawRectangle(0, 0, width, height);
     }
     
     ofSetColor(255);
@@ -171,7 +164,6 @@ void ofApp::draw(){
             break;
         case scenes::Stars:
             ofPushMatrix();
-            ofTranslate(busses[2], 0);
             stars->display(brightness);
             ofPopMatrix();
             break;
@@ -248,7 +240,7 @@ void ofApp::draw(){
             ofTranslate(ofGetWindowSize()*0.5);
             ofScale(1.4);
             ofTranslate(ofGetWindowSize()*-0.5);
-            images["CodeTxt"].draw(0,0, WIDTH, HEIGHT);
+            images["CodeTxt"].draw(0,0, width, height);
             int m = 60; // margin
             for(int i=0; i<4; i++){
                 ofPushMatrix();
@@ -426,9 +418,9 @@ void ofApp::joniskHover(){
             ofPushMatrix(); // Note: the zoom is not fixed to jonisk center
                 ofTranslate(ofGetWidth()*0.5, ofGetHeight()*0.25);
                 ofScale(sin(ofGetFrameNum()/50.) * (0.1 * 1.) + 1.);
-                images["Intro gradient"].draw(-ofGetWidth()*0.5, -ofGetHeight()*0.25, WIDTH, HEIGHT);
+                images["Intro gradient"].draw(-ofGetWidth()*0.5, -ofGetHeight()*0.25, width, height);
             ofPopMatrix();
         ofSetColor(255);
-        images["Intro Jonisk"].draw(0,0, WIDTH, HEIGHT);
+        images["Intro Jonisk"].draw(0,0, width, height);
     ofPopMatrix();
 }

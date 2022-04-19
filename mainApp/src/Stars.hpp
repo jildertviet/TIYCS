@@ -35,6 +35,7 @@ public:
     void display(float brightness=255);
 
     float* height;
+    float* hOffset;
     float* travelSpeed;
     
 //    ofxPostProcessing post;

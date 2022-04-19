@@ -1,7 +1,8 @@
 esp_now_peer_info_t slave;
 
-void initESPNow() {
-  WiFi.disconnect();
+void initESPNow(bool bDisconnect = true) {
+  if(bDisconnect )
+    WiFi.disconnect();
   if (esp_now_init() == ESP_OK) {
     Serial.println("ESPNow Init Success");
   } else {

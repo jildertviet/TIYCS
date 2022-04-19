@@ -57,6 +57,7 @@ class ofApp : public ofBaseApp{
 		void mousePressed(int x, int y, int button);
 		void windowResized(int w, int h);
     
+    int width, height;
     ofxOscReceiver receiver;
     int portNumAdd = 0;
     float busses[NUM_BUSSES];
@@ -108,4 +109,10 @@ class ofApp : public ofBaseApp{
     Stars* stars;
 
     ofxJVisuals* v;
+    
+#ifdef  TARGET_RASPBERRY_PI
+    bool bRotate = true;
+#else
+    bool bRotate = false;
+#endif
 };

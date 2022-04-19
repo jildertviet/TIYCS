@@ -16,15 +16,28 @@ const uint8_t mac[NUM][6] = {
 
 const uint8_t numBeams = 8;
 const uint8_t pixelsPerBeam = 60;
-float beamSpacing = 3;
+uint8_t noise[8][60];
 
 static uint16_t xPos;
 static uint16_t yPos;
 static uint16_t z;
 
-uint16_t speed = 3;
-uint16_t scale = 6;
-uint8_t noise[8][60];
+uint16_t speed = 5;
+uint16_t scale = 20;
+float beamSpacing = 3;
+
+float lineQ = 1.0;;
+float phaseOffset = 0;
+float phaseScale = 2.0;
+float stepSize = 0.01;
+float actualPhase = 0.0;
+
+enum Mode{
+  NOISE,
+  LINE
+};
+
+int mode = Mode::LINE;
 
 void setup() {
   Serial.begin(115200);
@@ -39,10 +52,12 @@ void setup() {
     Serial.println("Connection Failed! Go to normal state...");
 //    ESP.restart();
   }
+  Serial.print("WiFi connected, IP = ");
+  Serial.println(WiFi.localIP());
   
   Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
 
-  initESPNow();
+  initESPNow(false);
   slave.channel = CHANNEL;
   slave.encrypt = 0;
   for(char i=0; i<NUM; i++){
@@ -56,7 +71,9 @@ void setup() {
   unsigned char msg2[4] = {0x06,0x01, 0x01, 0x01};
   esp_now_send(mac[0], msg2, 4);
 
-  OscWiFi.subscribe(PORT, "/setNoiseValues", beamSpacing, scale, speed);
+  OscWiFi.subscribe(PORT, "/setValues/noise", beamSpacing, scale, speed);
+  OscWiFi.subscribe(PORT, "/setValues/line", phaseOffset, lineQ, phaseScale, stepSize);
+  OscWiFi.subscribe(PORT, "/setMode", mode);
 }
 
 void fillnoise8() {
@@ -71,8 +88,43 @@ void fillnoise8() {
   z += speed;
 }
 
+void fillLine(){
+  if(stepSize == -1){
+    actualPhase = phaseOffset;
+  }
+  if(abs(actualPhase - phaseOffset) > stepSize*1.5){
+    if(actualPhase < phaseOffset){
+      actualPhase += stepSize; 
+    } else if(actualPhase > phaseOffset){
+      actualPhase -= stepSize; 
+    }
+  }
+  
+  for(int x=0; x<numBeams; x++) {
+    for(int y = 0; y< pixelsPerBeam; y++) {
+      float phase = ((1./pixelsPerBeam) * y) * TWO_PI;
+      phase += actualPhase; // Lag to this value
+      float val = cos(phase * phaseScale) * 0.5 + 0.5;
+      val = 1.0 - val;
+      val = pow(val, lineQ);
+      val *= 255;
+      noise[x][y] = (char)val;  
+    }
+  }
+}
+
 void loop() {
-  fillnoise8();
+  OscWiFi.update();
+
+  switch(mode){
+    case NOISE:
+      fillnoise8();
+    break;
+    case LINE:
+      fillLine();
+    break;
+  }
+  
 
   for(int h=0; h<2; h++){
     int dataLen = pixelsPerBeam * 4 + 1;
