@@ -39,20 +39,21 @@ int main(int argc, char *argv[]){
     ofRunMainLoop();
 #else
     
-    vector<Star*> stars;
-    for(int i=0; i<300; i++){
-        stars.push_back(new Star());
-        stars.back()->setLoc(
-                            glm::vec3(
-                                      width * ofRandom(3), // Left screen, mid screen, right screen. This will be set from SC eventually
-                                      ofRandom(height),
-                                      ofRandom(-1000, 1000)
-                                      ),
-                             true
-                             );
-    }
-    
     for(int i=0; i<numWindows; i++){
+        vector<Star*> stars;
+        for(int i=0; i<100; i++){
+            stars.push_back(new Star());
+            stars.back()->setLoc(
+                                glm::vec3(
+                                          width * ofRandom(-1,2), // Left screen, mid screen, right screen. This will be set from SC eventually
+                                          height * ofRandom(-1,2),
+                                          ofRandom(-3000, 1000)
+//                                          -3000
+                                          ),
+                                 true
+                                 );
+        }
+        
         ofGLFWWindowSettings settings;
 
         settings.setSize(width, height);
@@ -65,7 +66,8 @@ int main(int argc, char *argv[]){
         mainApp->width = width;
         mainApp->height = height;
         mainApp->bRotate = bRotate;
-        
+        mainApp->windowScale = windowScale;
+
         ofRunApp(window, mainApp); // This calls setup() ?
         
         mainApp->stars->stars.clear();

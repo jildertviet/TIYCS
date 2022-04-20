@@ -1,16 +1,15 @@
 #include "ofApp.h"
 
-// Width an height are also set in main.cpp
-
 string prefix = "1280/";
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     scene = scenes::Stars;
-    ofSetFrameRate(30);
+    ofSetFrameRate(60);
     ofSetWindowShape(width, height);
     renderFbo.allocate(width, height);
     initMesh();
+    seed = ofRandom(TWO_PI);
     
     memset(busses, 0, sizeof(float)*NUM_BUSSES); // Set busses to 0.
     
@@ -31,6 +30,7 @@ void ofApp::setup(){
     images["Code Glow"] =       ofImage(prefix +"codeGlow2.png");
     images["Autopilot"] =       ofImage(prefix + "loading.png");
     images["Captain"] =         ofImage(prefix + "captainPicto.png");
+    images["Welcome"] =         ofImage(prefix + "welkomTxt.png");
 
     for(int i=0; i<7; i++){
         instructions[i].load(prefix + "instructions/" + ofToString(i) + ".png");
@@ -39,13 +39,27 @@ void ofApp::setup(){
         returnImages[i].load(prefix + "return/" + ofToString(i) + ".png");
     }
     
+    if(windowScale != 1){
+        auto iter = images.begin();
+        while (iter != images.end()) {
+            cout << iter->second.getWidth() << endl;;
+            iter->second.resize(iter->second.getWidth() * windowScale, iter->second.getHeight() * windowScale);
+            ++iter;
+        }
+        
+        for(int i=0; i<7; i++)
+            instructions[i].resize(instructions[i].getWidth() * windowScale, instructions[i].getHeight() * windowScale);
+        for(int i=0; i<4; i++)
+            returnImages[i].resize(returnImages[i].getWidth() * windowScale, returnImages[i].getHeight() * windowScale);
+    }
+    
     // FONTS
     ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 100px");
     countFont.load("fonts/Helvetica-Bold.ttf", 100);
     ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 60px");
     codeFont.load("fonts/Helvetica-Bold.ttf", 60);
     
-    // CRASH
+    // CRASH @ RBP
 //    ofLog(OF_LOG_NOTICE, "Loading Geneva Normal, 36px");
 //    autoPilotFont.load("fonts/Geneva Normal.ttf", 36);
     
@@ -119,9 +133,6 @@ void ofApp::update(){
     
     joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * routePct + start;
     
-    
-    
-    
     renderFbo.begin();
         if(bRotate){
             ofPushMatrix();
@@ -142,19 +153,34 @@ void ofApp::update(){
             case scenes::Nothing:
                 break;
             case scenes::Intro:
-                joniskHover();
-    //            welcomTxt.draw(0,0);
+            {
+                ofPushMatrix();
+                ofTranslate(ofGetWidth()*0.5, 0);
+                ofRotateYDeg(busses[1]);
+                ofTranslate(ofGetWidth()*-0.5, 0);
+                if(busses[1] > 90){
+                    images["Welcome"].draw(0,0);
+                } else{
+                    joniskHover();
+                }
+                ofPopMatrix();
+            }
                 break;
             case scenes::JoniskBig:
                 images["Jonisk big"].draw(0,0);
                 break;
             case scenes::Instructions:{
-                int imageID = busses[0];
-                ofPushMatrix();
-                    ofTranslate(ofGetWindowSize() * 0.5);
-                    if(imageID <= 6)
-                        instructions[imageID].draw(instructions[imageID].getWidth() * -0.5, instructions[imageID].getHeight() * -0.5);
-                ofPopMatrix();
+//                int imageID = busses[0];
+                for(int i=0; i<7; i++){
+                    ofPushMatrix();
+                    ofTranslate(0, (instructions[0].getHeight()) * (i - busses[0]));
+                        ofPushMatrix();
+                            ofTranslate(ofGetWindowSize() * 0.5);
+                            if(i <= 6)
+                                instructions[i].draw(instructions[i].getWidth() * -0.5, instructions[i].getHeight() * -0.5);
+                        ofPopMatrix();
+                    ofPopMatrix();
+                }
             }
                 break;
             case scenes::Countdown:{
@@ -199,16 +225,27 @@ void ofApp::update(){
                     commercial.draw(0,0, ofGetWidth(), ofGetHeight());
             }
                 break;
-            case scenes::Benzine:
-                images["Benzine"].draw(0,0);
-                ofPushMatrix();
-                ofPushStyle();
-                    ofSetLineWidth(215);
-                    ofTranslate(959, 705);
-                    ofRotateDeg(180 + 17.5 + busses[0] + ofNoise((float)(ofGetFrameNum()/50.) * 10));
-                    ofDrawLine(0, 0, 340, 0);
-                ofPopStyle();
-                ofPopMatrix();
+            case scenes::Benzine:{
+                float h = ofGetHeight() * (busses[4]/100.);
+                h *= 0.5;
+                ofSetColor(255, 0, 0, busses[5]);
+                ofDrawRectangle(0, ofGetHeight() * 0.5, ofGetWidth(), h);
+                ofDrawRectangle(0, ofGetHeight() * 0.5 - (h), ofGetWidth(), h);
+                if(busses[3] == 255){
+                    ofSetColor(255);
+                    images["Benzine"].draw(0,0);
+                    ofPushMatrix();
+                    ofPushStyle();
+                        ofSetLineWidth(10 * windowScale);
+                        ofTranslate(ofGetWidth() * 0.5, ofGetHeight() * 0.655);
+                        float noiseRange = ofMap(busses[0], 0, 145, 1, 0.05);
+                        noiseRange *= 30;
+                        ofRotateDeg(180 + 17.5 + busses[0] + ((ofNoise((float)(ofGetFrameNum()/50.)) * noiseRange)));
+                        ofDrawLine(0, 0, ofGetWidth() * 0.177, 0);
+                    ofPopStyle();
+                    ofPopMatrix();
+                }
+            }
                 break;
             case scenes::ReturnToShip:{
                 int imgIndex = busses[0];
@@ -470,7 +507,7 @@ void ofApp::windowResized(int w, int h){}
 
 void ofApp::joniskHover(){
     ofPushMatrix();
-        ofTranslate(0, pow(sin(ofGetFrameNum()/50.), 2.) * 30 * busses[0]);
+        ofTranslate(0, pow(sin(seed + ofGetFrameNum()/50.), 2.) * 30 * busses[0]);
         
         ofSetColor(255);
             ofPushMatrix(); // Note: the zoom is not fixed to jonisk center

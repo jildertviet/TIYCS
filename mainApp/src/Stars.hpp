@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "ofMain.h"
+#include "ofxPostProcessing.h"
 
 class Star{
 public:
@@ -21,6 +22,7 @@ public:
     glm::vec3 originalLoc;
     void setLoc(glm::vec3 loc, bool bSetOrigin = false);
     void translate(glm::vec3 t);
+    ofColor color;
 private:
     glm::vec3 loc;
     glm::vec3 locToDraw;
@@ -38,8 +40,9 @@ public:
     float* hOffset;
     float* travelSpeed;
     
-//    ofxPostProcessing post;
-//    BloomPass::Ptr bloom;
+    ofxPostProcessing post;
+    BloomPass::Ptr bloom;
+    KaleidoscopePass::Ptr kaleidoscope;
     
     vector<Star*> stars;
     void initStars();

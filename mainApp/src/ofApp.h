@@ -104,6 +104,7 @@ class ofApp : public ofBaseApp{
     int code[4] = {4, 5, 9, 3};
     
     void joniskHover();
+    float seed = 0;
     
     Bingo* bingo;
     Stars* stars;
@@ -123,4 +124,5 @@ class ofApp : public ofBaseApp{
     ofMesh mesh;
     void initMesh();
     ofFbo renderFbo;
+    float windowScale = 1;
 };
