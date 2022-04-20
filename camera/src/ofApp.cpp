@@ -2,15 +2,13 @@
 
 void ofApp::setup(){
     ofSetFrameRate(30);
-    grabber.setURI("http://192.168.178.124:8081");
+    grabber.setURI("http://192.168.1.101:8081");
     grabber.connect();
 }
-
 
 void ofApp::update(){
     grabber.update();
 }
-
 
 void ofApp::draw(){
     ofSetColor(255);
