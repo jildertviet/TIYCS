@@ -90,6 +90,7 @@ class ofApp : public ofBaseApp{
 #else
     ofVideoPlayer commercial;
 #endif
+    bool bMuteAudio = true;
     
     vector<float> waveForm;
     

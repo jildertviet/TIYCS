@@ -30,3 +30,5 @@ hardware/**/*.zip
 *.mp4
 /bin/exampleSimple
 *.DS_Store
+*.plist
+camera/Makefile

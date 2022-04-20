@@ -67,6 +67,8 @@ int main(int argc, char *argv[]){
         mainApp->height = height;
         mainApp->bRotate = bRotate;
         mainApp->windowScale = windowScale;
+        if(i==0)
+            mainApp->bMuteAudio = false;
 
         ofRunApp(window, mainApp); // This calls setup() ?
         

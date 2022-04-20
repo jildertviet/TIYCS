@@ -401,6 +401,7 @@ void ofApp::processMsg(ofxOscMessage &m){
                 commercial.load(prefix + "commercial/" + ofToString(movieID) + ".mp4");
                 commercial.setLoopState(ofLoopType::OF_LOOP_NONE);
                 commercial.play();
+                commercial.setVolume(1-bMuteAudio); // True gives 1-1: 0, so it's muted
 #endif
 
                 if(movieID == -1){
@@ -446,8 +447,13 @@ void ofApp::processMsg(ofxOscMessage &m){
         id = m.getArgAsInt(0);
     } else if(m.getAddress() == "/setWave"){
         waveForm.clear();
-        for(int i=0; i<m.getNumArgs(); i++){
-            waveForm.push_back(m.getArgAsFloat(i));
+        ofBuffer b = m.getArgAsBlob(0);
+        cout << b.size() << endl;
+        double data[b.size() / 8]; // 3200 bytes = 400 doubles
+        memcpy(data, b.getData(), b.size()); // Needs 3200 bytes
+        for(int i=0; i<b.size() / 8; i++){
+            waveForm.push_back((float)data[i] * ofGetHeight()*0.5 + (ofGetHeight()*0.5));
+//            cout << data[i] << endl;
         }
     } else if(m.getAddress() == "/setBus"){
         if(m.getArgAsInt(0) < NUM_BUSSES){
