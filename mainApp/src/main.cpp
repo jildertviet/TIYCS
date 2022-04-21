@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
     int width = arguments.size() > 1 ? ofToInt(arguments[1]) : 1280;
     int height = arguments.size() > 2 ? ofToInt(arguments[2]) : 800;
     int numWindows = arguments.size() > 3 ? ofToInt(arguments[3]) : 3;
-    float windowScale = arguments.size() > 4 ? ofToInt(arguments[4]) : 1;
+    float windowScale = arguments.size() > 4 ? ofToInt(arguments[4]) : 0.5;
     bool bRotate = arguments.size() > 5 ? ofToInt(arguments[5]) : false;
     
     width *= windowScale;

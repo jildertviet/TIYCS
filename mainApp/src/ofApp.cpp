@@ -4,7 +4,7 @@ string prefix = "1280/";
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    scene = scenes::Stars;
+    scene = scenes::Test;
     ofSetFrameRate(60);
     ofSetWindowShape(width, height);
     renderFbo.allocate(width, height);
@@ -13,7 +13,8 @@ void ofApp::setup(){
     
     memset(busses, 0, sizeof(float)*NUM_BUSSES); // Set busses to 0.
     
-    bingo = new Bingo();
+    bingo = new Bingo(prefix);
+    bingo->numberScale = &busses[3];
     
     stars = new Stars(glm::vec2(width, height), prefix);
     stars->height = &busses[0];
@@ -35,7 +36,7 @@ void ofApp::setup(){
     for(int i=0; i<7; i++){
         instructions[i].load(prefix + "instructions/" + ofToString(i) + ".png");
     }
-    for(int i=0; i<4; i++){
+    for(int i=0; i<8; i++){
         returnImages[i].load(prefix + "return/" + ofToString(i) + ".png");
     }
     
@@ -49,7 +50,7 @@ void ofApp::setup(){
         
         for(int i=0; i<7; i++)
             instructions[i].resize(instructions[i].getWidth() * windowScale, instructions[i].getHeight() * windowScale);
-        for(int i=0; i<4; i++)
+        for(int i=0; i<8; i++)
             returnImages[i].resize(returnImages[i].getWidth() * windowScale, returnImages[i].getHeight() * windowScale);
     }
     
@@ -249,7 +250,7 @@ void ofApp::update(){
                 break;
             case scenes::ReturnToShip:{
                 int imgIndex = busses[0];
-                if(imgIndex < 4){
+                if(imgIndex < 8 && imgIndex >= 0){
                     returnImages[imgIndex].draw(0,0, ofGetWidth(), ofGetHeight());
                 }
             }
@@ -332,6 +333,16 @@ void ofApp::update(){
                     string str = ofToString((int)busses[0]) + "%";
                     autoPilotFont.drawString(ofToString((int)busses[1]) + "%", ofGetWidth() * 0.5 - 20, ofGetHeight() * 0.85);
                 }
+            }
+                break;
+            case scenes::Test:{
+                ofFill(); ofSetColor(255);
+                ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+                float lineW = 20;
+                ofSetColor(0);
+                ofDrawRectangle(lineW, lineW, ofGetWidth() - lineW*2, ofGetHeight() - lineW*2);
+                ofSetColor(255);
+                ofDrawBitmapString(ofToString(portNumAdd), lineW*2, lineW*2);
             }
                 break;
         }

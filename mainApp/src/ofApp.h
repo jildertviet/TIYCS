@@ -38,6 +38,7 @@ namespace scenes{
         Autopilot, // 15, bus: 0 (autoPilotPct 0<>100)
         
         Nothing, // 16
+        Test, // 17
     };
 }
 

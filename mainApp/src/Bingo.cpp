@@ -8,15 +8,15 @@
 #include "Bingo.hpp"
 
 
-Bingo::Bingo(){
+Bingo::Bingo(string prefix){
     size = ofGetWindowSize();
     
-    bingoSwirl[0].load("bingo_swirl.png");
-    bingoSwirl[1].load("bingo_swirlMirror.png");
-    bingoBase.load("bingoWheel.png");
+    bingoSwirl[0].load(prefix + "bingo_swirl.png");
+    bingoSwirl[1].load(prefix + "bingo_swirlMirror.png");
+    bingoBase.load(prefix + "bingoWheel.png");
     
     ofLog(OF_LOG_NOTICE, "Loading Helvatica-Bold, 100px");
-    countFont.load("Helvetica-Bold.ttf", 100);
+    countFont.load("fonts/Helvetica-Bold.ttf", 100);
         
     box2d.init();
     box2d.setGravity(0, 10);
@@ -28,9 +28,11 @@ Bingo::Bingo(){
     edgeLine.setPhysics(0.0, 0.5, 0.5);
     edgeLine.create(box2d.getWorld());
     
+    scaling = prefix == "1280/" ? (1280./1920.) : 1;
+    glm::vec2 offset = prefix == "1280/" ? glm::vec2(0, 40) : glm::vec2(0);
+    glm::vec2 pos;
     for(int i=0; i<360; i++){ // Draw a circle as a container
-        glm::vec2 pos;
-        pos = (size*0.5) + glm::vec2(sin(ofDegToRad(i)), cos(ofDegToRad(i))) * 262;
+        pos = (size*0.5) + offset + glm::vec2(sin(ofDegToRad(i)), cos(ofDegToRad(i))) * (262 * scaling);
         drawing.addVertex(pos.x, pos.y);
     }
     drawing.setClosed(false);
@@ -43,7 +45,7 @@ Bingo::Bingo(){
         
     drawing.clear();
     
-    bingoFont.load("Geneva bold.ttf", 40);
+    bingoFont.load("fonts/Geneva bold.ttf", 40 * scaling);
     ofSetCircleResolution(64);
     
     reInit();
@@ -76,7 +78,7 @@ void Bingo::display(DrawMode mode){
         }
             break;
         case WHEEL:{
-            bingoBase.draw(0,0, size.x, size.y);
+            bingoBase.draw(0,(ofGetHeight() - size.y)*0.5); // Centered on Y-axis
             int i=0;
             for(auto &circle : circles) {
                 ofFill();
@@ -97,12 +99,17 @@ void Bingo::display(DrawMode mode){
             break;
         case NUMBER:{
             if(count >= 0){
+                ofPushMatrix();
+                ofTranslate(ofGetWindowSize()*0.5);
+                ofScale(*numberScale);
+                ofTranslate(ofGetWindowSize()*-0.5);
                 ofFill();
                 ofSetColor(255);
                 ofDrawCircle(ofGetWindowSize() * 0.5, ofGetWindowSize()[1] * 0.25);
                 ofSetColor(0);
                 ofRectangle r = countFont.getStringBoundingBox(ofToString((int)floor(count)), 0, 0);
                 countFont.drawString(ofToString((int)floor(count)), ofGetWidth()*0.5 - r.getWidth() * 0.5, ofGetHeight()*0.5 + r.getHeight() * 0.5);
+                ofPopMatrix();
             }
         }
             break;
@@ -124,6 +131,7 @@ void Bingo::display(DrawMode a, DrawMode b, DrawMode c){
 }
 
 void Bingo::removeBall(string name){
+    count = ofToInt(name);
     for(int i=0; i<circles.size(); i++){
         if(circles[i]->name == name){
             circles.erase(circles.begin() + i);
@@ -137,7 +145,7 @@ void Bingo::reInit(){
     for(int i=0; i<9; i++){ // Create balls
         auto circle = make_shared<ofxBox2dCircle>();
         circle->setPhysics(3.0, 0.53, 0.1);
-        circle->setup(box2d.getWorld(), (size.x*0.5) + ofRandom(-50, 50), (size.y*0.5) + ofRandom(-50, 50), 40);
+        circle->setup(box2d.getWorld(), (size.x*0.5) + ofRandom(-50, 50), (size.y*0.5) + ofRandom(-50, 50), 40 * scaling);
         circle->name = ofToString(i+1);
         circles.push_back(circle);
     }
