@@ -18,4 +18,5 @@ public:
     std::size_t cameraHeight = 480;
     
     bool showStats = false;
+    string ip = "192.168.1.101";
 };

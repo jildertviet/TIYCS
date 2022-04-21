@@ -25,3 +25,5 @@ x.free; x = {var input = CombC.ar(LPF.ar(SoundIn.ar(0), 10000), 0.2, 0.01, 1); R
 	}
 	}.fork;
 );
+
+x.free; ~sendVolume.stop;

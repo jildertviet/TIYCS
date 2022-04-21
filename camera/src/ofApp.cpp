@@ -2,7 +2,8 @@
 
 void ofApp::setup(){
     ofSetFrameRate(30);
-    grabber.setURI("http://192.168.1.101:8081");
+    string url = "http://" + ip + ":8081";
+    grabber.setURI(url);
     grabber.connect();
 }
 
@@ -44,4 +45,7 @@ void ofApp::draw(){
 
 void ofApp::keyPressed(int key){
     showStats = !showStats;
+    if(key == 'b'){
+        ofLaunchBrowser("http://" + ip);
+    }
 }
