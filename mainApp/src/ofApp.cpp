@@ -4,7 +4,7 @@ string prefix = "1280/";
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    scene = scenes::Test;
+    scene = scenes::Nothing;
     ofSetFrameRate(60);
     ofSetWindowShape(width, height);
     renderFbo.allocate(width, height);
@@ -77,22 +77,19 @@ void ofApp::setup(){
 //        commercial[i].setLoopState(ofLoopType::OF_LOOP_NONE);
 //#endif
     
-    /*
-    welcomTxt.load("welkomTxt.png");
-    
-    routeStartEnd.load("route/TXT Aarde _ Planet Bi_1920x1080.png");
-    lineGray.load("route/route dashed GRIJS_1920x1080.png");
-    planetsGray.load("route/tussenplaneten GRIJS_1920x1080.png");
-    legenda.load("route/legenda_1920x1080.png");
-    joniskRoute.load("route/jonisk_2.png");
-    joniskRouteGlow.load("route/jonisk_s Outer Glow_2.png");
-    lineWhite.load("route/route dashed WIT_1920x1080.png");
-    planetNames.load("route/TXT planeetnamen GRIJS_1920x1080.png");
-        
-    id = 0;
+    lineGray.load(prefix + "/route/route dashed GRIJS.png");
+    lineWhite.load(prefix + "/route/route dashed WIT.png");
+    routeStartEnd.load(prefix + "/route/TXT Aarde _ Planet Bi.png");
+    planetNames.load(prefix + "/route/TXT planeetnamen GRIJS.png");
+    planetsGray.load(prefix + "/route/tussenplaneten GRIJS.png");
 
-    dest = glm::vec2(714, 437);
-     */
+    //    legenda.load("route/legenda_1920x1080.png");
+    joniskRoute.load(prefix + "/route/jonisk_2.png"); // Is scaled to 1280 res
+    joniskRouteGlow.load(prefix + "/route/jonisk_s Outer Glow_2.png");
+
+    start = glm::vec2(307, 373) * windowScale;
+    dest = glm::vec2(473, 289) * windowScale;
+    
     
 #ifdef  TARGET_RASPBERRY_PI
     ofHideCursor();
@@ -132,8 +129,7 @@ void ofApp::update(){
             break;
     }
     
-    joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * routePct + start;
-    
+
     renderFbo.begin();
         if(bRotate){
             ofPushMatrix();
@@ -192,33 +188,35 @@ void ofApp::update(){
                 }
             }
                 break;
-            case scenes::Stars:
+            case scenes::Stars:{
                 ofPushMatrix();
                 stars->display(brightness);
                 ofPopMatrix();
-                break;
-            case scenes::Route:{
-    //            stars->display(brightness);
-    //
-    //            ofSetColor(0, 100);
-    //            ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-    //
-    //            ofSetColor(255);
-    //
-    //            float widthRatio = ofGetWidth() / lineGray.getWidth();
-    //            lineGray.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
-    //            lineWhite.drawSubsection(0, 0, joniskRoutePos.x, HEIGHT, 0, 0);
-    //            routeStartEnd.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
-    //            planetNames.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
-    //            planetsGray.draw(0,0, lineGray.getWidth() * (widthRatio), ofGetHeight());
-    //
-    ////            joniskRoutePos
-    //            ofPushMatrix();
-    //            ofTranslate(joniskRoutePos);
-    //            ofScale((sin(ofGetFrameNum() * 0.02) * 0.2) + 1.2);
-    //            joniskRouteGlow.draw(glm::vec2(joniskRouteGlow.getWidth() * -0.5, joniskRouteGlow.getHeight() * -0.5));
-    //            ofPopMatrix();
-    //            joniskRoute.draw(joniskRoutePos - glm::vec2(joniskRoute.getWidth()*0.5, joniskRoute.getHeight() * 0.5));
+                            
+                if(busses[8]){
+                    joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * busses[9] + start;
+        
+                    ofSetColor(0, 100 * busses[8]);
+                    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+
+                    ofSetColor(255, 255 * busses[8]);
+                    
+                    float widthRatio = ofGetWidth() / lineGray.getWidth();
+                    float h = lineGray.getHeight() * widthRatio;
+                    lineGray.draw(0,0, lineGray.getWidth() * (widthRatio), h);
+                    lineWhite.drawSubsection(0, 0, joniskRoutePos.x * widthRatio, h, 0, 0);
+                    
+                    routeStartEnd.draw(0,0, lineGray.getWidth() * (widthRatio), h);
+                    planetNames.draw(0,0, lineGray.getWidth() * (widthRatio), h);
+                    planetsGray.draw(0,0, lineGray.getWidth() * (widthRatio), h);
+        
+                    ofPushMatrix();
+                    ofTranslate(joniskRoutePos);
+                    ofScale((sin(ofGetFrameNum() * 0.02) * 0.2) + 1.2);
+                    joniskRouteGlow.draw(glm::vec2(joniskRouteGlow.getWidth() * -0.5, joniskRouteGlow.getHeight() * -0.5));
+                    ofPopMatrix();
+                    joniskRoute.draw(joniskRoutePos - glm::vec2(joniskRoute.getWidth()*0.5, joniskRoute.getHeight() * 0.5));
+                }
             }
                 break;
             case scenes::Commercial:{
