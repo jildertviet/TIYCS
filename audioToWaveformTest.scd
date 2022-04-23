@@ -29,3 +29,12 @@ x.free; x = {var input = CombC.ar(LPF.ar(SoundIn.ar(0), 10000), 0.2, 0.01, 1); R
 x.free; ~sendVolume.stop;
 
 // x = {inf.do{t.setBus(3, 0.5 + 1.0.rand, [0,2]); 0.1.wait}}.fork;
+(
+{
+	inf.do{
+
+		t.setBus(9,1.0.rand,1);
+		0.1.wait;
+	}
+}.fork;
+)

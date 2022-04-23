@@ -105,7 +105,7 @@ class ofApp : public ofBaseApp{
     
     int code[4] = {4, 5, 9, 3};
     
-    void joniskHover();
+    void joniskHover(bool bGradient = true);
     float seed = 0;
     
     Bingo* bingo;

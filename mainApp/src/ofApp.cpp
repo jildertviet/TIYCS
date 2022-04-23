@@ -61,8 +61,8 @@ void ofApp::setup(){
     codeFont.load("fonts/Helvetica-Bold.ttf", 60);
     
     // CRASH @ RBP
-//    ofLog(OF_LOG_NOTICE, "Loading Geneva Normal, 36px");
-//    autoPilotFont.load("fonts/Geneva Normal.ttf", 36);
+    ofLog(OF_LOG_NOTICE, "Loading Geneva Normal, 36px");
+    autoPilotFont.load("fonts/Geneva Normal.ttf", 36);
     
 //    helveticaBold.load("Helvetica-Bold.ttf", 22); // Overlay
 //    helveticaRegular.load("Helvetica.ttf", 22);
@@ -317,9 +317,13 @@ void ofApp::update(){
                 break;
             case scenes::Autopilot:{
                 ofSetColor(255); ofFill();
-                ofDrawRectangle(416, 536, (busses[1]/100.)*(866-416), ofGetHeight());
+                if(prefix == "1280/"){
+                    ofDrawRectangle(389, 536 * 0.666, (busses[1]/100.)*(889-389), ofGetHeight()); // 66%
+                } else{
+                    ofDrawRectangle(416, 536, (busses[1]/100.)*(866-416), ofGetHeight());
+                }
                 images["Autopilot"].draw(0,0, ofGetWidth(), ofGetHeight());
-                joniskHover();
+                joniskHover(false);
                 string txt = "Starten automatische piloot...";
                 ofRectangle r = autoPilotFont.getStringBoundingBox(txt, 0, 0);
                 autoPilotFont.drawString(txt, ofGetWidth() * 0.5 - (r.getWidth()*0.5), ofGetHeight() * 0.625);
@@ -520,7 +524,7 @@ void ofApp::mousePressed(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){}
 
-void ofApp::joniskHover(){
+void ofApp::joniskHover(bool bGradient){
     ofPushMatrix();
         ofTranslate(0, pow(sin(seed + ofGetFrameNum()/50.), 2.) * 30 * busses[0]);
         
@@ -528,7 +532,8 @@ void ofApp::joniskHover(){
             ofPushMatrix(); // Note: the zoom is not fixed to jonisk center
                 ofTranslate(ofGetWidth()*0.5, ofGetHeight()*0.25);
                 ofScale(sin(ofGetFrameNum()/50.) * (0.1 * 1.) + 1.);
-                images["Intro gradient"].draw(-ofGetWidth()*0.5, -ofGetHeight()*0.25, width, height);
+                if(bGradient)
+                    images["Intro gradient"].draw(-ofGetWidth()*0.5, -ofGetHeight()*0.25, width, height);
             ofPopMatrix();
         ofSetColor(255);
         images["Intro Jonisk"].draw(0,0, width, height);
