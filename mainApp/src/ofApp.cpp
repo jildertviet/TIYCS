@@ -20,6 +20,7 @@ void ofApp::setup(){
     stars->height = &busses[0];
     stars->travelSpeed = &busses[1];
     stars->hOffset = &busses[6];
+    stars->planetID = &busses[7];
     
     // IMAGES
     images["Intro Jonisk"] =    ofImage(prefix + "joniskLayer.png");
@@ -33,7 +34,7 @@ void ofApp::setup(){
     images["Captain"] =         ofImage(prefix + "captainPicto.png");
     images["Welcome"] =         ofImage(prefix + "welkomTxt.png");
 
-    for(int i=0; i<7; i++){
+    for(int i=0; i<NUM_INSTRUCTIONS; i++){
         instructions[i].load(prefix + "instructions/" + ofToString(i) + ".png");
     }
     for(int i=0; i<8; i++){
@@ -48,9 +49,9 @@ void ofApp::setup(){
             ++iter;
         }
         
-        for(int i=0; i<7; i++)
+        for(int i=0; i<NUM_INSTRUCTIONS; i++)
             instructions[i].resize(instructions[i].getWidth() * windowScale, instructions[i].getHeight() * windowScale);
-        for(int i=0; i<8; i++)
+        for(int i=0; i<NUM_RETURNIMAGES; i++)
             returnImages[i].resize(returnImages[i].getWidth() * windowScale, returnImages[i].getHeight() * windowScale);
     }
     
@@ -168,12 +169,12 @@ void ofApp::update(){
                 break;
             case scenes::Instructions:{
 //                int imageID = busses[0];
-                for(int i=0; i<7; i++){
+                for(int i=0; i<NUM_INSTRUCTIONS; i++){
                     ofPushMatrix();
                     ofTranslate(0, (instructions[0].getHeight()) * (i - busses[0]));
                         ofPushMatrix();
                             ofTranslate(ofGetWindowSize() * 0.5);
-                            if(i <= 6)
+                            if(i <= (NUM_INSTRUCTIONS-1))
                                 instructions[i].draw(instructions[i].getWidth() * -0.5, instructions[i].getHeight() * -0.5);
                         ofPopMatrix();
                     ofPopMatrix();
@@ -220,8 +221,10 @@ void ofApp::update(){
             }
                 break;
             case scenes::Commercial:{
-                if(commercial.isPlaying())
-                    commercial.draw(0,0, ofGetWidth(), ofGetHeight());
+                if(commercial.isPlaying()){
+                    float scaledHeight = commercial.getHeight() * (ofGetWidth() / commercial.getWidth());
+                    commercial.draw(0,(ofGetHeight() - scaledHeight) * 0.5, ofGetWidth(), scaledHeight);
+                }
             }
                 break;
             case scenes::Benzine:{
@@ -248,7 +251,7 @@ void ofApp::update(){
                 break;
             case scenes::ReturnToShip:{
                 int imgIndex = busses[0];
-                if(imgIndex < 8 && imgIndex >= 0){
+                if(imgIndex < NUM_RETURNIMAGES && imgIndex >= 0){
                     returnImages[imgIndex].draw(0,0, ofGetWidth(), ofGetHeight());
                 }
             }
@@ -268,7 +271,11 @@ void ofApp::update(){
                              );
                 }
                 ofEndShape(false);
-    //            captainPicto.draw(0,0, ofGetWindowWidth() * 0.25, ofGetWindowHeight() * 0.25);
+                
+                if(busses[0]){
+                    ofSetColor(255, busses[0]);
+                    images["Captain"].draw(0,0);
+                }
             }
                 break;
             case scenes::Scene::Bingo:
@@ -367,6 +374,15 @@ void ofApp::update(){
         if(bRotate){
             ofPopMatrix();
         }
+        if(whiteFrame > 0){
+            whiteFrame--;
+            ofSetColor(255);
+            ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+        }
+        if(bBlack){
+            ofSetColor(0);
+            ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+        }
     renderFbo.end();
 }
 
@@ -454,6 +470,12 @@ void ofApp::processMsg(ofxOscMessage &m){
             case 15:
                 bingo->bRotateBingo = m.getArgAsBool(1);
                 bingo->rotStart = ofGetFrameNum();
+                break;
+            case 16:
+                whiteFrame = m.getArgAsInt(1);
+                break;
+            case 17:
+                bBlack = m.getArgAsBool(1);
                 break;
         }
     } else if (m.getAddress() == "/setId"){

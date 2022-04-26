@@ -12,6 +12,8 @@
 
 #define NUM_BUSSES  12
 #define PORT    5000
+#define NUM_INSTRUCTIONS    7
+#define NUM_RETURNIMAGES    8
 
 namespace scenes{
     enum Scene{
@@ -70,8 +72,8 @@ class ofApp : public ofBaseApp{
     
     ofImage welcomTxt;
     ofImage captainPicto;
-    ofImage instructions[7];
-    ofImage returnImages[4];
+    ofImage instructions[NUM_INSTRUCTIONS];
+    ofImage returnImages[NUM_RETURNIMAGES];
     
     ofImage routeStartEnd, lineGray, planetsGray, legenda, planetNames;
     ofImage joniskRoute, joniskRouteGlow;
@@ -126,5 +128,8 @@ class ofApp : public ofBaseApp{
     ofMesh mesh;
     void initMesh();
     ofFbo renderFbo;
-    float windowScale = 1;
+    float windowScale = 1.0;
+    
+    int whiteFrame = 0;
+    bool bBlack = false;
 };

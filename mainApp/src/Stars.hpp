@@ -48,7 +48,8 @@ public:
     void initStars();
     void drawStars();
     ofFbo starsFbo;
-    ofImage planet;
+    ofImage planet[2];
+    float* planetID;
     
 };
 #endif /* Star_hpp */

@@ -63,31 +63,20 @@ void Star::translate(glm::vec3 t){
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------||
 Stars::Stars(glm::vec2 size, string prefix){
-    planet.load(prefix + "planet.png");
+    planet[0].load(prefix + "planetA.png");
+    planet[1].load(prefix + "planetB.png");
 
     for(int i=0; i<100; i++){ // Happens in main.cpp
         stars.push_back(new Star());
         stars.back()->setLoc(
                             glm::vec3(
                                       ofGetWidth() * ofRandom(1),
-//                                      ofGetWidth()*i,
                                       i*10,
-//                                      ofRandom(ofGetHeight()),
-//                                      ofRandom(-500, 500)
                                       0
-//                                      0, 0,
-//                                      100
                                       ),
                              true
                              );
     }
-    
-//    for(int x=0; x<10; x++){
-//        for(int y=0; y<10; y++){
-//            stars.push_back(new Star());
-//            stars.back()->setLoc(glm::vec3(x * (1280/10), y * (800/10), -500));
-//        }
-//    }
     
 //    ofSetSphereResolution(180);
     
@@ -105,14 +94,11 @@ Stars::Stars(glm::vec2 size, string prefix){
 }
 
 void Stars::update(glm::vec3 t){
-//    t.x += ofGetWidth() * (*hOffset);
     for(int i=0; i<stars.size(); i++){
-//        stars[i]->translate(t);
         stars[i]->update(*travelSpeed);
     }
     
     starsFbo.begin();
-//    ofClear(0, 127);
     post.begin();
     
     ofSetColor(255);
@@ -136,7 +122,7 @@ void Stars::display(float brightness){
     
     ofSetColor(255, brightness);
     starsFbo.draw(0, ofGetHeight() * -2);
-
-    planet.draw(ofGetWidth() * (*hOffset), ofGetHeight() - planet.getHeight());
+    
+    planet[(int)*planetID].draw(ofGetWidth() * (*hOffset), ofGetHeight() - planet[(int)*planetID].getHeight());
     ofPopMatrix;
 }

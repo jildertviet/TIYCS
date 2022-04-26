@@ -38,3 +38,4 @@ x.free; ~sendVolume.stop;
 	}
 }.fork;
 )
+t.whiteFrame
