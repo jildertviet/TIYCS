@@ -218,6 +218,13 @@ void ofApp::update(){
                     ofPopMatrix();
                     joniskRoute.draw(joniskRoutePos - glm::vec2(joniskRoute.getWidth()*0.5, joniskRoute.getHeight() * 0.5));
                 }
+                if(busses[9]){ // Dashboard overview
+                    float hOffset = busses[6];
+                    ofPushMatrix();
+                    ofSetColor(255, busses[9]);
+                    
+                    ofPopMatrix();
+                }
             }
                 break;
             case scenes::Commercial:{
