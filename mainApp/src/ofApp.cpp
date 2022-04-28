@@ -33,6 +33,8 @@ void ofApp::setup(){
     images["Autopilot"] =       ofImage(prefix + "loading.png");
     images["Captain"] =         ofImage(prefix + "captainPicto.png");
     images["Welcome"] =         ofImage(prefix + "welkomTxt.png");
+    images["Einde"] =           ofImage(prefix + "einde.png");
+    images["Shopping"] =           ofImage(prefix + "inflightshopping.png");
 
     for(int i=0; i<NUM_INSTRUCTIONS; i++){
         instructions[i].load(prefix + "instructions/" + ofToString(i) + ".png");
@@ -95,15 +97,17 @@ void ofApp::setup(){
 #ifdef  TARGET_RASPBERRY_PI
     ofHideCursor();
 #endif
+    ofHideCursor();
     
     v = new ofxJVisuals(glm::vec2(width, height));
     receiver.setup(PORT + portNumAdd);
+    
+    ofSetFrameRate(60);
+    ofSetVerticalSync(false);
 }
 //
 //--------------------------------------------------------------
 void ofApp::update(){
-    v->update();
-
 //    ofSetWindowTitle(ofToString(ofGetFrameRate()));
     while(receiver.hasWaitingMessages()){
         ofxOscMessage m;
@@ -145,7 +149,7 @@ void ofApp::update(){
         }
         
         ofSetColor(255);
-        v->display();
+//        v->display();
         
         switch(scene){
             case scenes::Nothing:
@@ -231,6 +235,9 @@ void ofApp::update(){
                 if(commercial.isPlaying()){
                     float scaledHeight = commercial.getHeight() * (ofGetWidth() / commercial.getWidth());
                     commercial.draw(0,(ofGetHeight() - scaledHeight) * 0.5, ofGetWidth(), scaledHeight);
+                }
+                if(busses[0]){
+                    images["Shopping"].draw(0,0);
                 }
             }
                 break;
@@ -361,6 +368,9 @@ void ofApp::update(){
                 ofDrawBitmapString(ofToString(portNumAdd), lineW*2, lineW*2);
             }
                 break;
+            case scenes::Einde:
+                images["Einde"].draw(0,0);
+                break;
         }
         
         if(bVluchtInfo){ // Overlay
@@ -490,7 +500,7 @@ void ofApp::processMsg(ofxOscMessage &m){
     } else if(m.getAddress() == "/setWave"){
         waveForm.clear();
         ofBuffer b = m.getArgAsBlob(0);
-        cout << b.size() << endl;
+//        cout << b.size() << endl;
         double data[b.size() / 8]; // 3200 bytes = 400 doubles
         memcpy(data, b.getData(), b.size()); // Needs 3200 bytes
         for(int i=0; i<b.size() / 8; i++){

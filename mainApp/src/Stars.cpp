@@ -8,8 +8,8 @@
 #include "Stars.hpp"
 
 Star::Star(){
-    r = pow(ofRandom(1.0), 4.0) * 5;
-    r = 5;
+    r = pow(ofRandom(1.0), 4.0) * 15;
+//    r = 5;
     speed = glm::vec3(0,0,1);
     speed.z = ofRandom(1.5, 4);
     speed.x = ofRandom(-1, 1) * 0.1;

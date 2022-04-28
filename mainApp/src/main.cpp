@@ -7,17 +7,21 @@ int main(int argc, char *argv[]){
     string appName = "mainApp";
     vector<string> arguments = vector<string>(argv, argv + argc);
     
-    if(arguments[1] == "-h"){
-        cout << "Run like: " << endl;
-        cout << "\t" << appName << " numWindows" << endl;
-        exit(0);
+    if(arguments.size() > 1){
+        if(arguments[1] == "-h"){
+            cout << "Run like: " << endl;
+            cout << "\t" << appName << " numWindows" << endl;
+            exit(0);
+        }
     }
+    
+    cout << "x" << endl;
     
     int width = arguments.size() > 1 ? ofToInt(arguments[1]) : 1280;
     int height = arguments.size() > 2 ? ofToInt(arguments[2]) : 800;
     int numWindows = arguments.size() > 3 ? ofToInt(arguments[3]) : 3;
     float windowScale = arguments.size() > 4 ? ofToInt(arguments[4]) : 1.0;
-    bool bRotate = arguments.size() > 5 ? ofToInt(arguments[5]) : false;
+    bool bRotate = arguments.size() > 5 ? ofToInt(arguments[5]) : true;
     
     width *= windowScale;
     height *= windowScale;
@@ -71,13 +75,13 @@ int main(int argc, char *argv[]){
             mainApp->bMuteAudio = false;
 
         ofRunApp(window, mainApp); // This calls setup() ?
+//        ofRunApp(mainApp); // This calls setup() ?
         
         mainApp->stars->stars.clear();
         mainApp->stars->stars = stars;
     
 //        outterWindow->setOsc(5001);
     }
-    
     
     ofRunMainLoop();
     

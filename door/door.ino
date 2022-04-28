@@ -15,8 +15,8 @@ CRGB leds[NUM_LEDS];
 float range = 2000;
 
 void setup(){  
-   FastLED.addLeds<WS2812B, DATA_PIN_A, RGB>(leds, NUM_LEDS);  
-   FastLED.addLeds<WS2812B, DATA_PIN_B, RGB>(leds, NUM_LEDS);  
+  FastLED.addLeds<WS2812B, DATA_PIN_A, RGB>(leds, NUM_LEDS);  
+  FastLED.addLeds<WS2812B, DATA_PIN_B, RGB>(leds, NUM_LEDS);  
 
   stepper.setMaxSpeed(150);
   stepper.setAcceleration(100);
