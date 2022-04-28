@@ -89,6 +89,12 @@ void ofApp::setup(){
     //    legenda.load("route/legenda_1920x1080.png");
     joniskRoute.load(prefix + "/route/jonisk_2.png"); // Is scaled to 1280 res
     joniskRouteGlow.load(prefix + "/route/jonisk_s Outer Glow_2.png");
+    
+    for(int i=0; i<3; i++){
+        commercials[i].load(prefix + "commercial/" + ofToString(i) + ".mp4");
+        commercials[i].setLoopState(ofLoopType::OF_LOOP_NONE);
+        commercials[i].setVolume(1-bMuteAudio); // True gives 1-1: 0, so it's muted
+    }
 
     start = glm::vec2(307, 373) * windowScale;
     dest = glm::vec2(473, 289) * windowScale;
@@ -97,7 +103,7 @@ void ofApp::setup(){
 #ifdef  TARGET_RASPBERRY_PI
     ofHideCursor();
 #endif
-    ofHideCursor();
+//    ofHideCursor();
     
     v = new ofxJVisuals(glm::vec2(width, height));
     receiver.setup(PORT + portNumAdd);
@@ -118,7 +124,8 @@ void ofApp::update(){
     switch(scene){
         case scenes::Commercial:{
 #ifndef TARGET_RASPBERRY_PI
-            commercial.update();
+            if(commercial)
+                commercial->update();
 #endif
         }
             break;
@@ -232,12 +239,14 @@ void ofApp::update(){
             }
                 break;
             case scenes::Commercial:{
-                if(commercial.isPlaying()){
-                    float scaledHeight = commercial.getHeight() * (ofGetWidth() / commercial.getWidth());
-                    commercial.draw(0,(ofGetHeight() - scaledHeight) * 0.5, ofGetWidth(), scaledHeight);
-                }
-                if(busses[0]){
-                    images["Shopping"].draw(0,0);
+                if(commercial){
+                    if(commercial->isPlaying()){
+                        float scaledHeight = commercial->getHeight() * (ofGetWidth() / commercial->getWidth());
+                        commercial->draw(0,(ofGetHeight() - scaledHeight) * 0.5, ofGetWidth(), scaledHeight);
+                    }
+                    if(busses[0]){
+                        images["Shopping"].draw(0,0);
+                    }
                 }
             }
                 break;
@@ -433,6 +442,7 @@ void ofApp::processMsg(ofxOscMessage &m){
         switch(m.getArgAsInt(0)){
             case 1:{
                 int movieID = m.getArgAsInt(1);
+                commercial = &(commercials[movieID]);
 #ifdef TARGET_RASPBERRY_PI
                 string videoPath = ofToDataPath(prefix + "commercial/" + ofToString(movieID) + ".mp4", true);
                 ofxOMXPlayerSettings settings;
@@ -444,10 +454,9 @@ void ofApp::processMsg(ofxOscMessage &m){
                 commercial.setup(settings);
                 commercial.setPaused(false);
 #else
-                commercial.load(prefix + "commercial/" + ofToString(movieID) + ".mp4");
-                commercial.setLoopState(ofLoopType::OF_LOOP_NONE);
-                commercial.play();
-                commercial.setVolume(1-bMuteAudio); // True gives 1-1: 0, so it's muted
+//                commercial.load(prefix + "commercial/" + ofToString(movieID) + ".mp4");
+//                commercial.setLoopState(ofLoopType::OF_LOOP_NONE);
+                commercial->play();
 #endif
 
                 if(movieID == -1){
@@ -455,7 +464,7 @@ void ofApp::processMsg(ofxOscMessage &m){
                     commercial.setPaused(true);
                     commercial.close();
 #else
-                    commercial.stop();
+                    commercial->stop();
 
 #endif
                 }

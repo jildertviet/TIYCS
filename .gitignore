@@ -33,3 +33,4 @@ hardware/**/*.zip
 *.DS_Store
 *.plist
 camera/Makefile
+checklist.txt

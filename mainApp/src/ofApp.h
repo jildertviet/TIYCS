@@ -92,7 +92,8 @@ class ofApp : public ofBaseApp{
 #ifdef  TARGET_RASPBERRY_PI
     ofxOMXPlayer commercial;
 #else
-    ofVideoPlayer commercial;
+    ofVideoPlayer* commercial = nullptr;
+    ofVideoPlayer commercials[3];
 #endif
     bool bMuteAudio = true;
     
