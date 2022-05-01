@@ -97,8 +97,7 @@ void ofApp::setup(){
     }
 
     start = glm::vec2(307, 373) * windowScale;
-    dest = glm::vec2(473, 289) * windowScale;
-    
+    dest = glm::vec2(626, 438) * windowScale;
     
 #ifdef  TARGET_RASPBERRY_PI
     ofHideCursor();
@@ -185,8 +184,14 @@ void ofApp::update(){
                     ofTranslate(0, (instructions[0].getHeight()) * (i - busses[0]));
                         ofPushMatrix();
                             ofTranslate(ofGetWindowSize() * 0.5);
-                            if(i <= (NUM_INSTRUCTIONS-1))
-                                instructions[i].draw(instructions[i].getWidth() * -0.5, instructions[i].getHeight() * -0.5);
+                                if(i <= (NUM_INSTRUCTIONS-1)){
+                                    if(i > 0){
+                                        ofTranslate((ofGetWidth() - instructions[i].getWidth()) * 0.5, (ofGetHeight() - instructions[i].getHeight()) * 0.5);
+                                        ofScale(0.8);
+                                        ofTranslate((ofGetWidth() - instructions[i].getWidth()) * -0.5, (ofGetHeight() - instructions[i].getHeight()) * -0.5);
+                                    }
+                                    instructions[i].draw(instructions[i].getWidth() * -0.5, instructions[i].getHeight() * -0.5);
+                                }
                         ofPopMatrix();
                     ofPopMatrix();
                 }
@@ -239,13 +244,13 @@ void ofApp::update(){
             }
                 break;
             case scenes::Commercial:{
+                if(busses[0]){
+                    images["Shopping"].draw(0,0);
+                }
                 if(commercial){
                     if(commercial->isPlaying()){
                         float scaledHeight = commercial->getHeight() * (ofGetWidth() / commercial->getWidth());
                         commercial->draw(0,(ofGetHeight() - scaledHeight) * 0.5, ofGetWidth(), scaledHeight);
-                    }
-                    if(busses[0]){
-                        images["Shopping"].draw(0,0);
                     }
                 }
             }

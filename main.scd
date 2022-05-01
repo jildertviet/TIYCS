@@ -25,3 +25,5 @@ MIDIIn.doNoteOnAction(1, 14, 35, 127); // Alarm on
 MIDIIn.doNoteOffAction(1, 14, 35, 127); // Alarm off
 
 MIDIIn.doNoteOnAction(1, 14, 34, 127); // Captain scene
+
+MIDIIn.doNoteOnAction(1, 14, 19, 127); // Shopping (when Commercials scene is active)

@@ -21,7 +21,7 @@ int main(int argc, char *argv[]){
     int height = arguments.size() > 2 ? ofToInt(arguments[2]) : 800;
     int numWindows = arguments.size() > 3 ? ofToInt(arguments[3]) : 3;
     float windowScale = arguments.size() > 4 ? ofToInt(arguments[4]) : 1.0;
-    bool bRotate = arguments.size() > 5 ? ofToInt(arguments[5]) : true;
+    bool bRotate = arguments.size() > 5 ? ofToInt(arguments[5]) : false;
     
     width *= windowScale;
     height *= windowScale;
@@ -71,8 +71,8 @@ int main(int argc, char *argv[]){
         mainApp->height = height;
         mainApp->bRotate = bRotate;
         mainApp->windowScale = windowScale;
-        if(i==0)
-            mainApp->bMuteAudio = false;
+//        if(i==0) // Audio comes from other laptop
+//            mainApp->bMuteAudio = false;
 
         ofRunApp(window, mainApp); // This calls setup() ?
 //        ofRunApp(mainApp); // This calls setup() ?

@@ -12,7 +12,7 @@
 
 #define NUM_BUSSES  12
 #define PORT    5000
-#define NUM_INSTRUCTIONS    7
+#define NUM_INSTRUCTIONS    8
 #define NUM_RETURNIMAGES    8
 
 namespace scenes{
