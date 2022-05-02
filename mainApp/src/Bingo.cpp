@@ -65,14 +65,14 @@ void Bingo::update(){
 void Bingo::display(DrawMode mode){
     // Mode 3: display all layers, mode 2, display 1st 2 layers
     switch(mode){ // Background
-        case 0:{
+        case BACKGROUND:{
             int dir[2] = {1, -1};
             for(int i=0; i<2; i++){
                 ofPushMatrix();
-                ofTranslate(size * 0.5);
+                ofTranslate(size * 0.5 + glm::vec2(0, 38));
                 if(bRotateBingo)
                     ofRotateDeg((ofGetFrameNum()-rotStart) * 0.05 * dir[i]);
-                bingoSwirl[i].draw(bingoSwirl[i].getWidth()*-0.5,bingoSwirl[i].getHeight()*-0.5);
+                bingoSwirl[i].draw(bingoSwirl[i].getWidth()*-0.5,bingoSwirl[i].getHeight()*-0.5); // Not sure why to add?
                 ofPopMatrix();
             }
         }

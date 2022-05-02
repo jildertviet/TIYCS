@@ -31,10 +31,19 @@ void ofApp::setup(){
     images["Code Circle"] =     ofImage(prefix + "codeCircle.png");
     images["Code Glow"] =       ofImage(prefix +"codeGlow2.png");
     images["Autopilot"] =       ofImage(prefix + "loading.png");
-    images["Captain"] =         ofImage(prefix + "captainPicto.png");
     images["Welcome"] =         ofImage(prefix + "welkomTxt.png");
     images["Einde"] =           ofImage(prefix + "einde.png");
-    images["Shopping"] =           ofImage(prefix + "inflightshopping.png");
+    images["Shopping"] =        ofImage(prefix + "inflightshopping.png");
+    
+    images["incomingCall"] =    ofImage(prefix + "incomingCall.png");
+    images["telephone"] =       ofImage(prefix + "telephone.png");
+    images["duringCall"] =    ofImage(prefix + "duringCall.png");
+    
+    images["Motor"] =    ofImage(prefix + "motor.png");
+    images["lineGray"] =    ofImage(prefix + "/overlay/lijn_grijs.png");
+    images["lineWhite"] =    ofImage(prefix + "/overlay/lijn_wit.png");
+    images["joniskOL"] =    ofImage(prefix + "/overlay/jonisk.png");
+    images["glowOL"] =    ofImage(prefix + "/overlay/glow.png");
 
     for(int i=0; i<NUM_INSTRUCTIONS; i++){
         instructions[i].load(prefix + "instructions/" + ofToString(i) + ".png");
@@ -66,6 +75,8 @@ void ofApp::setup(){
     // CRASH @ RBP
     ofLog(OF_LOG_NOTICE, "Loading Geneva Normal, 36px");
     autoPilotFont.load("fonts/Geneva Normal.ttf", 36);
+    
+    callCountFont.load("fonts/Geneva Normal.ttf", 25);
     
 //    helveticaBold.load("Helvetica-Bold.ttf", 22); // Overlay
 //    helveticaRegular.load("Helvetica.ttf", 22);
@@ -110,6 +121,7 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofSetVerticalSync(false);
 }
+
 //
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -129,6 +141,7 @@ void ofApp::update(){
         }
             break;
         case scenes::Stars:
+        case scenes::Benzine:
         case scenes::Route:
             stars->update(glm::vec3(busses[3], busses[4], busses[5]));
             break;
@@ -140,8 +153,15 @@ void ofApp::update(){
             break;
     }
     
+    render(); // Writes to FBO, can be called recursively
+}
 
-    renderFbo.begin();
+void ofApp::render(scenes::Scene pseudo, bool bUseFbo){
+    scenes::Scene sceneToUse = pseudo != scenes::Pseudo ? pseudo : scene; // Is update() called with a scene specified?
+
+    if(bUseFbo){
+        renderFbo.begin();
+    }
         if(bRotate){
             ofPushMatrix();
                 ofTranslate(ofGetWidth(), ofGetHeight());
@@ -149,15 +169,11 @@ void ofApp::update(){
         }
         
         ofBackground(0);
-        if(busses[2] != 0){
-            ofSetColor(255, 0, 0, busses[2] * 255);
-            ofDrawRectangle(0, 0, width, height);
-        }
         
         ofSetColor(255);
 //        v->display();
         
-        switch(scene){
+        switch(sceneToUse){
             case scenes::Nothing:
                 break;
             case scenes::Intro:
@@ -238,7 +254,32 @@ void ofApp::update(){
                     float hOffset = busses[6];
                     ofPushMatrix();
                     ofSetColor(255, busses[9]);
+                    ofTranslate(ofGetWidth() * (hOffset), 0);
+                    images["Benzine"].draw(0,0);
+                    ofPushMatrix(); // DOUBLE CODE :(
+                    ofPushStyle();
+                        ofSetLineWidth(10 * windowScale);
+                        ofTranslate(ofGetWidth() * 0.5, ofGetHeight() * 0.655);
+                        float noiseRange = ofMap(busses[10], 0, 180, 1, 0.05);
+                        noiseRange *= 30;
+                        ofRotateDeg(180 + busses[10] + ((ofNoise((float)(ofGetFrameNum()/50.)) * noiseRange)));
+                        ofDrawLine(0, 0, ofGetWidth() * 0.25, 0);
+                        ofDrawCircle(0, 0, 20);
+                    ofPopStyle();
+                    ofPopMatrix();
                     
+                    
+                    ofPushMatrix();
+                    ofTranslate(ofGetWidth(), 0);
+                        images["lineGray"].draw(0,0);
+                        images["lineWhite"].drawSubsection(0, 0, images["lineWhite"].getWidth() * 0.2 + busses[14], images["lineWhite"].getHeight(), 0, 0);
+                        ofTranslate(busses[14], 0); // joniskAdd
+                            images["glowOL"].draw(0,0);
+                            images["joniskOL"].draw(0,0);
+                    ofPopMatrix();
+                    
+                    images["Motor"].draw(ofGetWidth() * 2, 0);
+                        
                     ofPopMatrix();
                 }
             }
@@ -256,22 +297,29 @@ void ofApp::update(){
             }
                 break;
             case scenes::Benzine:{
+                if(busses[13]){
+                    render(scenes::Stars, false); // Don't write to main FBO
+                }
+                
                 float h = ofGetHeight() * (busses[4]/100.);
                 h *= 0.5;
                 ofSetColor(255, 0, 0, busses[5]);
                 ofDrawRectangle(0, ofGetHeight() * 0.5, ofGetWidth(), h);
                 ofDrawRectangle(0, ofGetHeight() * 0.5 - (h), ofGetWidth(), h);
+                
                 if(busses[3] == 255){
                     ofSetColor(255);
                     images["Benzine"].draw(0,0);
+                    
                     ofPushMatrix();
                     ofPushStyle();
                         ofSetLineWidth(10 * windowScale);
                         ofTranslate(ofGetWidth() * 0.5, ofGetHeight() * 0.655);
-                        float noiseRange = ofMap(busses[0], 0, 145, 1, 0.05);
+                        float noiseRange = ofMap(busses[10], 0, 180, 1, 0.05);
                         noiseRange *= 30;
-                        ofRotateDeg(180 + 17.5 + busses[0] + ((ofNoise((float)(ofGetFrameNum()/50.)) * noiseRange)));
-                        ofDrawLine(0, 0, ofGetWidth() * 0.177, 0);
+                        ofRotateDeg(180 + busses[10] + ((ofNoise((float)(ofGetFrameNum()/50.)) * noiseRange)));
+                        ofDrawLine(0, 0, ofGetWidth() * 0.25, 0);
+                        ofDrawCircle(0, 0, 20);
                     ofPopStyle();
                     ofPopMatrix();
                 }
@@ -288,21 +336,39 @@ void ofApp::update(){
                 images["Captain"].draw(0,0);
                 break;
             case scenes::Waveform:{
-                ofSetColor(255);
-                ofSetLineWidth(3);
-                ofNoFill();
-                ofBeginShape();
-                for (unsigned int i = 0; i < waveForm.size(); i++){
-                    ofVertex(
-                             (i*((float)ofGetWidth()/waveForm.size())),
-                             waveForm[i]
-                             );
-                }
-                ofEndShape(false);
-                
                 if(busses[0]){
                     ofSetColor(255, busses[0]);
-                    images["Captain"].draw(0,0);
+                    ofSetLineWidth(3);
+                    ofNoFill();
+                    ofPushMatrix();
+                    ofTranslate(0, -ofGetHeight()*0.2); // Waveform @ 25% of screen H
+                    ofBeginShape();
+                    for (unsigned int i = 0; i < waveForm.size(); i++){
+                        ofVertex(
+                                 (i*((float)ofGetWidth()/waveForm.size())),
+                                 waveForm[i]
+                                 );
+                    }
+                    ofEndShape(false);
+                    ofPopMatrix();
+                }
+                if(busses[1]){
+                    ofSetColor(255, busses[1]);
+                    images["incomingCall"].draw(0,0);
+                }
+                if(busses[2]){
+                    ofSetColor(255);
+                    images["duringCall"].draw(0,0);
+                    int x = 595;
+                    if(busses[4] < 10){
+                        callCountFont.drawString("00:0" + ofToString(busses[4]), x, 547);
+                    } else{
+                        callCountFont.drawString("00:" + ofToString(busses[4]), x, 547);
+                    }
+                }
+                if(busses[3]){
+                    ofSetColor(255);
+                    images["telephone"].draw(images["telephone"].getHeight(),images["telephone"].getHeight());
                 }
             }
                 break;
@@ -414,7 +480,9 @@ void ofApp::update(){
             ofSetColor(0);
             ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
         }
-    renderFbo.end();
+    if(bUseFbo){
+        renderFbo.end();
+    }
 }
 
 //--------------------------------------------------------------
@@ -447,6 +515,10 @@ void ofApp::processMsg(ofxOscMessage &m){
         switch(m.getArgAsInt(0)){
             case 1:{
                 int movieID = m.getArgAsInt(1);
+                if(movieID == -1 && commercial){
+                    commercial->stop();
+                    return;
+                }
                 commercial = &(commercials[movieID]);
 #ifdef TARGET_RASPBERRY_PI
                 string videoPath = ofToDataPath(prefix + "commercial/" + ofToString(movieID) + ".mp4", true);
@@ -470,7 +542,6 @@ void ofApp::processMsg(ofxOscMessage &m){
                     commercial.close();
 #else
                     commercial->stop();
-
 #endif
                 }
             }

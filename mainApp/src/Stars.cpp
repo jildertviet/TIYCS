@@ -109,7 +109,7 @@ void Stars::update(glm::vec3 t){
 
     post.end();
     
-    ofSetColor(0, pow(1-((*height) / 2), 0.5) * 200); // Black fade when lowering
+    ofSetColor(0, pow(1-((*height) / 2), 0.5) * 255); // Black fade when lowering
     ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
     
     starsFbo.end();

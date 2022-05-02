@@ -4,7 +4,7 @@
 #include <WiFi.h>
 
 #define CHANNEL 1
-#define NUM_LEDS 60
+#define NUM_LEDS 116
 
 AccelStepper stepper(AccelStepper::HALF4WIRE, 3, 2, 5, 4); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 
@@ -39,7 +39,6 @@ void setup(){
     leds[i] = CRGB::Black;
   }
   FastLED.show();
-  startTimeFadeIn = millis();
 }
 
 void loop(){ 

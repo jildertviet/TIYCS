@@ -10,7 +10,7 @@
     #include "ofxOMXPlayer.h"
 #endif
 
-#define NUM_BUSSES  12
+#define NUM_BUSSES  24
 #define PORT    5000
 #define NUM_INSTRUCTIONS    8
 #define NUM_RETURNIMAGES    8
@@ -42,6 +42,7 @@ namespace scenes{
         Nothing, // 16
         Test, // 17
         Einde,
+        Pseudo
     };
 }
 
@@ -55,6 +56,8 @@ class ofApp : public ofBaseApp{
 	public:
 		void setup();
 		void update();
+        
+        void render(scenes::Scene pseudo = scenes::Pseudo, bool bUseFbo = true);
 		void draw();
 
 		void keyPressed(int key);
@@ -84,6 +87,7 @@ class ofApp : public ofBaseApp{
     ofTrueTypeFont countFont;
     ofTrueTypeFont codeFont;
     ofTrueTypeFont autoPilotFont;
+    ofTrueTypeFont callCountFont;
     
     float brightness = 255;
 
