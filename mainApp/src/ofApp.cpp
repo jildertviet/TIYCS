@@ -553,7 +553,18 @@ void ofApp::processMsg(ofxOscMessage &m){
             case 3:
                 bingo->reInit();
                 break;
+            case 4:{
+                meshVertices[m.getArgAsInt(1)] = glm::vec3(m.getArgAsFloat(2), m.getArgAsFloat(3), 0);
+                mesh.clear();
+                mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+
+                for(char i=0; i<4; i++){
+                    mesh.addTexCoord(texCoords[i]);
+                    mesh.addVertex(meshVertices[i]);
+                }
             }
+            break;
+        }
     } else if(m.getAddress() == "/setValueById"){
         switch(m.getArgAsInt(0)){
             case 2:

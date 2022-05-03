@@ -128,7 +128,7 @@ class ofApp : public ofBaseApp{
 #endif
     
     bool bEditMode = false;
-    char fboDisplayMode = 1;
+    char fboDisplayMode = 0; // Mapped
     vector<glm::vec3> meshVertices;
     vector<glm::vec2> texCoords;
     ofMesh mesh;

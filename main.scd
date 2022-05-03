@@ -1,9 +1,15 @@
 s.boot;
-t = TIYCS.new("192.168.1.2").gui
-// t = TIYCS.new("127.0.0.1").gui
-t.gui
+
+(
+// t = TIYCS.new("192.168.1.2").gui;
+t = TIYCS.new("127.0.0.1").gui;
+// t.gui
 ~j = JoniskMain.new.gui;
-~j.sequence = [	4,5,9,10]; // Den Dolder
+// ~j.sequence = [	4,5,9,10]; // Den Dolder
+~j.sequence = (0..23);
+)
+~j.slidersDict
+~j.globalJoniskWindow.view.children[5].children
 ~j.triggerNextInSeq();
 ~j.jonisks[0].synth.set(\amp, 0)
 ~j.configLights
@@ -27,8 +33,8 @@ MIDIIn.doNoteOnAction(1, 14, 34, 127); // Captain scene
 MIDIIn.doNoteOnAction(1, 14, 19, 127); // Shopping (when Commercials scene is active)
 MIDIIn.doNoteOnAction(1, 14, 20, 127); // Commercial 0
 
-MIDIIn.doNoteOnAction(1, 1, 19, 127); // Shopping (when Commercials scene is active)
+MIDIIn.doNoteOnAction(1, 1, 19, 127); // Shopping-txt (when Commercials scene is active)
+MIDIIn.doNoteOnAction(1, 1, 7, 127); // All white
 
-t.setBus(9, 255);
-t.setBus(10, 180);
-267/1280
+// Set tex via OSC
+t.screens[1].sendMsg("/eventById", 4, 0, 0, 100);
