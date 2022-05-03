@@ -161,13 +161,13 @@ void ofApp::render(scenes::Scene pseudo, bool bUseFbo){
 
     if(bUseFbo){
         renderFbo.begin();
-    }
-        if(bRotate){
+        
+        if(bRotate){ // Don't rotate again when recursive render()
             ofPushMatrix();
                 ofTranslate(ofGetWidth(), ofGetHeight());
                 ofRotateDeg(180, 0, 0, 1);
         }
-        
+    }
         ofBackground(0);
         
         ofSetColor(255);
@@ -520,6 +520,7 @@ void ofApp::processMsg(ofxOscMessage &m){
                     return;
                 }
                 commercial = &(commercials[movieID]);
+                commercial->stop(); // Restart
 #ifdef TARGET_RASPBERRY_PI
                 string videoPath = ofToDataPath(prefix + "commercial/" + ofToString(movieID) + ".mp4", true);
                 ofxOMXPlayerSettings settings;
