@@ -40,6 +40,12 @@ void ofApp::setup(){
     images["duringCall"] =    ofImage(prefix + "duringCall.png");
     
     images["Motor"] =    ofImage(prefix + "motor.png");
+    images["450-629"] =    ofImage(prefix + "450-629.png");
+    images["847-212"] =    ofImage(prefix + "847-212.png");
+    images["351-364"] =    ofImage(prefix + "351-364.png");
+    images["983-376"] =    ofImage(prefix + "983-376.png");
+    
+    
     images["lineGray"] =    ofImage(prefix + "/overlay/lijn_grijs.png");
     images["lineWhite"] =    ofImage(prefix + "/overlay/lijn_wit.png");
     images["joniskOL"] =    ofImage(prefix + "/overlay/jonisk.png");
@@ -279,7 +285,33 @@ void ofApp::render(scenes::Scene pseudo, bool bUseFbo){
                     ofPopMatrix();
                     
                     images["Motor"].draw(ofGetWidth() * 2, 0);
-                        
+                    
+                    for(auto i: vector<glm::vec4>{
+                        glm::vec4(450, 629, 5,0),
+                        glm::vec4(847,212, -5,0),
+                        glm::vec4(351, 364, 6,0),
+                        glm::vec4(983,376, -2,1),
+                    }){
+                        string name = ofToString(i.x) + "-" + ofToString(i.y);
+                        ofPushMatrix();
+                        ofTranslate(ofGetWidth() * 2, 0);
+                        ofTranslate(i.x, i.y);
+                        if(i[3] == 1){
+                            float r = ofGetFrameNum() / i.z;
+                            r = fmod(r, 180.);
+                            r /= 180.;
+                            r *= TWO_PI;
+                            r = sin(r);
+                            r = r * 0.5 + 0.5;
+                            ofRotateXDeg(r * 180);
+                        } else{
+                            ofRotateDeg(ofGetFrameNum() / i.z);
+                        }
+                        ofTranslate(images[name].getWidth()*-0.5, images[name].getHeight()*-0.5);
+                        images[name].draw(0,0);
+                        ofPopMatrix();
+                    }
+                     
                     ofPopMatrix();
                 }
             }
