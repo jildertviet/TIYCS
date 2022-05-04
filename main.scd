@@ -1,15 +1,14 @@
 s.boot;
 
 (
-// t = TIYCS.new("192.168.1.2").gui;
-t = TIYCS.new("127.0.0.1").gui;
+t = TIYCS.new("192.168.1.2").gui;
+// t = TIYCS.new("127.0.0.1").gui;
 // t.gui
 ~j = JoniskMain.new.gui;
 // ~j.sequence = [	4,5,9,10]; // Den Dolder
 ~j.sequence = (0..23);
 )
 ~j.slidersDict
-~j.globalJoniskWindow.view.children[5].children
 ~j.triggerNextInSeq();
 ~j.jonisks[0].synth.set(\amp, 0)
 ~j.configLights
@@ -34,7 +33,31 @@ MIDIIn.doNoteOnAction(1, 14, 19, 127); // Shopping (when Commercials scene is ac
 MIDIIn.doNoteOnAction(1, 14, 20, 127); // Commercial 0
 
 MIDIIn.doNoteOnAction(1, 1, 19, 127); // Shopping-txt (when Commercials scene is active)
-MIDIIn.doNoteOnAction(1, 1, 7, 127); // All white
 
 // Set tex via OSC
-t.screens[1].sendMsg("/eventById", 4, 0, 0, 100);
+(
+var screen = 0;
+t.setTexCoord(screen, id: 0, x: 10, y: 40);
+t.setTexCoord(screen, id: 1, x: 1280-100, y: 0);
+t.setTexCoord(screen, id: 2, x: 1280-40, y: 800-0);
+t.setTexCoord(screen, id: 3, x: 4, y: 800-0);
+)
+(
+var screen = 1;
+t.setTexCoord(screen, id: 0, x: 100, y: 0);
+t.setTexCoord(screen, id: 1, x: 1280-150, y: 10);
+t.setTexCoord(screen, id: 2, x: 1280-100, y: 800-80);
+t.setTexCoord(screen, id: 3, x: 60, y: 800-100);
+)
+(
+var screen = 2;
+t.setTexCoord(screen, id: 0, x: 90, y: 60);
+t.setTexCoord(screen, id: 1, x: 1280-40, y: 10);
+t.setTexCoord(screen, id: 2, x: 1280-10, y: 800-70);
+t.setTexCoord(screen, id: 3, x: 80, y: 800-0);
+)
+// Full screen
+t.allFullscreen();
+t.gui
+
+1280*3

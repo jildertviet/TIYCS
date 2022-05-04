@@ -68,7 +68,7 @@ void loop(){
       float ratio = (millis() - startTimeFadeOut) / (float)fadeTime;
       ratio = 1 - ratio;
       for(int i=0; i<NUM_LEDS; i++){
-        if(i < (ratio * NUM_LEDS)){
+        if(i <   (ratio * NUM_LEDS)){
           leds[i] = CRGB(255 * ratio, 0, 255 * ratio);
         } else{
           leds[i] = CRGB::Black;

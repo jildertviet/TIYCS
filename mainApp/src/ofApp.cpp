@@ -4,7 +4,7 @@ string prefix = "1280/";
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    scene = scenes::Nothing;
+    scene = scenes::Test;
     ofSetFrameRate(60);
     ofSetWindowShape(width, height);
     renderFbo.allocate(width, height);
@@ -477,7 +477,10 @@ void ofApp::render(scenes::Scene pseudo, bool bUseFbo){
                 ofSetColor(0);
                 ofDrawRectangle(lineW, lineW, ofGetWidth() - lineW*2, ofGetHeight() - lineW*2);
                 ofSetColor(255);
-                ofDrawBitmapString(ofToString(portNumAdd), lineW*2, lineW*2);
+//                ofDrawBitmapString(ofToString(portNumAdd), lineW*2, lineW*2);
+                string idTxt = ofToString(portNumAdd);
+                countFont.drawString(idTxt, ofGetWidth()*0.5 - countFont.getStringBoundingBox(idTxt, 0, 0).width*0.5,
+                                     ofGetHeight()*0.5 + countFont.getStringBoundingBox(idTxt, 0, 0).height*0.5);
             }
                 break;
             case scenes::Einde:
@@ -596,6 +599,9 @@ void ofApp::processMsg(ofxOscMessage &m){
                 }
             }
             break;
+            case 5:
+                ofSetFullscreen(m.getArgAsBool(1));
+                break;
         }
     } else if(m.getAddress() == "/setValueById"){
         switch(m.getArgAsInt(0)){
