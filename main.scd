@@ -37,7 +37,7 @@ MIDIIn.doNoteOnAction(1, 1, 19, 127); // Shopping-txt (when Commercials scene is
 // Set tex via OSC
 (
 var screen = 0;
-t.setTexCoord(screen, id: 0, x: 10, y: 40);
+t.setTexCoord(screen, id: 0, x: 10, y: 46);
 t.setTexCoord(screen, id: 1, x: 1280-100, y: 0);
 t.setTexCoord(screen, id: 2, x: 1280-40, y: 800-0);
 t.setTexCoord(screen, id: 3, x: 4, y: 800-0);
@@ -51,7 +51,7 @@ t.setTexCoord(screen, id: 3, x: 60, y: 800-100);
 )
 (
 var screen = 2;
-t.setTexCoord(screen, id: 0, x: 90, y: 60);
+t.setTexCoord(screen, id: 0, x: 90, y: 65);
 t.setTexCoord(screen, id: 1, x: 1280-40, y: 10);
 t.setTexCoord(screen, id: 2, x: 1280-10, y: 800-70);
 t.setTexCoord(screen, id: 3, x: 80, y: 800-0);

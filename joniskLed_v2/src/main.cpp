@@ -8,7 +8,10 @@
 #include "credentials.h"
 
 #define CHANNEL 1
-#define IS_JONISK_2022
+// #define IS_JONISK_2022
+#define IS_JONISK_2022_EXTRA
+// #define IS_LED_FIXBOARD
+
 #define   PWM_10_BIT
 
 unsigned char values[4] = {0, 0, 0, 0};
@@ -83,17 +86,14 @@ void setup() {
   }
   id = EEPROM.read(0);
 
-  pinMode(34, INPUT);
-  pinMode(14, INPUT);
-  pinMode(15, INPUT_PULLUP);
-  pinMode(2, INPUT_PULLUP); // Fix for board that has pin2 shorted to 15...
-  pinMode(4, OUTPUT);
-  pinMode(5, OUTPUT);
+  initPins();
 
   aliveBlink();
   initCurve();
   testLed();
   Serial.println("Setup done");
+
+  setLED(2, 255);
 }
 
 void loop() {
@@ -205,9 +205,6 @@ void loop() {
 }
 
 void checkPins(){
-#ifndef  IS_JONISK_2022
-  return;
-#endif
   if(millis() > lastChecked + 100){
     if(digitalRead(15) == LOW){
       digitalWrite(5, HIGH);
