@@ -92,8 +92,6 @@ void setup() {
   initCurve();
   testLed();
   Serial.println("Setup done");
-
-  setLED(2, 255);
 }
 
 void loop() {
