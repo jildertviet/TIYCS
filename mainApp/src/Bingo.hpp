@@ -22,7 +22,7 @@ public:
     };
     DrawMode state;
     
-    Bingo(string prefix = "1280/");
+    Bingo(string prefix = "1280/", glm::vec2 size = glm::vec2(1280, 800));
     void update();
     void display(DrawMode mode = DrawMode::BACKGROUND);
     void display(DrawMode a, DrawMode b);

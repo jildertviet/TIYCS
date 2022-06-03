@@ -1,17 +1,17 @@
 s.boot;
 
 (
-t = TIYCS.new("192.168.1.2").gui;
-// t = TIYCS.new("127.0.0.1").gui;
+// t = TIYCS.new("192.168.1.2").gui;
+t = TIYCS.new("127.0.0.1").gui;
 // t.gui
-~j = JoniskMain.new.gui;
-// ~j.sequence = [	4,5,9,10]; // Den Dolder
-~j.sequence = (0..23);
+// ~j = JoniskMain.new.gui;
+// ~j.sequence = (0..23);
 )
 ~j.slidersDict
 ~j.triggerNextInSeq();
 ~j.jonisks[0].synth.set(\amp, 0)
 ~j.configLights
+~j.gui
 // Tank-sequence
 MIDIIn.doNoteOnAction(1, 14, 25, 127);
 MIDIIn.doNoteOnAction(1, 14, 26, 127);

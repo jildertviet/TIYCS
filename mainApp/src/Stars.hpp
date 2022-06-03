@@ -15,7 +15,7 @@
 class Star{
 public:
     Star();
-    void update(float speedMul=1);
+    void update(float speedMul=1, glm::vec2 size = glm::vec2(1280, 800));
     void display();
     float r = 10;
     glm::vec3 speed;

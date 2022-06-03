@@ -8,8 +8,8 @@
 #include "Bingo.hpp"
 
 
-Bingo::Bingo(string prefix){
-    size = ofGetWindowSize();
+Bingo::Bingo(string prefix, glm::vec2 size){
+    this->size = size;
     
     bingoSwirl[0].load(prefix + "bingo_swirl.png");
     bingoSwirl[1].load(prefix + "bingo_swirlMirror.png");
@@ -100,15 +100,15 @@ void Bingo::display(DrawMode mode){
         case NUMBER:{
             if(count >= 0){
                 ofPushMatrix();
-                ofTranslate(ofGetWindowSize()*0.5);
+                ofTranslate(size * 0.5);
                 ofScale(*numberScale);
-                ofTranslate(ofGetWindowSize()*-0.5);
+                ofTranslate(size * -0.5);
                 ofFill();
                 ofSetColor(255);
-                ofDrawCircle(ofGetWindowSize() * 0.5, ofGetWindowSize()[1] * 0.25);
+                ofDrawCircle(size * 0.5, size.y * 0.25);
                 ofSetColor(0);
                 ofRectangle r = countFont.getStringBoundingBox(ofToString((int)floor(count)), 0, 0);
-                countFont.drawString(ofToString((int)floor(count)), ofGetWidth()*0.5 - r.getWidth() * 0.5, ofGetHeight()*0.5 + r.getHeight() * 0.5);
+                countFont.drawString(ofToString((int)floor(count)), size.x*0.5 - r.getWidth() * 0.5, size.y*0.5 + r.getHeight() * 0.5);
                 ofPopMatrix();
             }
         }

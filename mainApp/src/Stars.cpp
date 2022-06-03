@@ -16,17 +16,17 @@ Star::Star(){
     color = ofColor(255, ofRandom(200, 255));
 }
 
-void Star::update(float speedMul){
+void Star::update(float speedMul, glm::vec2 size){
     loc += speed * speedMul;
     if(loc.z > 1000){
 //        loc = originalLoc;
         loc.z -= 3000;
     }
-    if(loc.x < ofGetWidth() * -1){
-        loc.x += ofGetWidth() * 3;
+    if(loc.x < size.x * -1){
+        loc.x += size.x * 3;
     }
-    if(loc.x > ofGetWidth() * 2){
-        loc.x += ofGetWidth() * -3;
+    if(loc.x > size.x * 2){
+        loc.x += size.x * -3;
     }
     locToDraw = loc;
 }
@@ -63,6 +63,7 @@ void Star::translate(glm::vec3 t){
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------------------||
 Stars::Stars(glm::vec2 size, string prefix){
+    this->size = size;
     planet[0].load(prefix + "planetA.png");
     planet[1].load(prefix + "planetB.png");
 
@@ -70,7 +71,7 @@ Stars::Stars(glm::vec2 size, string prefix){
         stars.push_back(new Star());
         stars.back()->setLoc(
                             glm::vec3(
-                                      ofGetWidth() * ofRandom(1),
+                                      size.x * ofRandom(1),
                                       i*10,
                                       0
                                       ),
@@ -81,14 +82,13 @@ Stars::Stars(glm::vec2 size, string prefix){
 //    ofSetSphereResolution(180);
     
     // Setup post-processing chain
-    post.init(ofGetWidth(), ofGetHeight());
+    post.init(size.x, size.y);
 //    post.createPass<FxaaPass>()->setEnabled(false);
     bloom = post.createPass<BloomPass>();
     bloom->setEnabled(true);
 //    kaleidoscope = post.createPass<KaleidoscopePass>();
 //    kaleidoscope->setEnabled(true);
     
-    this->size = size;
     starsFbo.allocate(size.x, size.y, GL_RGB); // Memory issue @ RBP?
     
 }
@@ -110,7 +110,7 @@ void Stars::update(glm::vec3 t){
     post.end();
     
     ofSetColor(0, pow(1-((*height) / 2), 0.5) * 255); // Black fade when lowering
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    ofDrawRectangle(0, 0, size.x, size.y);
     
     starsFbo.end();
 }
@@ -118,11 +118,11 @@ void Stars::update(glm::vec3 t){
 void Stars::display(float brightness){
     ofPushMatrix();
 
-    ofTranslate(0, ofGetHeight() * (*height));
+    ofTranslate(0, size.y * (*height));
     
     ofSetColor(255, brightness);
-    starsFbo.draw(0, ofGetHeight() * -2);
+    starsFbo.draw(0, size.y * -2);
     
-    planet[(int)*planetID].draw(ofGetWidth() * (*hOffset), ofGetHeight() - planet[(int)*planetID].getHeight());
+    planet[(int)*planetID].draw(size.x * (*hOffset), size.y - planet[(int)*planetID].getHeight());
     ofPopMatrix;
 }

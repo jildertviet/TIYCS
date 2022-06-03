@@ -43,45 +43,44 @@ int main(int argc, char *argv[]){
     ofRunMainLoop();
 #else
     
-    for(int i=0; i<numWindows; i++){
-        vector<Star*> stars;
-        for(int i=0; i<100; i++){
-            stars.push_back(new Star());
-            stars.back()->setLoc(
-                                glm::vec3(
-                                          width * ofRandom(-1,2), // Left screen, mid screen, right screen. This will be set from SC eventually
-                                          height * ofRandom(-1,2),
-                                          ofRandom(-3000, 1000)
+    vector<Star*> stars;
+    for(int i=0; i<100; i++){
+        stars.push_back(new Star());
+        stars.back()->setLoc(
+                            glm::vec3(
+                                      width * ofRandom(-1,2), // Left screen, mid screen, right screen. This will be set from SC eventually
+                                      height * ofRandom(-1,2),
+                                      ofRandom(-3000, 1000)
 //                                          -3000
-                                          ),
-                                 true
-                                 );
-        }
+                                      ),
+                             true
+                             );
+    }
         
-        ofGLFWWindowSettings settings;
+    ofGLFWWindowSettings settings;
 
-        settings.setSize(width, height);
-        settings.setPosition(glm::vec2(width * i,0));
-        settings.resizable = true;
-        shared_ptr<ofAppBaseWindow> window = ofCreateWindow(settings);
+    settings.setSize(width, height);
+    settings.setPosition(glm::vec2(width,0));
+    settings.resizable = true;
+    shared_ptr<ofAppBaseWindow> window = ofCreateWindow(settings);
 
-        shared_ptr<ofApp> mainApp(new ofApp);
-        mainApp->portNumAdd = i;
-        mainApp->width = width;
-        mainApp->height = height;
-        mainApp->bRotate = bRotate;
-        mainApp->windowScale = windowScale;
+    shared_ptr<ofApp> mainApp(new ofApp);
+//    mainApp->portNumAdd = i;
+//    mainApp->width = width;
+//    mainApp->height = height;
+//    mainApp->bRotate = bRotate;
+//    mainApp->windowScale = windowScale;
 //        if(i==0) // Audio comes from other laptop
 //            mainApp->bMuteAudio = false;
 
-        ofRunApp(window, mainApp); // This calls setup() ?
+    ofRunApp(window, mainApp); // This calls setup() ?
 //        ofRunApp(mainApp); // This calls setup() ?
         
-        mainApp->stars->stars.clear();
-        mainApp->stars->stars = stars;
+//    mainApp->stars->stars.clear();
+//    mainApp->stars->stars = stars;
     
 //        outterWindow->setOsc(5001);
-    }
+//    }
     
     ofRunMainLoop();
     
