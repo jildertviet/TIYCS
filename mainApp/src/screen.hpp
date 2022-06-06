@@ -125,6 +125,7 @@ public:
     Stars* stars;
 
     ofxJVisuals* v;
+    ofMesh lineMesh;
 
     #ifdef  TARGET_RASPBERRY_PI
     bool bRotate = true;

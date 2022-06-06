@@ -133,6 +133,23 @@ void screen::setup(int portNumAdd, glm::vec2 size){
     
     v = new ofxJVisuals(glm::vec2(width, height));
     receiver.setup(PORT + portNumAdd);
+    
+    lineMesh.setMode(OF_PRIMITIVE_LINES);
+//    lineMesh.addVertex(glm::vec3(0, 0, 0));
+//    lineMesh.addVertex(glm::vec3(width * 0.25, 0, 0));
+//
+//    lineMesh.addVertexglm::vec3((width * 0.25, 0, 0));
+//    lineMesh.addVertexglm::vec3((width * 0.25, 10, 0));
+//
+//    lineMesh.addVertexglm::vec3((width * 0.25, 10, 0));
+//    lineMesh.addVertexglm::vec3((0, 10, 0));
+//
+//    lineMesh.addVertexglm::vec3((0, 10, 0));
+//    lineMesh.addVertexglm::vec3((0, 0, 0));
+    lineMesh = lineMesh.plane(width*0.25, 10);
+    for(int i=0; i<lineMesh.getVertices().size(); i++){
+        lineMesh.getVertices()[i].x += width * 0.25 * 0.5;
+    }
 }
 
 //
@@ -278,7 +295,8 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                         float noiseRange = ofMap(busses[10], 0, 180, 1, 0.05);
                         noiseRange *= 30;
                         ofRotateDeg(180 + busses[10] + ((ofNoise((float)(ofGetFrameNum()/50.)) * noiseRange)));
-                        ofDrawLine(0, 0, width * 0.25, 0);
+//                        ofDrawLine(0, 0, width * 0.25, 0);
+                        lineMesh.draw();
                         ofDrawCircle(0, 0, 20);
                     ofPopStyle();
                     ofPopMatrix();
@@ -359,7 +377,8 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                         float noiseRange = ofMap(busses[10], 0, 180, 1, 0.05);
                         noiseRange *= 30;
                         ofRotateDeg(180 + busses[10] + ((ofNoise((float)(ofGetFrameNum()/50.)) * noiseRange)));
-                        ofDrawLine(0, 0, width * 0.25, 0);
+//                        ofDrawLine(0, 0, width * 0.25, 0);
+                        lineMesh.draw();
                         ofDrawCircle(0, 0, 20);
                     ofPopStyle();
                     ofPopMatrix();
