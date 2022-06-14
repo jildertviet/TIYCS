@@ -3,6 +3,7 @@ s.boot;
 (
 // t = TIYCS.new("192.168.1.2").gui;
 t = TIYCS.new("127.0.0.1").gui;
+t.mappingGui(0);
 // t.gui
 // ~j = JoniskMain.new.gui;
 // ~j.sequence = (0..23);
@@ -42,22 +43,7 @@ t.setTexCoord(screen, id: 1, x: 1280-100, y: 0);
 t.setTexCoord(screen, id: 2, x: 1280-40, y: 800-0);
 t.setTexCoord(screen, id: 3, x: 4, y: 800-0);
 )
-(
-var screen = 1;
-t.setTexCoord(screen, id: 0, x: 100, y: 0);
-t.setTexCoord(screen, id: 1, x: 1280-150, y: 10);
-t.setTexCoord(screen, id: 2, x: 1280-100, y: 800-80);
-t.setTexCoord(screen, id: 3, x: 60, y: 800-100);
-)
-(
-var screen = 2;
-t.setTexCoord(screen, id: 0, x: 90, y: 65);
-t.setTexCoord(screen, id: 1, x: 1280-40, y: 10);
-t.setTexCoord(screen, id: 2, x: 1280-10, y: 800-70);
-t.setTexCoord(screen, id: 3, x: 80, y: 800-0);
-)
+
 // Full screen
 t.allFullscreen();
 t.gui
-
-1280*3

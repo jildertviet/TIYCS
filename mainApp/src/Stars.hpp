@@ -28,6 +28,12 @@ private:
     glm::vec3 locToDraw;
 };
 
+class ShootingStar: public Star{
+public:
+    ShootingStar(){};
+    
+};
+
 class Stars{
 public:
     Stars(glm::vec2 size, string prefix);
