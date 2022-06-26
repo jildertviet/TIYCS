@@ -174,7 +174,6 @@ Stars::Stars(glm::vec2 size, string prefix){
 //    kaleidoscope->setEnabled(true);
     
     starsFbo.allocate(size.x, size.y, GL_RGB); // Memory issue @ RBP?
-    
 }
 
 void Stars::update(glm::vec3 t){
@@ -183,8 +182,9 @@ void Stars::update(glm::vec3 t){
     }
     
     starsFbo.begin();
+//    post.setFlip(false);
     post.begin();
-    
+
     ofSetColor(255);
     ofFill();
     for(int i=0; i<stars.size(); i++){

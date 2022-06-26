@@ -47,7 +47,9 @@ namespace scenes{
         Test, // 17
         Einde,
         Pseudo,
-        QAndA // 20
+        QAndA, // 20
+        
+        StarsFinal
     };
 }
 

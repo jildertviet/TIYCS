@@ -7,6 +7,7 @@
 #endif
 
 #include "screen.hpp"
+#include "ofxPostProcessing.h"
 
 class ofApp : public ofBaseApp{
 	public:
@@ -21,4 +22,7 @@ class ofApp : public ofBaseApp{
     int screenOrder[3] = {0,1,2};
     screen screens[3];
     ofVideoPlayer* commercials;
+    ofShader blob;
+    ofxPostProcessing post;
+    ofLight light;
 };

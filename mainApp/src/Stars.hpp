@@ -60,7 +60,6 @@ public:
     
     ofxPostProcessing post;
     BloomPass::Ptr bloom;
-    KaleidoscopePass::Ptr kaleidoscope;
     
     vector<Star*> stars;
     void initStars();

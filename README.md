@@ -41,8 +41,6 @@ In case of new batch:
 - [ ] Set PWM freq in EEPROM, high freq for picture mode, low for performance mode  
 - [ ] Implement internal lag for lower framerates  
 
-
-
 ## GUI
 
 The GUI is in SuperCollider (other repo (J_Pseudo)). 
@@ -66,6 +64,13 @@ To use the automator:
 
 ```
 t.automate(); // And use the counter (button up) or MIDI
+```
+
+Other useful functions:
+
+```
+t.fullscreen();
+t.gui;
 ```
 
 #### Barrier
