@@ -18,6 +18,7 @@ class ofApp : public ofBaseApp{
 		void mousePressed(int x, int y, int button);
 		void windowResized(int w, int h);
     
+    int screenorder[3] = {0,1,2};
     screen screens[3];
     ofVideoPlayer* commercials;
 };

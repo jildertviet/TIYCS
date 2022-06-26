@@ -9,8 +9,8 @@
 
 string prefix = "1280/";
 
-screen::screen(){
-    
+screen::screen(ofApp* parent){
+    this->parent = parent;
 }
 
 //--------------------------------------------------------------
@@ -20,7 +20,7 @@ void screen::setup(int portNumAdd, glm::vec2 size){
     width = size.x;
     height = size.y;
     
-    scene = scenes::Test;
+    scene = scenes::Stars;
     
     renderFbo.allocate(width, height);
     initMesh();
@@ -65,6 +65,8 @@ void screen::setup(int portNumAdd, glm::vec2 size){
     images["lineWhite"] =    ofImage(prefix + "/overlay/lijn_wit.png");
     images["joniskOL"] =    ofImage(prefix + "/overlay/jonisk.png");
     images["glowOL"] =    ofImage(prefix + "/overlay/glow.png");
+    
+    images["QandA"] = ofImage(prefix + "/qanda.png");
 
     for(int i=0; i<NUM_INSTRUCTIONS; i++){
         instructions[i].load(prefix + "instructions/" + ofToString(i) + ".png");
@@ -513,6 +515,18 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                 break;
             case scenes::Einde:
                 images["Einde"].draw(0,0);
+                break;
+            case scenes::QAndA:{
+                ofImage* i = &(images["QandA"]);
+                float x = (width - i->getWidth()) * 0.5;
+                float y = (height - i->getHeight()) * 0.5;
+                ofPushMatrix();
+                ofTranslate(width * 0.5, height * 0.5);
+                ofRotateDeg(ofRadToDeg(seed) + ofGetFrameNum()*-0.5 * ofMap(seed, 0, TWO_PI, 0.8, 1.2));
+                ofTranslate(width * -0.5, height * -0.5);
+                images["QandA"].draw(x,y);
+                ofPopMatrix();
+            }
                 break;
         }
         

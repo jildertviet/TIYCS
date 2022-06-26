@@ -21,6 +21,7 @@ void Star::update(float speedMul, glm::vec2 size){
     if(loc.z > 1000){
 //        loc = originalLoc;
         loc.z -= 3000;
+        reset();
     }
     if(loc.x < size.x * -1){
         loc.x += size.x * 3;
@@ -34,6 +35,70 @@ void Star::update(float speedMul, glm::vec2 size){
 void Star::display(){
     ofSetColor(color);
     ofDrawSphere(locToDraw, r);
+}
+
+Planet::Planet(){
+    r = pow(ofRandom(1.0), 4.0) * 15 * 2; // 2x star
+//    r = 5;
+    speed = glm::vec3(0,0,1);
+    speed.z = ofRandom(1.5, 4) * 0.5; // 2x slower
+    speed.x = ofRandom(-1, 1) * 0.1;
+    color = ofColor(255, ofRandom(200, 255));
+    
+    numRings = pow(ofRandom(1.0), 2.0) * 3.0 + 1.0;
+//    numRings = 5;
+    for(int j=0; j<numRings; j++){
+        rings.push_back(ofMesh());
+        rings[j].setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+        for(int i=0; i<91; i++){
+            float x = cos((i/90.)*TWO_PI) * (r * (2.0 + (j*3.0)));
+            float y = sin((i/90.)*TWO_PI) * (r * (2.0 + (j*3.0)));
+            float z = 0;
+            float xInner = cos((i/90.)*TWO_PI) * (r * (1.3 + (j*3)));
+            float yInner = sin((i/90.)*TWO_PI) * (r * (1.3 + (j*3)));
+            rings[j].addVertex(glm::vec3(x, y, z));
+            rings[j].addVertex(glm::vec3(xInner, yInner, z));
+        }
+    }
+    ringRotation = glm::vec3(1, 0, ofRandom(-0.2, 0.2));
+    
+    if(ofRandom(10) > 7){
+        bVisible = true;
+    } else{
+        bVisible = false;
+    }
+}
+
+void Planet::display(){
+    if(!bVisible){
+        return;
+    }
+    ofPopMatrix();
+    ofSetColor(color);
+
+    ofNoFill();
+    ofPushMatrix();
+    ofTranslate(locToDraw);
+    ofRotateDeg(90, ringRotation[0], ringRotation[1], ringRotation[2]);
+    ofEnableDepthTest();
+    ofFill();
+    ofDrawSphere(0, 0, r);
+    ofSetColor(255, 200);
+    for(int i=0; i<rings.size(); i++)
+        rings[i].draw();
+    ofDisableDepthTest();
+    ofPopMatrix();
+//    ofDrawCircle(locToDraw, r * 1.5);
+}
+
+void Planet::reset(){
+    if(ofRandom(10) > 7){
+        bVisible = true;
+    } else{
+        bVisible = false;
+    }
+    ringRotation = glm::vec3(1, 0, ofRandom(-0.2, 0.2));
+//    loc.x *= ofRandom(10.);
 }
 
 void Star::setLoc(glm::vec3 loc, bool bSetOrigin){
@@ -67,12 +132,31 @@ Stars::Stars(glm::vec2 size, string prefix){
     planet[0].load(prefix + "planetA.png");
     planet[1].load(prefix + "planetB.png");
 
-    for(int i=0; i<100; i++){ // Happens in main.cpp
+    for(int i=0; i<100; i++){
         stars.push_back(new Star());
+        float x = ofRandom(size.x-2)+1;
+        while(abs(x - size.x*0.5) < 10){
+            x = ofRandom(size.x-2)+1;
+        }
         stars.back()->setLoc(
                             glm::vec3(
-                                      size.x * ofRandom(1),
+                                      x,
                                       i*10,
+                                      0
+                                      ),
+                             true
+                             );
+    }
+    for(int i=0; i<5; i++){
+        stars.push_back(new Planet());
+        float x = ofRandom(size.x-2)+1;
+        while(abs(x - size.x*0.5) < 10){
+            x = ofRandom(size.x-2)+1;
+        }
+        stars.back()->setLoc(
+                            glm::vec3(
+                                      x,
+                                      ofRandom(size.y-2)+1,
                                       0
                                       ),
                              true
