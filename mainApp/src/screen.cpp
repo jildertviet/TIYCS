@@ -21,7 +21,7 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
     width = size.x;
     height = size.y;
     
-    scene = scenes::Test;
+    scene = scenes::StarsFinal;
     
     renderFbo.allocate(width, height);
     initMesh();
@@ -197,7 +197,7 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
         
         if(bRotate){ // Don't rotate again when recursive render()
             ofPushMatrix();
-                ofTranslate(ofGetWidth(), ofGetHeight());
+                ofTranslate(width, height);
                 ofRotateDeg(180, 0, 0, 1);
         }
     }

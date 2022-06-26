@@ -23,6 +23,8 @@ class ofApp : public ofBaseApp{
     screen screens[3];
     ofVideoPlayer* commercials;
     ofShader blob;
+    ofShader screenOrderShader;
+    ofFbo toReArrange;
     ofxPostProcessing post;
     ofLight light;
 };

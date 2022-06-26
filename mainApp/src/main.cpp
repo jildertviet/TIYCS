@@ -59,9 +59,10 @@ int main(int argc, char *argv[]){
 
     ofGLFWWindowSettings settings;
 
-    settings.setSize(width, height);
-    settings.setPosition(glm::vec2(width,0));
+//    settings.setSize(width, height);
+//    settings.setPosition(glm::vec2(width,0));
     settings.resizable = true;
+    settings.multiMonitorFullScreen = true;
     shared_ptr<ofAppBaseWindow> window = ofCreateWindow(settings);
 
     shared_ptr<ofApp> mainApp(new ofApp);

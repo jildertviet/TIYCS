@@ -73,7 +73,7 @@ void Planet::display(){
     if(!bVisible){
         return;
     }
-    ofPopMatrix();
+//    ofPopMatrix();
     ofSetColor(color);
 
     ofNoFill();
@@ -180,6 +180,7 @@ void Stars::update(glm::vec3 t){
     for(int i=0; i<stars.size(); i++){
         stars[i]->update(*travelSpeed);
     }
+    ofDisableLighting();
     
     starsFbo.begin();
 //    post.setFlip(false);

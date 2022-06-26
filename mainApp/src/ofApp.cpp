@@ -27,11 +27,13 @@ void ofApp::setup(){
     
     ofSetVerticalSync(false);
     blob.load("shadersGL2/shader");
+    screenOrderShader.load("shadersGL2/offsetShader");
     post.init(1024*4, 1024, false);
     post.createPass<BloomPass>()->setEnabled(true);
     post.createPass<GodRaysPass>()->setEnabled(true);
     light.setPosition(ofGetWidth()*0.5, ofGetHeight()*0.5, 4000);
     light.setPointLight();
+    toReArrange.allocate(ofGetWidth(), ofGetHeight());
 //    light.setAmbientColor(ofFloatColor::white);
 //    light.setDiffuseColor(ofFloatColor(1.0, 0.5, 0.5));
 }
@@ -45,24 +47,34 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    bool bRotate = true;
     if(screens[0].scene == scenes::StarsFinal){
+        
+//        screenOrderShader.begin();
+        toReArrange.begin();
+        if(bRotate){ // Don't rotate again when recursive render()
+            ofPushMatrix();
+                ofTranslate(ofGetWidth(), ofGetHeight());
+                ofRotateDeg(180, 0, 0, 1);
+        }
         float v = (float)(ofGetElapsedTimeMillis()) / 4000.;
         float v2 = (float)(1000 + ofGetElapsedTimeMillis()) / 4000.;
         
-        light.enable();
+        
         post.setFlip(false);
         post.begin();
         ofEnableDepthTest();
         for(int i=0; i<3; i++){
             ofPushMatrix();
-            ofTranslate(1280*i * windowScaler, 0);
+            ofTranslate(1280 * i * 1, 0);
     //        screens[screenOrder[i]].draw();
             for(int j=0; j<screens[i].stars->stars.size(); j++){
-                screens[i].stars->stars[j]->update();
+                screens[i].stars->stars[j]->update(1);
                 screens[i].stars->stars[j]->display();
             }
             ofPopMatrix();
         }
+        light.enable();
         blob.begin();
             blob.setUniform3f("iResolution", ofGetWidth(), ofGetHeight(), 0);
             blob.setUniform1f("iTime", ofGetElapsedTimeMillis() / 1000.);
@@ -74,8 +86,17 @@ void ofApp::draw(){
     //        blob.setUniform2f("offset", 0,0);
             ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
         blob.end();
-        
+        light.disable();
         post.end();
+        if(bRotate)
+            ofPopMatrix();
+//        screenOrderShader.end();
+        toReArrange.end();
+        
+        for(int i=0; i<3; i++){
+            toReArrange.getTexture().drawSubsection(1280 * screenOrder[i], 0, 1280, 800, 1280*i, 0);
+//            draw(1280 * screenOrder[i], 0);
+        }
     } else{
         for(int i=0; i<3; i++){
             ofPushMatrix();

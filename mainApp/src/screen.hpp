@@ -134,7 +134,7 @@ public:
     #ifdef  TARGET_RASPBERRY_PI
     bool bRotate = true;
     #else
-    bool bRotate = false;
+    bool bRotate = true;
     #endif
 
     bool bEditMode = false;
