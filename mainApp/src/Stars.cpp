@@ -45,17 +45,17 @@ Planet::Planet(){
     speed.x = ofRandom(-1, 1) * 0.1;
     color = ofColor(255, ofRandom(200, 255));
     
-    numRings = pow(ofRandom(1.0), 2.0) * 3.0 + 1.0;
+    numRings = pow(ofRandom(1.0), 3.0) * 3.0 + 1.0;
 //    numRings = 5;
     for(int j=0; j<numRings; j++){
         rings.push_back(ofMesh());
         rings[j].setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
         for(int i=0; i<91; i++){
-            float x = cos((i/90.)*TWO_PI) * (r * (2.0 + (j*3.0)));
-            float y = sin((i/90.)*TWO_PI) * (r * (2.0 + (j*3.0)));
+            float x = cos((i/90.)*TWO_PI) * (r * (2.0 + (j*2.0)));
+            float y = sin((i/90.)*TWO_PI) * (r * (2.0 + (j*2.0)));
             float z = 0;
-            float xInner = cos((i/90.)*TWO_PI) * (r * (1.3 + (j*3)));
-            float yInner = sin((i/90.)*TWO_PI) * (r * (1.3 + (j*3)));
+            float xInner = cos((i/90.)*TWO_PI) * (r * (1.3 + (j*2)));
+            float yInner = sin((i/90.)*TWO_PI) * (r * (1.3 + (j*2)));
             rings[j].addVertex(glm::vec3(x, y, z));
             rings[j].addVertex(glm::vec3(xInner, yInner, z));
         }

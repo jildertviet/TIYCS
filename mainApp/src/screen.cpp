@@ -9,18 +9,19 @@
 
 string prefix = "1280/";
 
-screen::screen(ofApp* parent){
-    this->parent = parent;
+screen::screen(){
+    
 }
 
 //--------------------------------------------------------------
-void screen::setup(int portNumAdd, glm::vec2 size){
+void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
     this->portNumAdd = portNumAdd;
     this->id = portNumAdd;
+    this->screenOrder = screenOrder;
     width = size.x;
     height = size.y;
     
-    scene = scenes::Stars;
+    scene = scenes::Test;
     
     renderFbo.allocate(width, height);
     initMesh();
@@ -646,6 +647,11 @@ void screen::processMsg(ofxOscMessage &m){
             break;
             case 5:
                 ofSetFullscreen(m.getArgAsBool(1));
+                break;
+            case 6:{
+                for(int i=0; i<3; i++)
+                    screenOrder[i] = m.getArgAsInt(i+1);
+            }
                 break;
         }
     } else if(m.getAddress() == "/setValueById"){

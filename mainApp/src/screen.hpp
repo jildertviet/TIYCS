@@ -57,13 +57,11 @@ struct FlightInfo{
     int temp = 270;
 };
 
-class ofApp;
-
 class screen{
 public:
-    screen(ofApp* parent);
-    ofApp* parent;
-    void setup(int portNumAdd = 0, glm::vec2 size = glm::vec2(1280, 800));
+    screen();
+    void setup(int portNumAdd = 0, glm::vec2 size = glm::vec2(1280, 800), int* screenOrder = nullptr);
+    int* screenOrder;
     void update();
     
     void render(scenes::Scene pseudo = scenes::Pseudo, bool bUseFbo = true);

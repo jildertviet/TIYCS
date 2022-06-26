@@ -21,7 +21,7 @@ void ofApp::setup(){
     }
     
     for(int i=0; i<3; i++){
-        screens[i].setup(i, glm::vec2(1280 * windowScaler, 800 * windowScaler));
+        screens[i].setup(i, glm::vec2(1280 * windowScaler, 800 * windowScaler), &screenOrder[0]);
         screens[i].commercials = commercials;
     }
     
@@ -40,7 +40,7 @@ void ofApp::draw(){
     for(int i=0; i<3; i++){
         ofPushMatrix();
         ofTranslate(1280*i * windowScaler, 0);
-        screens[i].draw();
+        screens[screenOrder[i]].draw();
         ofPopMatrix();
     }
 }
