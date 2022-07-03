@@ -21,7 +21,7 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
     width = size.x;
     height = size.y;
     
-    scene = scenes::StarsFinal;
+    scene = scenes::Test;
     
     renderFbo.allocate(width, height);
     initMesh();
@@ -352,8 +352,8 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                 }
                 if(commercial){
                     if(commercial->isPlaying()){
-                        float scaledHeight = commercial->getHeight() * (ofGetWidth() / commercial->getWidth());
-                        commercial->draw(0,(ofGetHeight() - scaledHeight) * 0.5, ofGetWidth(), scaledHeight);
+                        float scaledHeight = commercial->getHeight() * (width / commercial->getWidth());
+                        commercial->draw(0,(height - scaledHeight) * 0.5, width, scaledHeight);
                     }
                 }
             }

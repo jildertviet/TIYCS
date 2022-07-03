@@ -49,17 +49,19 @@ void ofApp::update(){
 void ofApp::draw(){
     bool bRotate = true;
     if(screens[0].scene == scenes::StarsFinal){
-        
+        if(screens[0].brightness == 0){
+            ofBackground(0);
+            return;
+        }
 //        screenOrderShader.begin();
         toReArrange.begin();
-        if(bRotate){ // Don't rotate again when recursive render()
+        if(bRotate){
             ofPushMatrix();
                 ofTranslate(ofGetWidth(), ofGetHeight());
                 ofRotateDeg(180, 0, 0, 1);
         }
         float v = (float)(ofGetElapsedTimeMillis()) / 4000.;
         float v2 = (float)(1000 + ofGetElapsedTimeMillis()) / 4000.;
-        
         
         post.setFlip(false);
         post.begin();
@@ -69,7 +71,9 @@ void ofApp::draw(){
             ofTranslate(1280 * i * 1, 0);
     //        screens[screenOrder[i]].draw();
             for(int j=0; j<screens[i].stars->stars.size(); j++){
-                screens[i].stars->stars[j]->update(1);
+//                screens[i].stars->update(glm::vec3(1.));
+//                screens[i].stars->display();
+                screens[i].stars->stars[j]->update(1.);
                 screens[i].stars->stars[j]->display();
             }
             ofPopMatrix();
@@ -79,10 +83,10 @@ void ofApp::draw(){
             blob.setUniform3f("iResolution", ofGetWidth(), ofGetHeight(), 0);
             blob.setUniform1f("iTime", ofGetElapsedTimeMillis() / 1000.);
             blob.setUniform4f("iMouse", ofGetMouseX(), ofGetMouseY(), 0, 0);
-    //        blob.setUniform2f("offset", (ofNoise(v)-0.5)*2.0, (ofNoise(v2)-0.5)*2.0);
-            blob.setUniform2f("offset", screens[0].busses[0],screens[0].busses[1]);
-            blob.setUniform1f("Radius", screens[0].busses[2]);
-            blob.setUniform1f("NoiseAmplitude", screens[0].busses[3]);
+//            blob.setUniform2f("offset", (ofNoise(v)-0.5)*2.0, (ofNoise(v2)-0.5)*2.0);
+            blob.setUniform2f("offset", screens[0].busses[10],screens[0].busses[11]);
+            blob.setUniform1f("Radius", screens[0].busses[12]);
+            blob.setUniform1f("NoiseAmplitude", screens[0].busses[13]);
     //        blob.setUniform2f("offset", 0,0);
             ofDrawRectangle(0,0,ofGetWidth(), ofGetHeight());
         blob.end();
@@ -91,6 +95,10 @@ void ofApp::draw(){
         if(bRotate)
             ofPopMatrix();
 //        screenOrderShader.end();
+        
+//        ofDrawBitmapString("0", 10, 10);
+//        ofDrawBitmapString("1", 10 + 1280, 10);
+//        ofDrawBitmapString("2", 10 + (2*1280), 10);
         toReArrange.end();
         
         for(int i=0; i<3; i++){

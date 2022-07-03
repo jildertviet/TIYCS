@@ -1,13 +1,30 @@
 s.boot;
+(
+t = TIYCS.new("192.168.1.2");
+~j = JoniskMain.new.gui;
+t.setScreenOrder(2, 1, 0);
+t.fullscreen();
+t.automate;
+)
+
 
 (
-// t = TIYCS.new("192.168.1.2").gui;
-t = TIYCS.new("127.0.0.1").gui;
-t.mappingGui(0);
+t = TIYCS.new("192.168.1.2");
+// t = TIYCS.new("127.0.0.1").gui;
+// t.mappingGui(0);
 // t.gui
-// ~j = JoniskMain.new.gui;
+~j = JoniskMain.new.gui;
 // ~j.sequence = (0..23);
+t.automate
 )
+
+t.setScreenOrder(0,1,2); // Einde
+t.clearRoutines
+
+t.mappingGui(0);
+
+~j.jonisks.do{|j| j.synth.set(\noiseMul, 0.0)};
+
 ~j.slidersDict
 ~j.triggerNextInSeq();
 ~j.jonisks[0].synth.set(\amp, 0)
@@ -22,6 +39,9 @@ MIDIIn.doNoteOnAction(1, 14, 29, 127);
 MIDIIn.doNoteOnAction(1, 14, 29, 127);
 MIDIIn.doNoteOnAction(1, 14, 30, 127);
 MIDIIn.doNoteOnAction(1, 14, 31, 127);
+MIDIIn.doNoteOnAction(1, 14, 96, 127); // Start fireball
+
+MIDIIn.doNoteOnAction(1, 14, 97, 127); // Feest trigger
 
 MIDIIn.doNoteOnAction(1, 14, 36, 127); // Jonisk seq (ARP)
 
@@ -45,5 +65,8 @@ t.setTexCoord(screen, id: 3, x: 4, y: 800-0);
 )
 
 // Full screen
-t.allFullscreen();
+t.fullscreen();
 t.gui
+
+t.counter.valueAction = 3
+t.valyueById(2, 255);

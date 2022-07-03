@@ -180,7 +180,8 @@ void Stars::update(glm::vec3 t){
     for(int i=0; i<stars.size(); i++){
         stars[i]->update(*travelSpeed);
     }
-    ofDisableLighting();
+
+//    ofEnableLighting();
     
     starsFbo.begin();
 //    post.setFlip(false);
@@ -193,6 +194,7 @@ void Stars::update(glm::vec3 t){
     }
 
     post.end();
+//    ofDisableLighting();
     
     ofSetColor(0, pow(1-((*height) / 2), 0.5) * 255); // Black fade when lowering
     ofDrawRectangle(0, 0, size.x, size.y);
