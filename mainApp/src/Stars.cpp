@@ -24,10 +24,10 @@ void Star::update(float speedMul, glm::vec2 size){
         reset();
     }
     if(loc.x < size.x * -1){
-        loc.x += size.x * 3;
+        loc.x += size.x * 2;
     }
     if(loc.x > size.x * 2){
-        loc.x += size.x * -3;
+        loc.x += size.x * -2;
     }
     locToDraw = loc;
 }
@@ -82,23 +82,28 @@ void Planet::display(){
     ofRotateDeg(90, ringRotation[0], ringRotation[1], ringRotation[2]);
     ofEnableDepthTest();
     ofFill();
-    ofDrawSphere(0, 0, r);
     ofSetColor(255, 200);
     for(int i=0; i<rings.size(); i++)
         rings[i].draw();
+    ofSetColor(255);
+    ofDrawSphere(0, 0, r);
     ofDisableDepthTest();
     ofPopMatrix();
 //    ofDrawCircle(locToDraw, r * 1.5);
 }
 
 void Planet::reset(){
+    if(bVisible){
+        bVisible = false;
+        return;
+    }
     if(ofRandom(10) > 7){
         bVisible = true;
     } else{
         bVisible = false;
     }
     ringRotation = glm::vec3(1, 0, ofRandom(-0.2, 0.2));
-//    loc.x *= ofRandom(10.);
+//    loc.x *= ofRandom(3000.);
 }
 
 void Star::setLoc(glm::vec3 loc, bool bSetOrigin){
@@ -132,10 +137,10 @@ Stars::Stars(glm::vec2 size, string prefix){
     planet[0].load(prefix + "planetA.png");
     planet[1].load(prefix + "planetB.png");
 
-    for(int i=0; i<100; i++){
+    for(int i=0; i<120; i++){
         stars.push_back(new Star());
         float x = ofRandom(size.x-2)+1;
-        while(abs(x - size.x*0.5) < 10){
+        while(abs(x - size.x*0.5) < 100){
             x = ofRandom(size.x-2)+1;
         }
         stars.back()->setLoc(
@@ -150,7 +155,7 @@ Stars::Stars(glm::vec2 size, string prefix){
     for(int i=0; i<5; i++){
         stars.push_back(new Planet());
         float x = ofRandom(size.x-2)+1;
-        while(abs(x - size.x*0.5) < 10){
+        while(abs(x - size.x*0.5) < 100){
             x = ofRandom(size.x-2)+1;
         }
         stars.back()->setLoc(

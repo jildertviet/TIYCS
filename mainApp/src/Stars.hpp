@@ -25,8 +25,8 @@ public:
     void translate(glm::vec3 t);
     ofColor color;
     glm::vec3 locToDraw;
-private:
     glm::vec3 loc;
+private:
 };
 
 class ShootingStar: public Star{

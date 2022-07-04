@@ -63,7 +63,7 @@ void ofApp::draw(){
         float v = (float)(ofGetElapsedTimeMillis()) / 4000.;
         float v2 = (float)(1000 + ofGetElapsedTimeMillis()) / 4000.;
         
-        post.setFlip(false);
+        post.setFlip(true);
         post.begin();
         ofEnableDepthTest();
         for(int i=0; i<3; i++){

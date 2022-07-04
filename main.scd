@@ -1,7 +1,8 @@
 s.boot;
 (
-t = TIYCS.new("192.168.1.2");
-~j = JoniskMain.new.gui;
+// t = TIYCS.new("192.168.1.2");
+t = TIYCS.new("127.0.0.1");
+// ~j = JoniskMain.new.gui;
 t.setScreenOrder(2, 1, 0);
 t.fullscreen();
 t.automate;
