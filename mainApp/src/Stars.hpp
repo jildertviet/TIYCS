@@ -66,6 +66,7 @@ public:
     void drawStars();
     ofFbo starsFbo;
     ofImage planet[2];
+    ofImage starLayer;
     float* planetID;
     
 };

@@ -73,7 +73,7 @@ void ofApp::draw(){
             for(int j=0; j<screens[i].stars->stars.size(); j++){
 //                screens[i].stars->update(glm::vec3(1.));
 //                screens[i].stars->display();
-                screens[i].stars->stars[j]->update(1.);
+                screens[i].stars->stars[j]->update(screens[0].busses[14]);
                 screens[i].stars->stars[j]->display();
             }
             ofPopMatrix();

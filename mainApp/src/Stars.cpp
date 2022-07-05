@@ -136,6 +136,7 @@ Stars::Stars(glm::vec2 size, string prefix){
     this->size = size;
     planet[0].load(prefix + "planetA.png");
     planet[1].load(prefix + "planetB.png");
+    starLayer.load(prefix + "sterrenLaag.png");
 
     for(int i=0; i<120; i++){
         stars.push_back(new Star());
@@ -211,6 +212,7 @@ void Stars::display(float brightness){
     ofPushMatrix();
 
     ofTranslate(0, size.y * (*height));
+    starLayer.draw(size.x * (*hOffset), size.y * -2);
     
     ofSetColor(255, brightness);
     starsFbo.draw(0, size.y * -2);

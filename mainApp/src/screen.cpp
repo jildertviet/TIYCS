@@ -262,7 +262,7 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                 ofPopMatrix();
                             
                 if(busses[8]){
-                    joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * busses[9] + start;
+                    joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * (busses[9]+0.15) + start;
         
                     ofSetColor(0, 100 * busses[8]);
                     ofDrawRectangle(0, 0, width, height);
