@@ -13,6 +13,11 @@ AccelStepper stepper(AccelStepper::HALF4WIRE, 3, 2, 5, 4); // Defaults to AccelS
 #define DATA_PIN_B 17
 
 CRGB leds[NUM_LEDS];
+CRGB colors[2] = {
+  CRGB(255, 0, 255),
+  CRGB(233, 118, 76)
+};
+int activeColor = 0;
 float range = 2000;
 unsigned long startTimeFadeIn = 0;
 unsigned long startTimeFadeOut = 0;
@@ -96,6 +101,7 @@ void loop(){
   bool value = digitalRead(33);
   if(value != prevValue && value == LOW){
     bState = !bState;
+    activeColor = (activeColor + 1) % 4; // 0, 1, 2, 3
     digitalWrite(5, 1-bState);
     if(bState == false){
       startTimeFadeOut = millis();
@@ -112,7 +118,7 @@ void loop(){
       ratio = 1 - ratio;
       for(int i=0; i<NUM_LEDS; i++){
         if(i <   (ratio * NUM_LEDS)){
-          leds[i] = CRGB(255 * ratio, 0, 255 * ratio);
+          leds[i] = CRGB(colors[activeColor/2].r * ratio, colors[activeColor/2].g * ratio, colors[activeColor/2].b * ratio);
         } else{
           leds[i] = CRGB::Black;
         }
@@ -123,7 +129,7 @@ void loop(){
         float ratio = (millis() - startTimeFadeIn) / (float)fadeTime;
         for(int i=0; i<NUM_LEDS; i++){
         if(i < ratio * NUM_LEDS){
-          leds[i] = CRGB(255 * ratio, 0, 255 * ratio);
+          leds[i] = CRGB(colors[activeColor/2].r * ratio, colors[activeColor/2].g * ratio, colors[activeColor/2].b * ratio);
         } else{
           leds[i] = CRGB::Black;
         }

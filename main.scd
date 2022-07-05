@@ -7,7 +7,7 @@ t.setScreenOrder(2, 1, 0);
 // t.fullscreen();
 t.automate();
 ~j = JoniskMain.new.gui();
-StaticText(Window("Beweeg muis @ Linux, voor je begint").front, Rect(0, 0, 400, 30)).string_("Beweeg muis @ Linux, voor je begint\nClose this window");
+StaticText(Window("Beweeg muis @ Linux, voor je begint").setInnerExtent(400, 100).front, Rect(0, 0, 400, 30)).string_("Beweeg muis @ Linux, voor je begint\nEn sluit dit scherm.");
 )
 
 s.options.inDevice = "Built-in Microph";

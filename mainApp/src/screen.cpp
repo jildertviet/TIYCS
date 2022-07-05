@@ -639,9 +639,20 @@ void screen::processMsg(ofxOscMessage &m){
                 mesh.clear();
                 mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
 
-                for(char i=0; i<4; i++){
-                    mesh.addTexCoord(texCoords[i]);
-                    mesh.addVertex(meshVertices[i]);
+                if(bRotate){
+                    mesh.addTexCoord(texCoords[3]);
+                    mesh.addVertex(meshVertices[3]);
+                    mesh.addTexCoord(texCoords[2]);
+                    mesh.addVertex(meshVertices[2]);
+                    mesh.addTexCoord(texCoords[1]);
+                    mesh.addVertex(meshVertices[1]);
+                    mesh.addTexCoord(texCoords[0]);
+                    mesh.addVertex(meshVertices[0]);
+                } else{
+                    for(char i=0; i<4; i++){
+                        mesh.addTexCoord(texCoords[i]);
+                        mesh.addVertex(meshVertices[i]);
+                    }
                 }
             }
             break;
