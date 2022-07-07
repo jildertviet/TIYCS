@@ -176,6 +176,7 @@ Stars::Stars(glm::vec2 size, string prefix){
 //    post.createPass<FxaaPass>()->setEnabled(false);
     bloom = post.createPass<BloomPass>();
     bloom->setEnabled(true);
+    post.createPass<VerticalTiltShifPass>()->setEnabled(true);
 //    kaleidoscope = post.createPass<KaleidoscopePass>();
 //    kaleidoscope->setEnabled(true);
     

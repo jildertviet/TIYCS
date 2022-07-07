@@ -63,7 +63,7 @@ void ofApp::draw(){
         float v = (float)(ofGetElapsedTimeMillis()) / 4000.;
         float v2 = (float)(1000 + ofGetElapsedTimeMillis()) / 4000.;
         
-        post.setFlip(true);
+        post.setFlip(false);
         post.begin();
         ofEnableDepthTest();
         for(int i=0; i<3; i++){
@@ -102,7 +102,12 @@ void ofApp::draw(){
         toReArrange.end();
         
         for(int i=0; i<3; i++){
-            toReArrange.getTexture().drawSubsection(1280 * screenOrder[i], 0, 1280, 800, 1280*i, 0);
+            ofPushMatrix();
+//            ofRotateYDeg(180);
+//            ofTranslate(1280, 0);
+            ofTranslate(1280 * screenOrder[2-i], 0); // Reverse screenorder ... 
+            toReArrange.getTexture().drawSubsection(0, 0, 1280, 800, 1280*i, 0);
+            ofPopMatrix();
 //            draw(1280 * screenOrder[i], 0);
         }
     } else{
