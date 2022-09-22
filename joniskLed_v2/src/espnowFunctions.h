@@ -41,9 +41,23 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       id = data[1];
       writeEEPROM();
       break;
-    case 0x07:
+    case 0x07:{
       mode = Mode::START_WIFI;
       memcpy(&replyAddr, mac_addr, 6);
+      int seperatorIndex = -1;
+      for(int i=1; i<data_len; i++){
+        if(data[i] == ';'){
+          seperatorIndex = i;
+          break;
+        }
+      } // 0x07 a b c ; d d
+      if(seperatorIndex>0){
+        ssid = new char[seperatorIndex-1];
+        password = new char[data_len - seperatorIndex - 1];
+        memcpy(ssid, data+1, seperatorIndex-1);
+        memcpy(password, data+1+seperatorIndex, data_len - seperatorIndex - 1);
+      }
+    }
       break;
     case 0x08: // Reply with battery voltage
       mode = Mode::SEND_BATTERY;
