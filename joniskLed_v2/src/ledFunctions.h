@@ -78,7 +78,7 @@ void sendPing(){
     int v = measureBattery();
     memcpy(msg+1, &v, 4); // Prefix is 'a'
 
-    // esp_err_t result = 
+    // esp_err_t result =
     esp_now_send(replyAddr, msg, 5);
 //    if (result == ESP_OK) {
 //      blinkLed(1, 100, 1);

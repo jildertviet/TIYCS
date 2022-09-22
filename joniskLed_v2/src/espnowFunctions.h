@@ -13,8 +13,10 @@ bool checkAddressed(const uint8_t* data){
 }
 
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
-  lastReceived = millis();
   char msgType = data[0];
+  if(msgType != 'a'){
+    lastReceived = millis();
+  }
 //  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
 
 //  for(int i=0; i<data_len; i++){
