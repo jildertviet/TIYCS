@@ -1,7 +1,7 @@
 /mainApp/bin/data/*
 
-*/credentials.h
-
+**/credentials.h
+*.pem
 fp-info-cache
 *.kicad_prl
 *.numbers

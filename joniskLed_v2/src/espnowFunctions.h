@@ -1,3 +1,5 @@
+#include <ArduinoJson.h>
+
 esp_now_peer_info_t slave;
 
 void writeEEPROM();
@@ -93,6 +95,25 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       if(checkAddressed(data)){
         uint8_t newMsg[2] = {0x08, 0x00}; // Battery
         OnDataRecv(mac_addr, newMsg, 2);
+      }
+    }
+    break;
+    case 0x15:{
+      if(checkAddressed(data)){
+        DynamicJsonDocument doc(200); // {"ssid":"xxx"}
+        char* json = new char[data_len-7];
+        memcpy(json, data+1+6, data_len - 7); // ID, mac[6], JSONMSG
+        DeserializationError error = deserializeJson(doc, json);
+        String ssid_ = doc["ssid"];
+        ssid = new char[ssid_.length()];
+        memcpy(ssid, &ssid_, ssid_.length());
+        String password_ = doc["password"];
+        password = new char[password_.length()];
+        memcpy(password, &password_, password_.length());
+        String url_ = doc["url"];
+        url = new char[url_.length()];
+        memcpy(url, &url_, url_.length());
+        mode = START_OTA_SERVER;
       }
     }
     break;

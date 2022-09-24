@@ -7,6 +7,10 @@
 #include "EEPROM.h"
 #include "credentials.h"
 
+char* ssid;
+char* password;
+char* url; // Set from MSG
+
 #define CHANNEL 1
 // #define IS_JONISK_2022
 #define IS_JONISK_2022_EXTRA
@@ -18,7 +22,7 @@ unsigned char values[4] = {0, 0, 0, 0};
 uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 uint8_t myAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY, DEEP_SLEEP};
+enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY, DEEP_SLEEP, HANDLE_OTA_SERVER, START_OTA_SERVER};
 Mode mode = NOLAG;
 Mode modeToReturnTo = Mode::NOLAG;
 unsigned char id = 0;
@@ -43,6 +47,7 @@ unsigned long envStartTime = 0;
 bool bLagDone = false;
 
 #include "ledFunctions.h"
+#include "otaServer.h"
 
 void writeEEPROM(){
   EEPROM.write(0, id);
@@ -179,6 +184,22 @@ void loop() {
     case HANDLE_OTA:{
         ArduinoOTA.handle();
         delay(10);
+    }
+    break;
+    case START_OTA_SERVER:{
+      startOtaServer();
+      mode = HANDLE_OTA_SERVER;
+    }
+    break;
+    case HANDLE_OTA_SERVER:{
+      otastatus = HttpsOTA.status();
+      if(otastatus == HTTPS_OTA_SUCCESS) {
+          Serial.println("Firmware written successfully. To reboot device, call API ESP.restart() or PUSH restart button on device");
+          ESP.restart();
+      } else if(otastatus == HTTPS_OTA_FAIL) {
+          Serial.println("Firmware Upgrade Fail");
+      }
+      delay(1000);
     }
     break;
     case SEND_BATTERY:{

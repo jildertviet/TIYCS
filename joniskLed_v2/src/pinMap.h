@@ -27,7 +27,7 @@
   #define W_PIN 32
 #endif
 
-#ifdef IS_LED_FIXBOARD // Used for ESP32S2 with fixBoard on top
+#ifdef IS_LED_FIXBOARD // Used for ESP32S2 with fixBoard on top (these are thrown away!)
   #define R_PIN 14
   #define G_PIN 15
   #define B_PIN 16
@@ -54,4 +54,18 @@
     pinMode(4, OUTPUT);
     pinMode(5, OUTPUT);
   }
+#endif
+
+#ifdef IS_PONTLED_2019
+  #define R_PIN 0
+  #define G_PIN 0
+  #define B_PIN 0
+  #define W_PIN 0
+#endif
+
+#ifdef IS_PONTLED_2022 // Recycled ESP32S2
+  #define R_PIN 0
+  #define G_PIN 0
+  #define B_PIN 0
+  #define W_PIN 0
 #endif
