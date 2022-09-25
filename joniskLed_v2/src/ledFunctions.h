@@ -29,7 +29,7 @@ void setLED(int channel, int value){ // Receives 0 - 255
   }
   values[channel] = value;
 #ifdef PWM_10_BIT
-  value = v * 1024;
+  value = v * 4096; // 1024
 #endif
 
   ledcWrite(channel + 1, value);
@@ -58,12 +58,12 @@ void aliveBlink(){ // GPIO_5
   }
 }
 
-void sendPing(){
-  if(mode ==HANDLE_OTA)
+void sendPing(bool bOverride = false){
+  if(mode == HANDLE_OTA)
     return;
 
   // Only send when no msg is received for x seconds
-  if(millis() > lastReceived + 60000 && millis() > 10000){
+  if(millis() > lastReceived + 60000 && millis() > 10000 || bOverride){
     WiFi.mode(WIFI_OFF);
     WiFi.mode(WIFI_STA);
     Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());

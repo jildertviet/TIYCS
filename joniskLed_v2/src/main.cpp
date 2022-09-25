@@ -67,7 +67,7 @@ void setup() {
   // ledcSetup(uint8_t channel, uint32_t freq, uint8_t resolution_bits);
   for(char i=0; i<4; i++){
 #ifdef  PWM_10_BIT
-    ledcSetup(i+1, 9000, 10); // Hz / bitdepth
+    ledcSetup(i+1, 9000, 12); // Hz / bitdepth
 #else
     ledcSetup(i+1, 12000, 8); // Hz / bitdepth
 #endif
@@ -93,10 +93,12 @@ void setup() {
 
   initPins();
 
-  aliveBlink();
+  aliveBlink(); // BuiltinLED
   initCurve();
   testLed();
   Serial.println("Setup done");
+
+  sendPing(true); // "I'm alive!"
 }
 
 void loop() {
