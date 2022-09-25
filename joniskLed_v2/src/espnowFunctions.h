@@ -27,9 +27,11 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 //  Serial.println();
   switch(msgType){
     case 0x05:
-      memcpy(values, data + 1 + (id*4), 4);
+    if(checkAddressed(data)){
+      memcpy(values, data + 1 + (id*4) + 6, 4);
       mode = NOLAG;
       bUpdate = true;
+    }
       break;
     case 0x09:
 //      mode = LAG;
@@ -46,28 +48,34 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       writeEEPROM();
       break;
     case 0x07:{
-      mode = Mode::START_WIFI;
-      memcpy(&replyAddr, mac_addr, 6);
-      int seperatorIndex = -1;
-      for(int i=1; i<data_len; i++){
-        if(data[i] == ';'){
-          seperatorIndex = i;
-          break;
+      if(checkAddressed(data)){
+        mode = Mode::START_WIFI;
+        memcpy(&replyAddr, mac_addr, 6);
+        int seperatorIndex = -1;
+        for(int i=1+6; i<data_len; i++){
+          if(data[i] == ';'){
+            seperatorIndex = i;
+            break;
+          }
+        } // 0x07 a b c ; d d
+        if(seperatorIndex>0){
+          ssid = new char[seperatorIndex-1];
+          password = new char[data_len - seperatorIndex - 1];
+          memcpy(ssid, data+1+6, seperatorIndex-1);
+          memcpy(password, data+1+seperatorIndex+6, data_len - seperatorIndex - 1);
         }
-      } // 0x07 a b c ; d d
-      if(seperatorIndex>0){
-        ssid = new char[seperatorIndex-1];
-        password = new char[data_len - seperatorIndex - 1];
-        memcpy(ssid, data+1, seperatorIndex-1);
-        memcpy(password, data+1+seperatorIndex, data_len - seperatorIndex - 1);
       }
     }
       break;
     case 0x08: // Reply with battery voltage
-      mode = Mode::SEND_BATTERY;
+      if(checkAddressed(data)){
+        mode = Mode::SEND_BATTERY;
+      }
       break;
     case 0x10:
-      mode = Mode::DEEP_SLEEP;
+      if(checkAddressed(data)){
+        mode = Mode::DEEP_SLEEP;
+      }
       break;
 
     case 0x11:{ // {0x11, a, d, d, r, e, s, 0x05} : set ESP32 with address 'addres' to ID 0x05
