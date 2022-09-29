@@ -13,7 +13,9 @@ char* url; // Set from MSG
 
 #define CHANNEL 1
 // #define IS_JONISK_2022
-#define IS_JONISK_2022_EXTRA
+// #define JONISK // This performs the battery measurement
+// #define IS_PONTLED_2019
+#define IS_PONTLED_2022_V1
 // #define IS_LED_FIXBOARD
 
 #define   PWM_10_BIT
@@ -56,6 +58,10 @@ void writeEEPROM(){
 
 void setup() {
   delay(500);
+  initPins();
+  // aliveBlink(true);
+  // digitalWrite(5, HIGH);
+  // return;
 //  pinMode(23, OUTPUT); digitalWrite(23, LOW);
   ledcAttachPin(R_PIN, 1); // assign RGB led pins to channels
   ledcAttachPin(G_PIN, 2);
@@ -91,8 +97,6 @@ void setup() {
   }
   id = EEPROM.read(0);
 
-  initPins();
-
   aliveBlink(); // BuiltinLED
   initCurve();
   testLed();
@@ -103,6 +107,9 @@ void setup() {
 
 void loop() {
   aliveBlink();
+  // return;
+
+  // return;
   sendPing();
   checkPins();
   switch(mode){
@@ -227,6 +234,7 @@ void loop() {
 
 void checkPins(){
   if(millis() > lastChecked + 100){
+    #ifdef  IS_JONISK_2022
     if(digitalRead(15) == LOW){
       digitalWrite(5, HIGH);
       delay(100);
@@ -239,6 +247,7 @@ void checkPins(){
       blinkInterval[0] = 30;
       blinkInterval[1] = 1500;
     }
+    #endif
     lastChecked = millis();
   }
 }

@@ -27,11 +27,9 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 //  Serial.println();
   switch(msgType){
     case 0x05:
-    if(checkAddressed(data)){
-      memcpy(values, data + 1 + (id*4) + 6, 4);
+      memcpy(values, data + 1 + (id*4), 4);
       mode = NOLAG;
       bUpdate = true;
-    }
       break;
     case 0x09:
 //      mode = LAG;
@@ -44,8 +42,10 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 //      bLagDone = false;
     break;
     case 0x03:
+    Serial.println("Set ID");
       id = data[1];
       writeEEPROM();
+      Serial.println((int)id);
       break;
     case 0x07:{
       if(checkAddressed(data)){
@@ -55,14 +55,19 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
         for(int i=1+6; i<data_len; i++){
           if(data[i] == ';'){
             seperatorIndex = i;
+            Serial.print("sepIndex: "); Serial.println(seperatorIndex);
             break;
           }
         } // 0x07 a b c ; d d
         if(seperatorIndex>0){
-          ssid = new char[seperatorIndex-1];
-          password = new char[data_len - seperatorIndex - 1];
-          memcpy(ssid, data+1+6, seperatorIndex-1);
-          memcpy(password, data+1+seperatorIndex+6, data_len - seperatorIndex - 1);
+          ssid = new char[seperatorIndex-1+1-6];
+          password = new char[data_len - seperatorIndex + 1];
+          memset(ssid, 0x00, seperatorIndex-1+1-6);
+          memset(password, 0x00, data_len - seperatorIndex + 1);
+          memcpy(ssid, data+1+6, seperatorIndex-1-6);
+          memcpy(password, data+seperatorIndex+1, data_len - seperatorIndex - 1);
+          Serial.println(ssid);
+          Serial.println(password);
         }
       }
     }
@@ -80,18 +85,22 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
 
     case 0x11:{ // {0x11, a, d, d, r, e, s, 0x05} : set ESP32 with address 'addres' to ID 0x05
       if(checkAddressed(data)){
-        uint8_t newMsg[2] = {0x03, data[7]};
-        OnDataRecv(mac_addr, newMsg, 2); // Recursively call this function to set the ID
+        uint8_t newMsg[data_len - 6];
+        newMsg[0] == 0x03;
+        memcpy(newMsg+1, data + 7, data_len - 6);
+        OnDataRecv(mac_addr, newMsg, data_len-6); // Recursively call this function to set the ID
       }
     }
       break;
-    case 0x12:{
-      if(checkAddressed(data)){
-        uint8_t newMsg[2] = {0x07, 0x00}; // OTA
-        OnDataRecv(mac_addr, newMsg, 2);
-      }
-    }
-    break;
+    // case 0x12:{
+    //   if(checkAddressed(data)){
+    //     uint8_t newMsg[data_len - 6]; // OTA
+    //     newMsg[0] == 0x07;
+    //     memcpy(newMsg+1, data + 7, data_len - 6);
+    //     OnDataRecv(mac_addr, newMsg, data_len-6);
+    //   }
+    // }
+    // break;
     case 0x13:{
       if(checkAddressed(data)){
         uint8_t newMsg[2] = {0x10, 0x00}; // Deep sleep
@@ -107,20 +116,26 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     }
     break;
     case 0x15:{
+      Serial.print("0x15");
       if(checkAddressed(data)){
+        Serial.println(" addressed");
         DynamicJsonDocument doc(200); // {"ssid":"xxx"}
         char* json = new char[data_len-7];
         memcpy(json, data+1+6, data_len - 7); // ID, mac[6], JSONMSG
         DeserializationError error = deserializeJson(doc, json);
         String ssid_ = doc["ssid"];
-        ssid = new char[ssid_.length()];
-        memcpy(ssid, &ssid_, ssid_.length());
+        ssid = new char[ssid_.length()+1];
+        ssid_.toCharArray(ssid, ssid_.length()+1);
         String password_ = doc["password"];
-        password = new char[password_.length()];
-        memcpy(password, &password_, password_.length());
+        password = new char[password_.length()+1];
+        password_.toCharArray(password, password_.length()+1);
         String url_ = doc["url"];
-        url = new char[url_.length()];
-        memcpy(url, &url_, url_.length());
+        url = new char[url_.length() + 1];
+        url_.toCharArray(url, url_.length() + 1);
+        // memcpy(url, &url_, url_.length());
+        Serial.println(ssid);
+        Serial.println(password);
+        Serial.println(url);
         mode = START_OTA_SERVER;
       }
     }

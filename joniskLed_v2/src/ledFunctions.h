@@ -50,8 +50,8 @@ void testLed(){ // 12 PWM
   }
 }
 
-void aliveBlink(){ // GPIO_5
-  if(millis() > lastBlinked + blinkInterval[blinkIndex]){
+void aliveBlink(bool bOverride = false){ // GPIO_5
+  if(millis() > lastBlinked + blinkInterval[blinkIndex] || bOverride){
     lastBlinked = millis();
     digitalWrite(5, blinkIndex);
     blinkIndex = (blinkIndex + 1) % 2; // 0, 1, 0, etc
@@ -75,7 +75,11 @@ void sendPing(bool bOverride = false){
     addPeer(replyAddr);
 
     uint8_t msg[5] = {'a','l', 'i', 'v', 'e'};
+    #ifdef JONISK
     int v = measureBattery();
+    #else
+    int v = 1;
+    #endif
     memcpy(msg+1, &v, 4); // Prefix is 'a'
 
     // esp_err_t result =

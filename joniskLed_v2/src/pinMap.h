@@ -57,15 +57,19 @@
 #endif
 
 #ifdef IS_PONTLED_2019
-  #define R_PIN 0
-  #define G_PIN 0
-  #define B_PIN 0
-  #define W_PIN 0
+  #define R_PIN 16
+  #define G_PIN 33
+  #define B_PIN 17
+  #define W_PIN 32
+  void initPins(){};
 #endif
 
-#ifdef IS_PONTLED_2022 // Recycled ESP32S2
-  #define R_PIN 0
-  #define G_PIN 0
-  #define B_PIN 0
-  #define W_PIN 0
+#ifdef IS_PONTLED_2022_V1
+  #define R_PIN 12
+  #define G_PIN 13
+  #define B_PIN 22
+  #define W_PIN 23
+  void initPins(){
+    // pinMode(5, OUTPUT);
+  }
 #endif
