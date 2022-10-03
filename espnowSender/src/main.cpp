@@ -11,7 +11,7 @@ unsigned char x;
 unsigned char lengtOfMsg;
 unsigned char startByte;
 
-//#define J_LOG true
+// #define J_LOG true
 
 #define CHANNEL 1
 //#define LEDBEAM_0
@@ -102,8 +102,9 @@ const uint8_t mac[NUM][6] = {
 #endif
 
 #ifdef PONT2022
-#define NUM 14
+#define NUM 15
 const uint8_t mac[NUM][6] = {
+{0xFF,0xFF,0xFF,0xFF,0xFF,0xFF}, // AAAAARGH >:/
 {0x24,0x6F,0x28,0xDD,0x48,0xA1},
 {0x24,0x6F,0x28,0xDD,0x01,0xB1},
 {0x24,0x6F,0x28,0xF2,0x83,0x41},
@@ -264,10 +265,10 @@ void loop() {
     if(serialBuffer[writePos] == 'd' && writePos > 9){
       if(serialBuffer[writePos-1] == 'n' && serialBuffer[writePos-2] == 'e'){
         int len = writePos-2-6;
-//        for(int i=0; i<len; i++){
-//          Serial.print((char)serialBuffer[i]);
-//        }
-//        Serial.println();
+       // for(int i=0; i<len; i++){
+         // Serial.print((char)serialBuffer[i]);
+       // }
+       // Serial.println();
         memcpy(addr, serialBuffer, 6);
 //        for(int i=0; i<6; i++){
 //          Serial.print((int)addr[i]); Serial.print(" ");

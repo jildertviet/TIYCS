@@ -103,7 +103,7 @@ void setup() {
   testLed();
   Serial.println("Setup done");
 
-  // sendPing(true); // "I'm alive!"
+  sendPing(true); // "I'm alive!"
 }
 
 void loop() {

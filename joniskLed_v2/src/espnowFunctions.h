@@ -21,9 +21,9 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
   }
 //  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
 
- for(int i=0; i<data_len; i++){
-   Serial.print((int)data[i]); Serial.print(" ");
- }
+ // for(int i=0; i<data_len; i++){
+   // Serial.print((int)data[i]); Serial.print(" ");
+ // }
 //  Serial.println();
   switch(msgType){
     case 0x05:
