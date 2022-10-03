@@ -1,3 +1,5 @@
+#pragma once
+
 float brightnessCurve[256];
 
 unsigned long lastBlinked = 0;
@@ -66,7 +68,7 @@ void sendPing(bool bOverride = false){
   if(millis() > lastReceived + 60000 && millis() > 10000 || bOverride){
     WiFi.mode(WIFI_OFF);
     WiFi.mode(WIFI_STA);
-    Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
+    // Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
 
     initESPNow();
     esp_now_register_recv_cb(OnDataRecv);

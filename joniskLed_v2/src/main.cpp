@@ -84,7 +84,7 @@ void setup() {
   Serial.println("Serial opened, led pwm channels already configured");
 
   delay(200);
-  WiFi.softAP("TIYCS", "nonsense", 1, true);
+  WiFi.softAP("TIYCS", "nonsense", CHANNEL, true);
   Serial.print("AP MAC: "); Serial.println(WiFi.softAPmacAddress());
   WiFi.softAPmacAddress(myAddr);
 
@@ -96,13 +96,14 @@ void setup() {
     Serial.println("failed to initialise EEPROM");
   }
   id = EEPROM.read(0);
+  Serial.print("My ID: "); Serial.println((int)id);
 
   aliveBlink(); // BuiltinLED
   initCurve();
   testLed();
   Serial.println("Setup done");
 
-  sendPing(true); // "I'm alive!"
+  // sendPing(true); // "I'm alive!"
 }
 
 void loop() {
@@ -196,7 +197,12 @@ void loop() {
     }
     break;
     case START_OTA_SERVER:{
-      startOtaServer();
+      if(startOtaServer()){
+        blinkLed(1, 250, 3);
+        setLED(1, 50);
+      } else{
+        ESP.restart();
+      }
       mode = HANDLE_OTA_SERVER;
     }
     break;
