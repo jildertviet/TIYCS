@@ -10,20 +10,40 @@
 
 #include <stdio.h>
 #include "ofMain.h"
+#include "ofxPostProcessing.h"
 
 class Star{
 public:
     Star();
-    void update(float speedMul=1);
-    void display();
+    void update(float speedMul=1, glm::vec2 size = glm::vec2(1280, 800));
+    virtual void display();
+    virtual void reset(){};
     float r = 10;
     glm::vec3 speed;
     glm::vec3 originalLoc;
     void setLoc(glm::vec3 loc, bool bSetOrigin = false);
     void translate(glm::vec3 t);
-private:
-    glm::vec3 loc;
+    ofColor color;
     glm::vec3 locToDraw;
+    glm::vec3 loc;
+private:
+};
+
+class ShootingStar: public Star{
+public:
+    ShootingStar(){};
+    
+};
+
+class Planet: public Star{
+public:
+    Planet();
+    vector<ofMesh> rings;
+    void display() override;
+    void reset() override;
+    glm::vec3 ringRotation;
+    int numRings;
+    bool bVisible = true;
 };
 
 class Stars{
@@ -35,16 +55,19 @@ public:
     void display(float brightness=255);
 
     float* height;
+    float* hOffset;
     float* travelSpeed;
     
-//    ofxPostProcessing post;
-//    BloomPass::Ptr bloom;
+    ofxPostProcessing post;
+    BloomPass::Ptr bloom;
     
     vector<Star*> stars;
     void initStars();
     void drawStars();
     ofFbo starsFbo;
-    ofImage planet;
+    ofImage planet[2];
+    ofImage starLayer;
+    float* planetID;
     
 };
 #endif /* Star_hpp */

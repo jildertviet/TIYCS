@@ -8,22 +8,102 @@
 #include "Stars.hpp"
 
 Star::Star(){
-    r = pow(ofRandom(1.0), 4.0) * 5;
-    r = 5;
+    r = pow(ofRandom(1.0), 4.0) * 15;
+//    r = 5;
     speed = glm::vec3(0,0,1);
     speed.z = ofRandom(1.5, 4);
+    speed.x = ofRandom(-1, 1) * 0.1;
+    color = ofColor(255, ofRandom(200, 255));
 }
 
-void Star::update(float speedMul){
+void Star::update(float speedMul, glm::vec2 size){
     loc += speed * speedMul;
     if(loc.z > 1000){
-        loc = originalLoc;
+//        loc = originalLoc;
+        loc.z -= 3000;
+        reset();
     }
+    if(loc.x < size.x * -1){
+        loc.x += size.x * 2;
+    }
+    if(loc.x > size.x * 2){
+        loc.x += size.x * -2;
+    }
+    locToDraw = loc;
 }
 
 void Star::display(){
-    ofSetColor(255);
+    ofSetColor(color);
     ofDrawSphere(locToDraw, r);
+}
+
+Planet::Planet(){
+    r = pow(ofRandom(1.0), 4.0) * 15 * 2; // 2x star
+//    r = 5;
+    speed = glm::vec3(0,0,1);
+    speed.z = ofRandom(1.5, 4) * 0.5; // 2x slower
+    speed.x = ofRandom(-1, 1) * 0.1;
+    color = ofColor(255, ofRandom(200, 255));
+    
+    numRings = pow(ofRandom(1.0), 3.0) * 3.0 + 1.0;
+//    numRings = 5;
+    for(int j=0; j<numRings; j++){
+        rings.push_back(ofMesh());
+        rings[j].setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+        for(int i=0; i<91; i++){
+            float x = cos((i/90.)*TWO_PI) * (r * (2.0 + (j*2.0)));
+            float y = sin((i/90.)*TWO_PI) * (r * (2.0 + (j*2.0)));
+            float z = 0;
+            float xInner = cos((i/90.)*TWO_PI) * (r * (1.3 + (j*2)));
+            float yInner = sin((i/90.)*TWO_PI) * (r * (1.3 + (j*2)));
+            rings[j].addVertex(glm::vec3(x, y, z));
+            rings[j].addVertex(glm::vec3(xInner, yInner, z));
+        }
+    }
+    ringRotation = glm::vec3(1, 0, ofRandom(-0.2, 0.2));
+    
+    if(ofRandom(10) > 7){
+        bVisible = true;
+    } else{
+        bVisible = false;
+    }
+}
+
+void Planet::display(){
+    if(!bVisible){
+        return;
+    }
+//    ofPopMatrix();
+    ofSetColor(color);
+
+    ofNoFill();
+    ofPushMatrix();
+    ofTranslate(locToDraw);
+    ofRotateDeg(90, ringRotation[0], ringRotation[1], ringRotation[2]);
+    ofEnableDepthTest();
+    ofFill();
+    ofSetColor(255, 200);
+    for(int i=0; i<rings.size(); i++)
+        rings[i].draw();
+    ofSetColor(255);
+    ofDrawSphere(0, 0, r);
+    ofDisableDepthTest();
+    ofPopMatrix();
+//    ofDrawCircle(locToDraw, r * 1.5);
+}
+
+void Planet::reset(){
+    if(bVisible){
+        bVisible = false;
+        return;
+    }
+    if(ofRandom(10) > 7){
+        bVisible = true;
+    } else{
+        bVisible = false;
+    }
+    ringRotation = glm::vec3(1, 0, ofRandom(-0.2, 0.2));
+//    loc.x *= ofRandom(3000.);
 }
 
 void Star::setLoc(glm::vec3 loc, bool bSetOrigin){
@@ -35,84 +115,109 @@ void Star::setLoc(glm::vec3 loc, bool bSetOrigin){
 
 void Star::translate(glm::vec3 t){
     locToDraw = loc;
-    locToDraw += t;
-    locToDraw.x = (int)locToDraw.x % 1280;
-    locToDraw.y = (int)locToDraw.y % 800;
+//    return;
     
-    if(locToDraw.z >= 1000){
-        locToDraw.z = locToDraw.z - 2000;
-    }
+    locToDraw += t;
+//    locToDraw.x = (int)locToDraw.x % (ofGetWidth() * 3); // numScreens ...
+//    locToDraw.y = (int)locToDraw.y % ofGetHeight();
+//    locToDraw.z = ((int)locToDraw.z % 2000) - 1000;
+    
+//    if(locToDraw.z >= 1000){
+//        locToDraw.z = locToDraw.z - 2000;
+//    }
+    
+    /*
+     Rotate the two outter screens, so the back plane is ajecting?
+     */
 }
 
-
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------||
 Stars::Stars(glm::vec2 size, string prefix){
-    planet.load(prefix + "planet.png");
+    this->size = size;
+    planet[0].load(prefix + "planetA.png");
+    planet[1].load(prefix + "planetB.png");
+    starLayer.load(prefix + "sterrenLaag.png");
 
-    for(int i=0; i<100; i++){
+    for(int i=0; i<120; i++){
         stars.push_back(new Star());
+        float x = ofRandom(size.x-2)+1;
+        while(abs(x - size.x*0.5) < 100){
+            x = ofRandom(size.x-2)+1;
+        }
         stars.back()->setLoc(
                             glm::vec3(
-                                      ofGetWidth() * ofRandom(-1, 2), // Left screen, mid screen, right screen. This will be set from SC eventually
-                                      ofRandom(ofGetHeight()),
-                                      ofRandom(-500, 500)
-//                                      0, 0,
-//                                      100
+                                      x,
+                                      i*10,
+                                      0
+                                      ),
+                             true
+                             );
+    }
+    for(int i=0; i<5; i++){
+        stars.push_back(new Planet());
+        float x = ofRandom(size.x-2)+1;
+        while(abs(x - size.x*0.5) < 100){
+            x = ofRandom(size.x-2)+1;
+        }
+        stars.back()->setLoc(
+                            glm::vec3(
+                                      x,
+                                      ofRandom(size.y-2)+1,
+                                      0
                                       ),
                              true
                              );
     }
     
-//    for(int x=0; x<10; x++){
-//        for(int y=0; y<10; y++){
-//            stars.push_back(new Star());
-//            stars.back()->setLoc(glm::vec3(x * (1280/10), y * (800/10), -500));
-//        }
-//    }
-    
 //    ofSetSphereResolution(180);
     
     // Setup post-processing chain
-//    post.init(ofGetWidth(), ofGetHeight());
+    post.init(size.x, size.y);
 //    post.createPass<FxaaPass>()->setEnabled(false);
-//    bloom = post.createPass<BloomPass>();
-//    bloom->setEnabled(true);
+    bloom = post.createPass<BloomPass>();
+    bloom->setEnabled(true);
+    post.createPass<VerticalTiltShifPass>()->setEnabled(true);
+//    kaleidoscope = post.createPass<KaleidoscopePass>();
+//    kaleidoscope->setEnabled(true);
     
-    this->size = size;
-//    starsFbo.allocate(size.x, size.y, GL_RGB); // Memory issue @ RBP?
-    
+    starsFbo.allocate(size.x, size.y, GL_RGB); // Memory issue @ RBP?
 }
 
 void Stars::update(glm::vec3 t){
     for(int i=0; i<stars.size(); i++){
-        stars[i]->translate(t);
-//        stars[i]->update(*travelSpeed);
+        stars[i]->update(*travelSpeed);
     }
-}
 
-void Stars::display(float brightness){
-    ofPushMatrix();
-    ofTranslate(0, ofGetHeight() * (*height));
-
+//    ofEnableLighting();
     
     starsFbo.begin();
-    ofClear(0);
-//    post.begin();
-    
+//    post.setFlip(false);
+    post.begin();
+
     ofSetColor(255);
     ofFill();
     for(int i=0; i<stars.size(); i++){
         stars[i]->display();
     }
-    ofSetColor(0, pow(1-((*height) / 2), 0.5) * 200);
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-//    post.end();
-    starsFbo.end();
+
+    post.end();
+//    ofDisableLighting();
     
+    ofSetColor(0, pow(1-((*height) / 2), 0.5) * 255); // Black fade when lowering
+    ofDrawRectangle(0, 0, size.x, size.y);
+    
+    starsFbo.end();
+}
+
+void Stars::display(float brightness){
+    ofPushMatrix();
+
+    ofTranslate(0, size.y * (*height));
+    starLayer.draw(size.x * (*hOffset), size.y * -2);
     
     ofSetColor(255, brightness);
-    starsFbo.draw(0, ofGetHeight()*-2);
-
-    cout << ofGetHeight() - planet.getHeight() << endl;
-    planet.draw(0,ofGetHeight() - planet.getHeight());
+    starsFbo.draw(0, size.y * -2);
+    
+    planet[(int)*planetID].draw(size.x * (*hOffset), size.y - planet[(int)*planetID].getHeight());
     ofPopMatrix;
 }

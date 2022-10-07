@@ -22,12 +22,13 @@ public:
     };
     DrawMode state;
     
-    Bingo();
+    Bingo(string prefix = "1280/", glm::vec2 size = glm::vec2(1280, 800));
     void update();
     void display(DrawMode mode = DrawMode::BACKGROUND);
     void display(DrawMode a, DrawMode b);
     void display(DrawMode a, DrawMode b, DrawMode c);
     
+    float scaling = 1;
     void removeBall(string name);
     glm::vec2 size;
     
@@ -50,6 +51,7 @@ public:
     ofTrueTypeFont bingoFont;
     ofTrueTypeFont countFont;
     float count = 10;
+    float* numberScale;
 
     void reInit();
     
