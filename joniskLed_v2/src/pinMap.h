@@ -27,13 +27,6 @@
   #define W_PIN 32
 #endif
 
-#ifdef IS_LED_FIXBOARD // Used for ESP32S2 with fixBoard on top (these are thrown away!)
-  #define R_PIN 14
-  #define G_PIN 15
-  #define B_PIN 16
-  #define W_PIN 17
-#endif
-
 #ifdef IS_JONISK_NEW
   #define R_PIN 46
   #define G_PIN 45
