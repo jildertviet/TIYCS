@@ -19,17 +19,19 @@ Project{
             'src/main.cpp',
             'src/ofApp.cpp',
             'src/ofApp.h',
+            'src/screen.cpp',
+            'src/screen.hpp',
         ]
 
         of.addons: [
             'ofxAssimpModelLoader',
-            'ofxBox2d',
             'ofxEasing',
             'ofxGui',
             'ofxJVisuals',
             'ofxOscBidirectional',
-            'ofxPostProcessing',
             'ofxSvg',
+            'ofxBox2d',
+            'ofxPostProcessing',
         ]
 
         // additional flags for the project. the of module sets some

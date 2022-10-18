@@ -9,11 +9,6 @@ uniform float       Radius;
 uniform float       NoiseAmplitude;
 //uniform sampler2D iChannel1;
 
-// port from http://glslsandbox.com/e#8625.0 by Duke
-// Fireball
-// Awd
-// @AlexWDunn
-
 #define saturate(oo) clamp(oo, 0.0, 1.0)
 
 // Quality Settings
@@ -167,9 +162,9 @@ bool IntersectSphere(vec3 ro, vec3 rd, vec3 pos, float radius, out vec3 intersec
 void main(){
     vec2 p = (gl_FragCoord.xy / iResolution.xy) * 2.0 - 1.0;
     p.x *= iResolution.x/iResolution.y;
-    
+
     p += offset; // Move the sphere?
-    
+
     float rotx = iMouse.y * 0.01;
     float roty = -iMouse.x * 0.01;
     rotx = roty = 0.0;

@@ -1,17 +1,17 @@
 #include "ofApp.h"
 
-float windowScaler = 1;
+float windowScaler = 1.0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(60);
     ofSetWindowShape(1280*3 * windowScaler, 800 * windowScaler);
-    
+
 #ifdef  TARGET_RASPBERRY_PI
     ofHideCursor();
 #endif
 //    ofHideCursor();
-    
+
     // Shared resources
     commercials = new ofVideoPlayer[3];
     for(int i=0; i<3; i++){
@@ -19,16 +19,16 @@ void ofApp::setup(){
         commercials[i].setLoopState(ofLoopType::OF_LOOP_NONE);
         commercials[i].setVolume(0); // Audio off
     }
-    
+
     for(int i=0; i<3; i++){
         screens[i].setup(i, glm::vec2(1280 * windowScaler, 800 * windowScaler), &screenOrder[0]);
         screens[i].commercials = commercials;
     }
-    
+
     ofSetVerticalSync(false);
     blob.load("shadersGL2/shader");
-    screenOrderShader.load("shadersGL2/offsetShader");
-    post.init(1024*4, 1024, false);
+    // screenOrderShader.load("shadersGL2/offsetShader");
+    post.init(1024*4 * windowScaler, 1024 * windowScaler, false);
     post.createPass<BloomPass>()->setEnabled(true);
     post.createPass<GodRaysPass>()->setEnabled(true);
     light.setPosition(ofGetWidth()*0.5, ofGetHeight()*0.5, 4000);
@@ -36,6 +36,10 @@ void ofApp::setup(){
     toReArrange.allocate(ofGetWidth(), ofGetHeight());
 //    light.setAmbientColor(ofFloatColor::white);
 //    light.setDiffuseColor(ofFloatColor(1.0, 0.5, 0.5));
+screens[0].scene = scenes::StarsFinal;
+screens[1].scene = scenes::StarsFinal;
+screens[2].scene = scenes::StarsFinal;
+screens[0].busses[14] = 1.0;
 }
 
 //--------------------------------------------------------------
@@ -62,13 +66,13 @@ void ofApp::draw(){
         }
         float v = (float)(ofGetElapsedTimeMillis()) / 4000.;
         float v2 = (float)(1000 + ofGetElapsedTimeMillis()) / 4000.;
-        
+
         post.setFlip(false);
         post.begin();
         ofEnableDepthTest();
         for(int i=0; i<3; i++){
             ofPushMatrix();
-            ofTranslate(1280 * i * 1, 0);
+            ofTranslate(1280 * i * windowScaler, 0);
     //        screens[screenOrder[i]].draw();
             for(int j=0; j<screens[i].stars->stars.size(); j++){
 //                screens[i].stars->update(glm::vec3(1.));
@@ -95,20 +99,20 @@ void ofApp::draw(){
         if(bRotate)
             ofPopMatrix();
 //        screenOrderShader.end();
-        
+
 //        ofDrawBitmapString("0", 10, 10);
 //        ofDrawBitmapString("1", 10 + 1280, 10);
 //        ofDrawBitmapString("2", 10 + (2*1280), 10);
         toReArrange.end();
-        
+
         for(int i=0; i<3; i++){
             ofPushMatrix();
-//            ofRotateYDeg(180);
-//            ofTranslate(1280, 0);
-            ofTranslate(1280 * screenOrder[2-i], 0); // Reverse screenorder ... 
-            toReArrange.getTexture().drawSubsection(0, 0, 1280, 800, 1280*i, 0);
+// //            ofRotateYDeg(180);
+// //            ofTranslate(1280, 0);
+            ofTranslate(1280 * screenOrder[2-i] * windowScaler, 0); // Reverse screenorder ...
+            toReArrange.getTexture().drawSubsection(0, 0, 1280 * windowScaler, 800 * windowScaler, 1280 * i * windowScaler, 0);
             ofPopMatrix();
-//            draw(1280 * screenOrder[i], 0);
+// //            draw(1280 * screenOrder[i], 0);
         }
     } else{
         for(int i=0; i<3; i++){
