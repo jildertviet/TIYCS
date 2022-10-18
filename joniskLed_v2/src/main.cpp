@@ -15,7 +15,8 @@ char* url; // Set from MSG
 // #define IS_JONISK_2022
 // #define JONISK // This performs the battery measurement
 // #define IS_PONTLED_2019
-#define IS_PONTLED_2022_V1
+// #define IS_PONTLED_2022_V1
+#define IS_JONISK_2022_EXTRA
 // #define IS_LED_FIXBOARD
 
 #define   PWM_10_BIT
@@ -24,8 +25,8 @@ unsigned char values[4] = {0, 0, 0, 0};
 uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 uint8_t myAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY, DEEP_SLEEP, HANDLE_OTA_SERVER, START_OTA_SERVER};
-Mode mode = NOLAG;
+enum Mode {NOLAG, LAG, START_WIFI, HANDLE_OTA, SEND_BATTERY, DEEP_SLEEP, HANDLE_OTA_SERVER, START_OTA_SERVER, SNAKY_EYES};
+Mode mode = SNAKY_EYES;
 Mode modeToReturnTo = Mode::NOLAG;
 unsigned char id = 0;
 bool bUpdate = false;
@@ -235,6 +236,27 @@ void loop() {
       esp_sleep_enable_ext0_wakeup(GPIO_NUM_14,1);
       esp_deep_sleep_start();
     }
+    break;
+    case SNAKY_EYES:{
+      int onVal = 30;
+      int redVal = 100;
+      int greenVal = 100;
+      for(int i=0; i<2; i++){
+        setLED(3, onVal); setLED(0, redVal); setLED(1, greenVal);
+        delay(200);
+        setLED(3, 0); setLED(0, 0); setLED(1, 0);
+        delay(100);
+      }
+      setLED(3, onVal); setLED(0, redVal); setLED(1, greenVal);
+      delay(10000);
+      setLED(3, 0); setLED(0, 0); setLED(1, 0);
+      delay(750);
+      setLED(3, onVal); setLED(0, redVal); setLED(1, greenVal);
+      delay(50);
+      setLED(3, 0); setLED(0, 0); setLED(1, 0);
+      delay(10000 * 60 * 10);
+    }
+    break;
   }
 }
 
