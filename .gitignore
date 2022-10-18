@@ -1,4 +1,5 @@
 /mainApp/bin/data/*
+!/mainApp/bin/data/shadersGL2
 
 **/credentials.h
 *.pem
