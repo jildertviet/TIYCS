@@ -1,8 +1,7 @@
-#include <ArduinoJson.h>
-
 esp_now_peer_info_t slave;
 
 void writeEEPROM();
+bool parseOtaMsgAddressed(const uint8_t *data, int data_len, Mode m);
 
 bool checkAddressed(const uint8_t* data){
   bool bAddressed = true;
@@ -118,25 +117,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     case 0x15:{
       Serial.print("0x15");
       if(checkAddressed(data)){
-        Serial.println(" addressed");
-        DynamicJsonDocument doc(200); // {"ssid":"xxx"}
-        char* json = new char[data_len-7];
-        memcpy(json, data+1+6, data_len - 7); // ID, mac[6], JSONMSG
-        DeserializationError error = deserializeJson(doc, json);
-        String ssid_ = doc["ssid"];
-        ssid = new char[ssid_.length()+1];
-        ssid_.toCharArray(ssid, ssid_.length()+1);
-        String password_ = doc["password"];
-        password = new char[password_.length()+1];
-        password_.toCharArray(password, password_.length()+1);
-        String url_ = doc["url"];
-        url = new char[url_.length() + 1];
-        url_.toCharArray(url, url_.length() + 1);
-        // memcpy(url, &url_, url_.length());
-        Serial.println(ssid);
-        Serial.println(password);
-        Serial.println(url);
-        mode = START_OTA_SERVER;
+        parseOtaMsgAddressed(data, data_len, START_OTA_SERVER);
       }
     }
     break;

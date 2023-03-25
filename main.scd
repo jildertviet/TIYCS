@@ -9,3 +9,4 @@ t.automate();
 ~j = JoniskMain.new("/home/jildert/of_v0.11.2_linux64gcc6_release/apps/TIYCS/jonisk.config").gui();
 // t.welcomeTxt();
 )
+
