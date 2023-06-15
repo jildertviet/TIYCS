@@ -31,24 +31,24 @@ namespace scenes{
         Commercial, // 6
         Commercial1, // 7
         Commercial2, // 8
-        
+
         Benzine, // 9, bus: 0 (meterAngle, )
         ReturnToShip, // 10, bus: 0 (imgIndex, 0<>3)
 
         CaptainPicto, // 11
         Waveform, // 12
-        
+
         Bingo, // 13, bus: 0 (bingoState, 0<>3), bus: 1 (bingoForce)
 
         Code, // 14, bus: 0 (codeLen, 0<>3)
         Autopilot, // 15, bus: 0 (autoPilotPct 0<>100)
-        
+
         Nothing, // 16
         Test, // 17
         Einde,
         Pseudo,
         QAndA, // 20
-        
+
         StarsFinal
     };
 }
@@ -65,7 +65,7 @@ public:
     void setup(int portNumAdd = 0, glm::vec2 size = glm::vec2(1280, 800), int* screenOrder = nullptr);
     int* screenOrder;
     void update();
-    
+
     void render(scenes::Scene pseudo = scenes::Pseudo, bool bUseFbo = true);
     void draw();
 
@@ -132,9 +132,9 @@ public:
     ofMesh lineMesh;
 
     #ifdef  TARGET_RASPBERRY_PI
-    bool bRotate = true;
+    bool bRotate = false;
     #else
-    bool bRotate = true;
+    bool bRotate = false;
     #endif
 
     bool bEditMode = false;

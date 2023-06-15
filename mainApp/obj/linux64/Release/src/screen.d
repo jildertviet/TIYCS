@@ -529,6 +529,8 @@ obj/linux64/Release/src/screen.o: \
  /home/jildert/of_v0.11.2_linux64gcc6_release/apps/../libs/openFrameworks/3d/ofEasyCam.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/ofxJVisuals.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/config.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/particleSystem.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEvent.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscBidirectional.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscArg.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscMessage.h \
@@ -548,23 +550,27 @@ obj/linux64/Release/src/screen.o: \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscEvent.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscEventListener.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscSenderReceiver.h \
- /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEvent.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Env.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/mapValue.h \
- /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/Vorm.h \
- /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/Particle.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEventBase.hpp \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/config.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JVecField.hpp \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JPPBuffer.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEvent.hpp \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JVorm.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JParticle.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Wavetable.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JNoise.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JImage.hpp \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxSvg/src/ofxSvg.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/SpaceCube.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JMirror.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/MultiMesh.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/MultiMeshMaybeTomorrow.hpp \
- /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEllipse.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JRectangle.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JPrimitive.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/JModifier.hpp \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JThickLine.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/RectangleMask.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JRectangle.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/AlphaBlackScreen.hpp \
@@ -579,6 +585,9 @@ obj/linux64/Release/src/screen.o: \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JMesh.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JVideoPlayer.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JShaderTest.hpp \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JLine.hpp \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/JShader.hpp \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/JShaderLines.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/scSynth.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/apps/TIYCS/mainApp/src/Stars.hpp \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPostProcessing/src/ofxPostProcessing.h \
@@ -1210,6 +1219,8 @@ obj/linux64/Release/src/screen.o: \
 /home/jildert/of_v0.11.2_linux64gcc6_release/apps/../libs/openFrameworks/3d/ofEasyCam.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/ofxJVisuals.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/config.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/particleSystem.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEvent.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscBidirectional.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscArg.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscMessage.h:
@@ -1229,23 +1240,27 @@ obj/linux64/Release/src/screen.o: \
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscEvent.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscEventListener.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxOscBidirectional/src/ofxOscSenderReceiver.h:
-/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEvent.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Env.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/mapValue.h:
-/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/Vorm.h:
-/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/Particle.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEventBase.hpp:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/config.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JVecField.hpp:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JPPBuffer.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEvent.hpp:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JVorm.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JParticle.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Wavetable.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JNoise.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JImage.hpp:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxSvg/src/ofxSvg.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/SpaceCube.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JMirror.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/MultiMesh.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/MultiMeshMaybeTomorrow.hpp:
-/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JEllipse.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JRectangle.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JPrimitive.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/JModifier.hpp:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JThickLine.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/RectangleMask.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JRectangle.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/AlphaBlackScreen.hpp:
@@ -1260,6 +1275,9 @@ obj/linux64/Release/src/screen.o: \
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JMesh.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JVideoPlayer.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JShaderTest.hpp:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/Event/JLine.hpp:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/JShader.hpp:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/JShaderLines.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxJVisuals/src/scSynth.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/apps/TIYCS/mainApp/src/Stars.hpp:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPostProcessing/src/ofxPostProcessing.h:

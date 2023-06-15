@@ -30,7 +30,7 @@ void setLED(int channel, int value){ // Receives 0 - 255
     }
   }
   values[channel] = value;
-#ifdef PWM_10_BIT
+#ifdef PWM_12_BIT
   value = v * 4096; // 1024
 #endif
 
@@ -76,16 +76,17 @@ void sendPing(bool bOverride = false){
     memcpy(replyAddr, &broadcastAddr, 6);
     addPeer(replyAddr);
 
-    uint8_t msg[5] = {'a','l', 'i', 'v', 'e'};
-    #ifdef JONISK
+    uint8_t msg[7] = {'a','l', 'i', 'v', 'e', 0, 0};
+    #ifdef JONISK_BATTERY_CHECK
     int v = measureBattery();
     #else
     int v = 1;
     #endif
     memcpy(msg+1, &v, 4); // Prefix is 'a'
+    memcpy(msg+1+4, &version, 2); // Msg looks like: 'a', f (4 bytes), version (2 bytes);
 
     // esp_err_t result =
-    esp_now_send(replyAddr, msg, 5);
+    esp_now_send(replyAddr, msg, 7);
 //    if (result == ESP_OK) {
 //      blinkLed(1, 100, 1);
 //    } else {
@@ -109,4 +110,9 @@ void blinkLed(int channel, int delayTime, int num=1, int brightness){ // 12V PWM
       delay(delayTime);
   }
   setLED(channel, 0);
+}
+
+void blinkVersion(){
+  blinkLed(0, 300, version[0]);
+  blinkLed(1, 300, version[1]);
 }

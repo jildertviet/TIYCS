@@ -20,13 +20,6 @@
   #define W_PIN 19
 #endif
 
-#ifdef IS_LED // Used for ESP32S2 boards?
-  #define R_PIN 16
-  #define G_PIN 33
-  #define B_PIN 17
-  #define W_PIN 32
-#endif
-
 #ifdef IS_JONISK_NEW
   #define R_PIN 46
   #define G_PIN 45
@@ -65,4 +58,11 @@
   void initPins(){
     // pinMode(5, OUTPUT);
   }
+#endif
+
+#ifdef IS_LED // Used for ESP32S2 boards?
+  #define R_PIN 16
+  #define G_PIN 33
+  #define B_PIN 17
+  #define W_PIN 32
 #endif

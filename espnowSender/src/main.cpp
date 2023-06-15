@@ -206,8 +206,11 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     }
     break;
     case 'a':{
-        int v;
+        int v; // Battery voltage, 4 bytes
+        char fwVersion[2];
+
         memcpy(&v, data+1, 4);
+        memcpy(&fwVersion, data+1+4, 2);
         Serial.print("msg");
         Serial.print('a'); // Msg type
         for(int i=0; i<6; i++){
@@ -215,6 +218,10 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
           Serial.print(":");
         }
         Serial.print(v);
+        Serial.print(":");
+        Serial.print(fwVersion[0]);
+        Serial.print(":");
+        Serial.print(fwVersion[1]);
         Serial.print("end"); // msg a 012345 value end // Value will be parsed from string
     }
     break;

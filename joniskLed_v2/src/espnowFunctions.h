@@ -1,6 +1,5 @@
 esp_now_peer_info_t slave;
 
-void writeEEPROM();
 bool parseOtaMsgAddressed(const uint8_t *data, int data_len, Mode m);
 
 bool checkAddressed(const uint8_t* data){
@@ -43,7 +42,8 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     case 0x03:
     Serial.println("Set ID");
       id = data[1];
-      writeEEPROM();
+      EEPROM.write(0, id);
+      EEPROM.commit();
       Serial.println((int)id);
       break;
     case 0x07:{

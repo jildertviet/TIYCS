@@ -1,6 +1,6 @@
 #include "ofApp.h"
 
-float windowScaler = 1.0;
+float windowScaler = 0.5;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -36,10 +36,6 @@ void ofApp::setup(){
     toReArrange.allocate(ofGetWidth(), ofGetHeight());
 //    light.setAmbientColor(ofFloatColor::white);
 //    light.setDiffuseColor(ofFloatColor(1.0, 0.5, 0.5));
-screens[0].scene = scenes::StarsFinal;
-screens[1].scene = scenes::StarsFinal;
-screens[2].scene = scenes::StarsFinal;
-screens[0].busses[14] = 1.0;
 }
 
 //--------------------------------------------------------------
@@ -51,7 +47,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    bool bRotate = true;
+    bool bRotate = false;
     if(screens[0].scene == scenes::StarsFinal){
         if(screens[0].brightness == 0){
             ofBackground(0);

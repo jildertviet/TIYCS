@@ -10,3 +10,6 @@ t.automate();
 // t.welcomeTxt();
 )
 
+~j.jonisks[23].ota("Hertenkamp", ~pw);
+// setOtaServer
+~pw
