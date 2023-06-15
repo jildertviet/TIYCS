@@ -29,15 +29,14 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       mode = NOLAG;
       bUpdate = true;
       break;
-    case 0x09:
-//      mode = LAG;
-//      if(data_len > 6) // [R, G, B, W, mode, lagTime, lagTime
-//        memcpy(&lagTime, data+5, 2); // Copy the last two char's, and write to unsigned short.
-//      memcpy(endValues, data, 4);
-//      memcpy(startValues, values, 4);
-//      envStartTime = millis();
-//      envEndTime = millis() + lagTime;
-//      bLagDone = false;
+    case 0x09: // [msgType, lagTime, R, G, B, W, R, G, B, W, etc]
+     mode = LAG;
+     memcpy(&lagTime, data+1, 2); // Copy the last two char's, and write to unsigned short.
+     memcpy(endValues, data + 1 + 2 + (id*4), 4);
+     memcpy(startValues, values, 4);
+     envStartTime = millis();
+     envEndTime = millis() + lagTime;
+     bLagDone = false;
     break;
     case 0x03:
     Serial.println("Set ID");
@@ -76,12 +75,12 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
         mode = Mode::SEND_BATTERY;
       }
       break;
-    case 0x10:
+    case 0x10: // [msgType, address[6], minutesToSleep[2]]
       if(checkAddressed(data)){
+        memcpy(&minutesToSleep, data+6+1, 2);
         mode = Mode::DEEP_SLEEP;
       }
       break;
-
     case 0x11:{ // {0x11, a, d, d, r, e, s, 0x05} : set ESP32 with address 'addres' to ID 0x05
       if(checkAddressed(data)){
         uint8_t newMsg[data_len - 6];

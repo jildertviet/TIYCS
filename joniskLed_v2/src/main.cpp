@@ -6,6 +6,8 @@
 #include <ArduinoOTA.h>
 #include "EEPROM.h"
 #include "credentials.h"
+#include "lag.h"
+#define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
 
 char version[2] = {1, 1}; // A 0 isn't printed in SC, so use 1.1 as first version :)
 
@@ -40,6 +42,7 @@ unsigned char id = 0; // Read from EEPROM
 bool bUpdate = false;
 unsigned long lastReceived = 0;
 unsigned long lastCheckedPins = 0;
+unsigned short minutesToSleep = 0;
 
 void blinkLed(int channel, int delayTime, int num, int brightness=50);
 void checkPins();
@@ -49,13 +52,6 @@ void checkPins();
 #include "batteryStatus.h"
 
 uint8_t i = 0;
-
-unsigned short lagTime = 100;
-unsigned char startValues[4];
-unsigned char endValues[4];
-unsigned long envEndTime = 0;
-unsigned long envStartTime = 0;
-bool bLagDone = false;
 
 #include "ledFunctions.h"
 #include "otaServer.h"
@@ -70,7 +66,7 @@ void setup() {
   ledcAttachPin(B_PIN, 3);
   ledcAttachPin(W_PIN, 4);
 
-  for(char i=0; i<4; i++){
+  for(i=0; i<4; i++){
 #ifdef  PWM_12_BIT
     ledcSetup(i+1, 9000, 12); // Hz / bitdepth
 #else
@@ -118,7 +114,7 @@ void loop() {
   switch(mode){
     case NOLAG:{ // Just set the PWM-channels
       if(bUpdate){
-       for(int i = 0; i<4; i++){
+       for(i = 0; i<4; i++){
         setLED(i, values[i]);
        }
       bUpdate = false;
@@ -126,18 +122,18 @@ void loop() {
     }
     break;
     case LAG:{
-      if(millis() < envEndTime){
+      if(millis() < envEndTime){ // envEndTime is set in the ESPNOW-receive func
         float ratio = (millis() - envStartTime) / (float)lagTime; // 0.0 - 1.0
-        for(int i = 0; i<4; i++){
+        for(i = 0; i<4; i++){
          values[i] = (startValues[i] * (1-ratio)) + (endValues[i] * ratio);
-         ledcWrite(i+1, values[i]);
+         setLED(i, values[i]);
         }
       } else{
         if(!bLagDone){
-          for(int i = 0; i<4; i++){
+          for(i = 0; i<4; i++){
             if(values[i] != endValues[i]){
               values[i] = endValues[i];
-              ledcWrite(i+1, values[i]);
+              setLED(i, values[i]);
             }
           }
           bLagDone = true;
@@ -145,7 +141,7 @@ void loop() {
       }
     }
     break;
-    case START_WIFI:{ // Start the WiFi, and then change to HANDLE_OTA mode
+    case START_WIFI:{
       startArduinoOta();
       mode = HANDLE_OTA;
     }
@@ -191,8 +187,11 @@ void loop() {
       // Go to deep sleep
       blinkLed(3, 250, 2, 20);
       turnLedOff();
-      esp_sleep_enable_ext0_wakeup(GPIO_NUM_14,1);
-      esp_deep_sleep_start();
+      if(minutesToSleep){
+        // esp_sleep_enable_ext0_wakeup(GPIO_NUM_14,1);
+        esp_sleep_enable_timer_wakeup(minutesToSleep * 60 * uS_TO_S_FACTOR);
+        esp_deep_sleep_start();
+      }
     }
     break;
   }
