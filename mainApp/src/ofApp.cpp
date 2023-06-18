@@ -5,6 +5,7 @@ float windowScaler = 0.5;
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(60);
+
     ofSetWindowShape(1280*3 * windowScaler, 800 * windowScaler);
 
 #ifdef  TARGET_RASPBERRY_PI
@@ -23,6 +24,9 @@ void ofApp::setup(){
     for(int i=0; i<3; i++){
         screens[i].setup(i, glm::vec2(1280 * windowScaler, 800 * windowScaler), &screenOrder[0]);
         screens[i].commercials = commercials;
+        screens[i].mappableFbo.name = "FBO_" + ofToString(i);
+        screens[i].piMapper = &piMapper;
+        piMapper.registerFboSource(screens[i].mappableFbo);
     }
 
     ofSetVerticalSync(false);
@@ -36,6 +40,10 @@ void ofApp::setup(){
     toReArrange.allocate(ofGetWidth(), ofGetHeight());
 //    light.setAmbientColor(ofFloatColor::white);
 //    light.setDiffuseColor(ofFloatColor(1.0, 0.5, 0.5));
+
+
+    piMapper.setup();
+
 }
 
 //--------------------------------------------------------------
@@ -43,10 +51,13 @@ void ofApp::update(){
     for(int i=0; i<3; i++){
         screens[i].update();
     }
+    piMapper.update();
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+  ofBackground(0);
+
     bool bRotate = false;
     if(screens[0].scene == scenes::StarsFinal){
         if(screens[0].brightness == 0){
@@ -114,10 +125,13 @@ void ofApp::draw(){
         for(int i=0; i<3; i++){
             ofPushMatrix();
             ofTranslate(1280*i * windowScaler, 0);
-            screens[screenOrder[i]].draw();
+            screens[screenOrder[i]].draw(); // Write to FBO
             ofPopMatrix();
         }
     }
+  ofSetColor(255);
+  ofFill();
+  piMapper.draw();
 }
 
 //--------------------------------------------------------------
@@ -127,15 +141,34 @@ void ofApp::keyPressed(int key){
             ofSetFullscreen(true);
             break;
     }
-    for(int i=0; i<3; i++){
-        screens[i].keyPressed(key);
+    // for(int i=0; i<3; i++){
+        // screens[i].keyPressed(key);
+    // }
+    if(key == 't'){
+
+      return;
     }
+    piMapper.keyPressed(key);
+}
+
+void ofApp::keyReleased(int key){
+	piMapper.keyReleased(key);
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    int i = floor(x / (1280. * windowScaler));
-    screens[i].mousePressed(x - (i * 1280 * windowScaler), y, button);
+    // int i = floor(x / (1280. * windowScaler));
+    // screens[i].mousePressed(x - (i * 1280 * windowScaler), y, button);
+    piMapper.mousePressed(x, y, button);
+}
+
+
+void ofApp::mouseReleased(int x, int y, int button){
+	piMapper.mouseReleased(x, y, button);
+}
+
+void ofApp::mouseDragged(int x, int y, int button){
+	piMapper.mouseDragged(x, y, button);
 }
 
 //--------------------------------------------------------------

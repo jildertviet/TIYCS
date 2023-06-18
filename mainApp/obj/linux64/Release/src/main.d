@@ -673,7 +673,101 @@ obj/linux64/Release/src/main.o: \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxBox2d/src/ofxBox2dRect.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxBox2d/src/ofxBox2dJoint.h \
  /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxBox2d/src/ofxBox2dRender.h \
- /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxBox2d/src/ofxBox2dContactListener.h
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxBox2d/src/ofxBox2dContactListener.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/FboSource.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/BaseSource.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/SourceType.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/ofxPiMapper.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Application.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Info/Info.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/SurfaceStack.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/BaseSurface.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Types/Vec2.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Types/Vec3.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Gui.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/GuiBaseWidget.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/ScaleWidget.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/SurfaceManager.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/TriangleSurface.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/SurfaceType.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/QuadSurface.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Utils/HomographyHelper.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/MediaServer/MediaServer.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/MediaServer/DirectoryWatcher.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/ImageSource.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/VideoSource.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/SurfaceFactory.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/GridWarpSurface.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/HexagonSurface.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/CircleSurface.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxXmlSettings/src/ofxXmlSettings.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxXmlSettings/libs/tinyxml.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/SettingsLoader.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/SourceTypeHelper.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/LayerPanelWidget.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/SurfaceHighlightWidget.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/TextureHighlightWidget.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/TextureEditorWidget.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/UserInterface/CircleJoint.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/UserInterface/BaseJoint.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/ProjectionEditorWidget.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/SourcesEditorWidget.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/UserInterface/RadioList.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxGuiGroup.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxBaseGui.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxSlider.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxInputField.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxGuiUtils.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxButton.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxToggle.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxLabel.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/CmdManager.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/BaseCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetSourceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetApplicationModeCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/ClearSurfacesCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetPresetCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/AddSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/RmSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvLayerUpCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvLayerDnCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/DuplicateSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/FullscreenSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/TogglePerspectiveCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetNextSourceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/ScaleSurfaceFromToCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/AddGridRowCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/RmGridRowCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/AddGridColCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/RmGridColCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelNextSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelPrevSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelNextVertexCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelPrevVertexCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelVertexCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvSelectionCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/ToggleAnimatedSourceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelNextTexCoordCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelPrevTexCoordCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/DeselectSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetVideoSourceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/ApplicationBaseMode.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/PresentationMode.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/ProjectionMappingMode.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/StartDragSurfaceCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvSurfaceVertCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/UserInterface/GuiMode.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/TextureMappingMode.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/DeselectTexCoordCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/TranslateCanvasCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetTexMapDrawModeCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvTexCoordCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvAllTexCoordsCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SaveTexCoordPosCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelTexCoordCmd.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/SourceSelectionMode.h \
+ /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Mode.h
 /home/jildert/of_v0.11.2_linux64gcc6_release/apps/../libs/openFrameworks/ofMain.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/apps/../libs/openFrameworks/utils/ofConstants.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/apps/../libs/tess2/include/tesselator.h:
@@ -1365,3 +1459,97 @@ obj/linux64/Release/src/main.o: \
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxBox2d/src/ofxBox2dJoint.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxBox2d/src/ofxBox2dRender.h:
 /home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxBox2d/src/ofxBox2dContactListener.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/FboSource.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/BaseSource.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/SourceType.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/ofxPiMapper.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Application.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Info/Info.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/SurfaceStack.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/BaseSurface.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Types/Vec2.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Types/Vec3.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Gui.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/GuiBaseWidget.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/ScaleWidget.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/SurfaceManager.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/TriangleSurface.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/SurfaceType.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/QuadSurface.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Utils/HomographyHelper.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/MediaServer/MediaServer.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/MediaServer/DirectoryWatcher.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/ImageSource.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/VideoSource.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/SurfaceFactory.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/GridWarpSurface.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/HexagonSurface.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Surfaces/CircleSurface.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxXmlSettings/src/ofxXmlSettings.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxXmlSettings/libs/tinyxml.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/SettingsLoader.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Sources/SourceTypeHelper.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/LayerPanelWidget.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/SurfaceHighlightWidget.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/TextureHighlightWidget.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/TextureEditorWidget.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/UserInterface/CircleJoint.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/UserInterface/BaseJoint.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/ProjectionEditorWidget.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Gui/Widgets/SourcesEditorWidget.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/UserInterface/RadioList.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxGuiGroup.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxBaseGui.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxSlider.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxInputField.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxGuiUtils.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxButton.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxToggle.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxGui/src/ofxLabel.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/CmdManager.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/BaseCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetSourceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetApplicationModeCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/ClearSurfacesCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetPresetCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/AddSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/RmSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvLayerUpCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvLayerDnCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/DuplicateSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/FullscreenSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/TogglePerspectiveCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetNextSourceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/ScaleSurfaceFromToCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/AddGridRowCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/RmGridRowCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/AddGridColCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/RmGridColCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelNextSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelPrevSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelNextVertexCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelPrevVertexCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelVertexCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvSelectionCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/ToggleAnimatedSourceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelNextTexCoordCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelPrevTexCoordCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/DeselectSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetVideoSourceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/ApplicationBaseMode.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/PresentationMode.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/ProjectionMappingMode.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/StartDragSurfaceCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvSurfaceVertCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/UserInterface/GuiMode.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/TextureMappingMode.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/DeselectTexCoordCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/TranslateCanvasCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SetTexMapDrawModeCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvTexCoordCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/MvAllTexCoordsCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SaveTexCoordPosCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Commands/SelTexCoordCmd.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Application/Modes/SourceSelectionMode.h:
+/home/jildert/of_v0.11.2_linux64gcc6_release/addons/ofxPiMapper/src/Mode.h:

@@ -13,11 +13,28 @@
 #include "ofxJVisuals.hpp"
 #include "Stars.hpp"
 #include "Bingo.hpp"
+#include "FboSource.h"
+#include "ofxPiMapper.h"
 
 #define NUM_BUSSES  24
 #define PORT    5000
 #define NUM_INSTRUCTIONS    8
 #define NUM_RETURNIMAGES    8
+
+class MappableFbo : public ofx::piMapper::FboSource {
+	public:
+    void setup(int width, int height){
+      allocate(width, height);
+    }
+		void update(){};
+		void draw(){
+      ofClear(0);
+      f->draw(0, 0);
+    }
+
+		ofFbo* f;
+};
+
 
 namespace scenes{
     enum Scene{
@@ -59,7 +76,7 @@ struct FlightInfo{
     int temp = 270;
 };
 
-class screen{
+class screen {
 public:
     screen();
     void setup(int portNumAdd = 0, glm::vec2 size = glm::vec2(1280, 800), int* screenOrder = nullptr);
@@ -139,14 +156,18 @@ public:
 
     bool bEditMode = false;
     char fboDisplayMode = 0; // Mapped
-    vector<glm::vec3> meshVertices;
-    vector<glm::vec2> texCoords;
-    ofMesh mesh;
-    void initMesh();
+    // vector<glm::vec3> meshVertices;
+    // vector<glm::vec2> texCoords;
+    // ofMesh mesh;
+    // void initMesh();
     ofFbo renderFbo;
     float windowScale = 1.0;
 
     int whiteFrame = 0;
     bool bBlack = false;
+
+    scenes::Scene sceneToUse;
+    MappableFbo mappableFbo;
+    ofxPiMapper* piMapper;
 };
 #endif /* screen_hpp */

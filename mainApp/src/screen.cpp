@@ -10,7 +10,7 @@
 string prefix = "1280/";
 
 screen::screen(){
-    
+
 }
 
 //--------------------------------------------------------------
@@ -20,24 +20,28 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
     this->screenOrder = screenOrder;
     width = size.x;
     height = size.y;
-    
+
     scene = scenes::Test;
-    
+
     renderFbo.allocate(width, height);
-    initMesh();
+    mappableFbo.setup(width, height);
+    mappableFbo.f = &renderFbo;
+    // allocate(width, height);
+
+    // initMesh();
     seed = ofRandom(TWO_PI);
-    
+
     memset(busses, 0, sizeof(float)*NUM_BUSSES); // Set busses to 0.
-    
+
     bingo = new Bingo(prefix, glm::vec2(width, height));
     bingo->numberScale = &busses[3];
-    
+
     stars = new Stars(glm::vec2(width, height), prefix);
     stars->height = &busses[0];
     stars->travelSpeed = &busses[1];
     stars->hOffset = &busses[6];
     stars->planetID = &busses[7];
-    
+
     // IMAGES
     images["Intro Jonisk"] =    ofImage(prefix + "joniskLayer.png");
     images["Intro gradient"] =  ofImage(prefix + "gradient3.jpg");
@@ -50,23 +54,23 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
     images["Welcome"] =         ofImage(prefix + "welkomTxt.png");
     images["Einde"] =           ofImage(prefix + "einde.png");
     images["Shopping"] =        ofImage(prefix + "inflightshopping.png");
-    
+
     images["incomingCall"] =    ofImage(prefix + "incomingCall.png");
     images["telephone"] =       ofImage(prefix + "telephone.png");
     images["duringCall"] =    ofImage(prefix + "duringCall.png");
-    
+
     images["Motor"] =    ofImage(prefix + "motor.png");
     images["450-629"] =    ofImage(prefix + "450-629.png");
     images["847-212"] =    ofImage(prefix + "847-212.png");
     images["351-364"] =    ofImage(prefix + "351-364.png");
     images["983-376"] =    ofImage(prefix + "983-376.png");
-    
-    
+
+
     images["lineGray"] =    ofImage(prefix + "/overlay/lijn_grijs.png");
     images["lineWhite"] =    ofImage(prefix + "/overlay/lijn_wit.png");
     images["joniskOL"] =    ofImage(prefix + "/overlay/jonisk.png");
     images["glowOL"] =    ofImage(prefix + "/overlay/glow.png");
-    
+
     images["QandA"] = ofImage(prefix + "/qanda.png");
 
     for(int i=0; i<NUM_INSTRUCTIONS; i++){
@@ -75,7 +79,7 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
     for(int i=0; i<8; i++){
         returnImages[i].load(prefix + "return/" + ofToString(i) + ".png");
     }
-    
+
     if(windowScale != 1){
         auto iter = images.begin();
         while (iter != images.end()) {
@@ -83,38 +87,38 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
             iter->second.resize(iter->second.getWidth() * windowScale, iter->second.getHeight() * windowScale);
             ++iter;
         }
-        
+
         for(int i=0; i<NUM_INSTRUCTIONS; i++)
             instructions[i].resize(instructions[i].getWidth() * windowScale, instructions[i].getHeight() * windowScale);
         for(int i=0; i<NUM_RETURNIMAGES; i++)
             returnImages[i].resize(returnImages[i].getWidth() * windowScale, returnImages[i].getHeight() * windowScale);
     }
-    
+
     // FONTS
     ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 100px");
     countFont.load("fonts/Helvetica-Bold.ttf", 100);
     ofLog(OF_LOG_NOTICE, "Loading Helvetica-Bold, 60px");
     codeFont.load("fonts/Helvetica-Bold.ttf", 60);
-    
+
     // CRASH @ RBP
     ofLog(OF_LOG_NOTICE, "Loading Geneva Normal, 36px");
     autoPilotFont.load("fonts/Geneva Normal.ttf", 36);
-    
+
     callCountFont.load("fonts/Geneva Normal.ttf", 25);
-    
+
 //    helveticaBold.load("Helvetica-Bold.ttf", 22); // Overlay
 //    helveticaRegular.load("Helvetica.ttf", 22);
-    
+
     // VIDEOS
 //#ifdef TARGET_RASPBERRY_PI
 //    for(int i=0; i<3; i++){
-        
+
 //    }
 //#else
 //        commercial[i].load("commercial/" + ofToString(i) + ".mp4");
 //        commercial[i].setLoopState(ofLoopType::OF_LOOP_NONE);
 //#endif
-    
+
     lineGray.load(prefix + "/route/route dashed GRIJS.png");
     lineWhite.load(prefix + "/route/route dashed WIT.png");
     routeStartEnd.load(prefix + "/route/TXT Aarde _ Planet Bi.png");
@@ -124,7 +128,7 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
     //    legenda.load("route/legenda_1920x1080.png");
     joniskRoute.load(prefix + "/route/jonisk_2.png"); // Is scaled to 1280 res
     joniskRouteGlow.load(prefix + "/route/jonisk_s Outer Glow_2.png");
-//    
+//
 //    for(int i=0; i<3; i++){
 //        commercials[i].load(prefix + "commercial/" + ofToString(i) + ".mp4");
 //        commercials[i].setLoopState(ofLoopType::OF_LOOP_NONE);
@@ -133,10 +137,10 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
 
     start = glm::vec2(307, 373) * windowScale;
     dest = glm::vec2(626, 438) * windowScale;
-    
-    v = new ofxJVisuals(glm::vec2(width, height));
+
+    v = new ofxJVisuals(glm::vec2(width, height), false);
     receiver.setup(PORT + portNumAdd);
-    
+
     lineMesh.setMode(OF_PRIMITIVE_LINES);
 //    lineMesh.addVertex(glm::vec3(0, 0, 0));
 //    lineMesh.addVertex(glm::vec3(width * 0.25, 0, 0));
@@ -164,7 +168,7 @@ void screen::update(){
         receiver.getNextMessage(m);
         processMsg(m);
     }
-    
+
     switch(scene){
         case scenes::Commercial:{
 #ifndef TARGET_RASPBERRY_PI
@@ -185,7 +189,7 @@ void screen::update(){
         default:
             break;
     }
-    
+
     render(); // Writes to FBO, can be called recursively
 }
 
@@ -194,7 +198,7 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
 
     if(bUseFbo){
         renderFbo.begin();
-        
+
         if(bRotate){ // Don't rotate again when recursive render()
             ofPushMatrix();
                 ofTranslate(width, height);
@@ -204,10 +208,10 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
         ofBackground(0);
 //    ofSetColor(0);
 //    ofDrawRectangle(0, 0, width, height);
-        
+
         ofSetColor(255);
 //        v->display();
-        
+
         switch(sceneToUse){
             case scenes::Nothing:
                 break;
@@ -260,24 +264,24 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                 ofPushMatrix();
                 stars->display(brightness);
                 ofPopMatrix();
-                            
+
                 if(busses[8]){
                     joniskRoutePos = glm::normalize(dest - start) * glm::distance(dest, start) * (busses[9]+0.15) + start;
-        
+
                     ofSetColor(0, 100 * busses[8]);
                     ofDrawRectangle(0, 0, width, height);
 
                     ofSetColor(255, 255 * busses[8]);
-                    
+
                     float widthRatio = width / lineGray.getWidth();
                     float h = lineGray.getHeight() * widthRatio;
                     lineGray.draw(0,0, lineGray.getWidth() * (widthRatio), h);
                     lineWhite.drawSubsection(0, 0, joniskRoutePos.x * widthRatio, h, 0, 0);
-                    
+
                     routeStartEnd.draw(0,0, lineGray.getWidth() * (widthRatio), h);
                     planetNames.draw(0,0, lineGray.getWidth() * (widthRatio), h);
                     planetsGray.draw(0,0, lineGray.getWidth() * (widthRatio), h);
-        
+
                     ofPushMatrix();
                     ofTranslate(joniskRoutePos);
                     ofScale((sin(ofGetFrameNum() * 0.02) * 0.2) + 1.2);
@@ -303,8 +307,8 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                         ofDrawCircle(0, 0, 20);
                     ofPopStyle();
                     ofPopMatrix();
-                    
-                    
+
+
                     ofPushMatrix();
                     ofTranslate(width, 0);
                         images["lineGray"].draw(0,0);
@@ -313,9 +317,9 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                             images["glowOL"].draw(0,0);
                             images["joniskOL"].draw(0,0);
                     ofPopMatrix();
-                    
+
                     images["Motor"].draw(width * 2, 0);
-                    
+
                     for(auto i: vector<glm::vec4>{
                         glm::vec4(450, 629, 5,0),
                         glm::vec4(847,212, -5,0),
@@ -341,7 +345,7 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                         images[name].draw(0,0);
                         ofPopMatrix();
                     }
-                     
+
                     ofPopMatrix();
                 }
             }
@@ -362,17 +366,17 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                 if(busses[13]){
                     render(scenes::Stars, false); // Don't write to main FBO
                 }
-                
+
                 float h = ofGetHeight() * (busses[4]/100.);
                 h *= 0.5;
                 ofSetColor(255, 0, 0, busses[5]);
                 ofDrawRectangle(0, height * 0.5, width, h);
                 ofDrawRectangle(0, height * 0.5 - (h), width, h);
-                
+
                 if(busses[3] == 255){
                     ofSetColor(255);
                     images["Benzine"].draw(0,0);
-                    
+
                     ofPushMatrix();
                     ofPushStyle();
                         ofSetLineWidth(10 * windowScale);
@@ -449,7 +453,7 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                     ofPushMatrix();
                     ofTranslate(width*0.5, height*0.5 + 50);
                     ofTranslate(((images["Code Circle"].getWidth() + m)*0.5) + (i-2) * (images["Code Circle"].getWidth() + m), 0);
-                    
+
                     if(busses[0]-1 >= i){
                         ofPushMatrix();
     //                    ofScale(1.1);
@@ -457,7 +461,7 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                         images["Code Glow"].draw(images["Code Glow"].getWidth()*-0.5, images["Code Glow"].getHeight()*-0.5);
     //                    ofScale(1/1.1);
                         ofPopMatrix();
-                        
+
                         ofSetColor(38);
                         ofDrawCircle(0,0,70);
                         ofSetColor(255);
@@ -530,7 +534,7 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
             }
                 break;
         }
-        
+
         if(bVluchtInfo){ // Overlay
             vector<string> names = {"Hoogte", "Snelheid", "Buitentemperatuur"};
             vector<string> units = {" km", " ziljard km/u", "°C"};
@@ -541,11 +545,11 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
             }
             legenda.draw(0,0);
         }
-        
+
         ofFill();
         ofSetColor(0, 255-brightness); // This line makes all black, even in the next line is commented :/
         ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-        
+
         if(bRotate){
             ofPopMatrix();
         }
@@ -568,23 +572,21 @@ void screen::draw(){
     switch(fboDisplayMode){
         case 0:
 //            ofBackground(0);
-            ofSetColor(0);
-            ofDrawRectangle(0, 0, width, height);
-            ofSetColor(255);
-            renderFbo.getTexture().bind();
-            mesh.draw();
-            renderFbo.getTexture().unbind();
-            if(bEditMode){
-                for(char i=0; i<4; i++)
-                    ofDrawCircle(meshVertices[i], 10);
-            }
+            // ofSetColor(0);
+            // ofDrawRectangle(0, 0, width, height);
+            // ofSetColor(255);
+            // renderFbo.getTexture().bind();
+            // mesh.draw();
+            // renderFbo.getTexture().unbind();
+            // if(bEditMode){
+            //     for(char i=0; i<4; i++)
+            //         ofDrawCircle(meshVertices[i], 10);
+            // }
+            // mappableFbo.draw();
+            // cout << "Implement: draw fbo src ofxPiMapper obj" << endl;
             break;
-        case 1: // Stretch
-            renderFbo.draw(0, 0);
-            break;
-        case 2: //
-            cout << "Display mode not supported" << endl;
-//            fbo.draw(0, ofGetHeight() * 0.5 - (0.5 * (ofGetHeight() / (f.getWidth() / ofGetWidth()))), ofGetWidth(), ofGetHeight() / (f.getWidth() / ofGetWidth()));
+        case 1:
+            // renderFbo.draw(0, 0);
             break;
     }
 }
@@ -609,7 +611,7 @@ void screen::processMsg(ofxOscMessage &m){
                 settings.enableTexture = false;
                 settings.enableLooping = false;
                 settings.enableAudio = false;
-                    
+
                 commercial.setup(settings);
                 commercial.setPaused(false);
 #else
@@ -635,25 +637,25 @@ void screen::processMsg(ofxOscMessage &m){
                 bingo->reInit();
                 break;
             case 4:{
-                meshVertices[m.getArgAsInt(1)] = glm::vec3(m.getArgAsFloat(2), m.getArgAsFloat(3), 0);
-                mesh.clear();
-                mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
-
-                if(bRotate){
-                    mesh.addTexCoord(texCoords[3]);
-                    mesh.addVertex(meshVertices[3]);
-                    mesh.addTexCoord(texCoords[2]);
-                    mesh.addVertex(meshVertices[2]);
-                    mesh.addTexCoord(texCoords[1]);
-                    mesh.addVertex(meshVertices[1]);
-                    mesh.addTexCoord(texCoords[0]);
-                    mesh.addVertex(meshVertices[0]);
-                } else{
-                    for(char i=0; i<4; i++){
-                        mesh.addTexCoord(texCoords[i]);
-                        mesh.addVertex(meshVertices[i]);
-                    }
-                }
+                // meshVertices[m.getArgAsInt(1)] = glm::vec3(m.getArgAsFloat(2), m.getArgAsFloat(3), 0);
+                // mesh.clear();
+                // mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+                //
+                // if(bRotate){
+                //     mesh.addTexCoord(texCoords[3]);
+                //     mesh.addVertex(meshVertices[3]);
+                //     mesh.addTexCoord(texCoords[2]);
+                //     mesh.addVertex(meshVertices[2]);
+                //     mesh.addTexCoord(texCoords[1]);
+                //     mesh.addVertex(meshVertices[1]);
+                //     mesh.addTexCoord(texCoords[0]);
+                //     mesh.addVertex(meshVertices[0]);
+                // } else{
+                //     for(char i=0; i<4; i++){
+                //         mesh.addTexCoord(texCoords[i]);
+                //         mesh.addVertex(meshVertices[i]);
+                //     }
+                // }
             }
             break;
             case 5:
@@ -664,6 +666,18 @@ void screen::processMsg(ofxOscMessage &m){
                     screenOrder[i] = m.getArgAsInt(i+1);
             }
                 break;
+            case 7:{ // eventById: moveVertex for ofxPiMapper
+              cout << m << endl;
+                  ofx::piMapper::Mode currentMode = piMapper->getMode();
+                  piMapper->setMode(ofx::piMapper::Mode::MAPPING_MODE);
+                  piMapper->selectVertex(m.getArgAsInt(1), m.getArgAsInt(2));
+                  piMapper->moveSelection(ofx::piMapper::Vec3(m.getArgAsInt(3),m.getArgAsInt(4),0));
+                  piMapper->setMode(currentMode);
+                }
+            break;
+            case 8:
+            piMapper->saveProject();
+            break;
         }
     } else if(m.getAddress() == "/setValueById"){
         switch(m.getArgAsInt(0)){
@@ -731,26 +745,26 @@ void screen::keyPressed(int key){
 
 //--------------------------------------------------------------
 void screen::mousePressed(int x, int y, int button){
-    cout << x << " " << y << endl;
-    if(bEditMode){
-        unsigned char indexOfClosest = 0;
-        float minDistance = 99999999;
-        for(char i=0; i<4; i++){
-            if(ofVec2f(x, y).distance(meshVertices[i]) < minDistance){
-                minDistance = ofVec2f(x, y).distance(meshVertices[i]);
-                indexOfClosest = i;
-            }
-        }
-        cout << "Selected: " << (int)indexOfClosest << endl;
-        meshVertices[indexOfClosest] = glm::vec3(x, y, 0);
-        mesh.clear();
-        mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
-
-        for(char i=0; i<4; i++){
-            mesh.addTexCoord(texCoords[i]);
-            mesh.addVertex(meshVertices[i]);
-        }
-    }
+    // cout << x << " " << y << endl;
+    // if(bEditMode){
+    //     unsigned char indexOfClosest = 0;
+    //     float minDistance = 99999999;
+    //     for(char i=0; i<4; i++){
+    //         if(ofVec2f(x, y).distance(meshVertices[i]) < minDistance){
+    //             minDistance = ofVec2f(x, y).distance(meshVertices[i]);
+    //             indexOfClosest = i;
+    //         }
+    //     }
+    //     cout << "Selected: " << (int)indexOfClosest << endl;
+    //     meshVertices[indexOfClosest] = glm::vec3(x, y, 0);
+    //     mesh.clear();
+    //     mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+    //
+    //     for(char i=0; i<4; i++){
+    //         mesh.addTexCoord(texCoords[i]); // Re-add, since mesh.clear() is called
+    //         mesh.addVertex(meshVertices[i]);
+    //     }
+    // }
 }
 
 
@@ -760,7 +774,7 @@ void screen::windowResized(int w, int h){}
 void screen::joniskHover(bool bGradient){
     ofPushMatrix();
         ofTranslate(0, pow(sin(seed + ofGetFrameNum()/50.), 2.) * 30 * busses[0]);
-        
+
         ofSetColor(255);
             ofPushMatrix(); // Note: the zoom is not fixed to jonisk center
                 ofTranslate(width*0.5, height*0.25);
@@ -772,14 +786,14 @@ void screen::joniskHover(bool bGradient){
         images["Intro Jonisk"].draw(0,0, width, height);
     ofPopMatrix();
 }
-
-void screen::initMesh(){
-    mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
-    texCoords = {glm::vec2(0,0), glm::vec2(width, 0), glm::vec2(width, height), glm::vec2(0, height)};
-    meshVertices = {glm::vec3(0, 0, 0), glm::vec3(width, 0, 0), glm::vec3(width, height, 0), glm::vec3(0, height, 0)};
-    for(char i=0; i<4; i++){
-//        mesh.addTexCoord(texCoords[i] + glm::vec2(size.x, 0)); // Center piece
-        mesh.addTexCoord(texCoords[i]); // Center piece
-        mesh.addVertex(meshVertices[i]);
-    }
-}
+//
+// void screen::initMesh(){
+//     mesh.setMode(OF_PRIMITIVE_TRIANGLE_FAN);
+//     texCoords = {glm::vec2(0,0), glm::vec2(width, 0), glm::vec2(width, height), glm::vec2(0, height)};
+//     meshVertices = {glm::vec3(0, 0, 0), glm::vec3(width, 0, 0), glm::vec3(width, height, 0), glm::vec3(0, height, 0)};
+//     for(char i=0; i<4; i++){
+// //        mesh.addTexCoord(texCoords[i] + glm::vec2(size.x, 0)); // Center piece
+//         mesh.addTexCoord(texCoords[i]); // Center piece
+//         mesh.addVertex(meshVertices[i]);
+//     }
+// }
