@@ -1,6 +1,7 @@
 let jonisks = [];
 let translateX = 0;
 let translateY = 0;
+let connections = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -13,6 +14,7 @@ function draw() {
   background(0);
   translate(translateX, translateY);
   drawGrid();
+  drawConnections();
   for (let jonisk of jonisks) {
     jonisk.show();
     if (jonisk.selected) {
@@ -26,7 +28,23 @@ function draw() {
 function mousePressed() {
   let found = false;
   for (let jonisk of jonisks) {
-    jonisk.clicked(mouseX - translateX, mouseY - translateY);
+    if (jonisk.clicked(mouseX - translateX, mouseY - translateY)) {
+      found = true;
+      if (keyIsDown(SHIFT)) {
+        let selectedJonisks = jonisks.filter(j => j.selected);
+        if (selectedJonisks.length === 2) {
+          connections.push([selectedJonisks[0].id, selectedJonisks[1].id]);
+          selectedJonisks[0].deselect();
+          selectedJonisks[1].deselect();
+        }
+      }
+      break;
+    }
+  }
+  if (!found) {
+    for (let jonisk of jonisks) {
+      jonisk.deselect();
+    }
   }
 }
 
@@ -58,10 +76,16 @@ function keyPressed() {
 function logPositions() {
   let positions = [];
   for (let jonisk of jonisks) {
+    let connection = connections.find(c => c.includes(jonisk.id));
+    let connectionId = null;
+    if (connection) {
+      connectionId = connection[0] === jonisk.id ? connection[1] : connection[0];
+    }
     positions.push({
       xPos: jonisk.x,
       yPos: jonisk.y,
-      id: jonisk.id
+      id: jonisk.id,
+      connectionId: connectionId
     });
   }
   console.log(JSON.stringify(positions));
@@ -69,8 +93,12 @@ function logPositions() {
 
 function populateJonisks(data) {
   jonisks = [];
+  connections = [];
   for (let item of data) {
     jonisks.push(new Jonisk(item.xPos, item.yPos, item.id));
+    if (item.connectionId) {
+      connections.push([item.id, item.connectionId]);
+    }
   }
 }
 
@@ -93,6 +121,17 @@ function drawGrid() {
    for(let j=-2000; j<height+2000; j+=100){
      line(-2000,j,width+2000,j);
      line(width+1999,j,width+1999,j+100);
+   }
+}
+
+function drawConnections() {
+  stroke(255);
+  strokeWeight(2);
+
+   for(let connection of connections){
+     let j1 = jonisks.find(j => j.id === connection[0]);
+     let j2 = jonisks.find(j => j.id === connection[1]);
+     line(j1.x,j1.y,j2.x,j2.y);
    }
 }
 

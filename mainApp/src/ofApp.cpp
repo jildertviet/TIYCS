@@ -22,7 +22,7 @@ void ofApp::setup(){
     }
 
     for(int i=0; i<3; i++){
-        screens[i].setup(i, glm::vec2(1280 * windowScaler, 800 * windowScaler), &screenOrder[0]);
+        screens[i].setup(i, glm::vec2(1280, 800), &screenOrder[0]);
         screens[i].commercials = commercials;
         screens[i].mappableFbo.name = "FBO_" + ofToString(i);
         screens[i].piMapper = &piMapper;
@@ -123,10 +123,10 @@ void ofApp::draw(){
         }
     } else{
         for(int i=0; i<3; i++){
-            ofPushMatrix();
-            ofTranslate(1280*i * windowScaler, 0);
+            // ofPushMatrix();
+            // ofTranslate(1280*i * windowScaler, 0);
             screens[screenOrder[i]].draw(); // Write to FBO
-            ofPopMatrix();
+            // ofPopMatrix();
         }
     }
   ofSetColor(255);

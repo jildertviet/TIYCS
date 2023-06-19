@@ -35,3 +35,5 @@ hardware/**/*.zip
 *.plist
 camera/Makefile
 checklist.txt
+
+**/*.min.js
