@@ -1,13 +1,5 @@
-int halfw;
-int halfh;
-int step = 2;
-int warpZ = 12;
-float speed = 0.075;
-ofVec3f v;
-
-ofColor getColor() {
-    return ofColor::fromHsb(200, 255, ofRandom(50, 100));
-}
+#ifndef Stars_v2
+#define Stars_v2
 
 class Star {
 public:
@@ -16,12 +8,28 @@ public:
     float z;
     ofColor color;
 
+    float speed = 0.025 * 0.3;
+    int step = 2;
+    int warpZ = 12;
+    ofVec3f v;
+
+
+    ofColor getColor() {
+        return ofColor::fromHsb(200, 255, ofRandom(50, 100));
+    }
+
     Star() {
         reset();
     }
 
+    void setLoc(glm::vec3 l, bool dummy){
+      x = l.x;
+      y = l.y;
+      z = l.z;
+    }
+
     void reset() {
-        v.set(ofRandom(-halfw, halfw), ofRandom(-halfh, halfh), ofRandom(1, warpZ));
+        v.set(ofRandom(0, 1280), ofRandom(0, 800), ofRandom(1, warpZ));
         x = v.x;
         y = v.y;
         color = getColor();
@@ -31,64 +39,57 @@ public:
         return ofVec3f(0, 0, -speed);
     }
 
-    void draw() {
+    void display() {
         v += calcVel();
         float x = v.x / v.z;
         float y = v.y / v.z;
         float x2 = v.x / (v.z + speed * 0.50);
         float y2 = v.y / (v.z + speed * 0.50);
 
-        ofSetColor(color);
+        // ofSetColor(color);
+        ofSetColor(255);
+        ofFill();
         ofDrawLine(x, y, x2, y2);
 
-        if (x < -halfw || x > halfw || y < -halfh || y > halfh) {
+        if (x < 0 || x > ofGetWidth() || y < 0 || y > ofGetHeight()) {
             reset();
         }
     }
+
+    void update(float v){};
 };
 
-class Starfield {
+class Stars {
 public:
-    int numOfStars = 250;
-    vector<Star> stars;
 
-    Starfield() {
+  int halfw;
+  int halfh;
+
+
+  // Dummy:
+    float* height;
+    float* hOffset;
+    float* travelSpeed;
+    float* planetID;
+
+    int numOfStars = 250;
+    vector<Star*> stars;
+
+    Stars(glm::vec2 size, string prefix) {
         for (int i = 0; i < numOfStars; i++) {
-            stars.push_back(Star());
+            stars.push_back(new Star());
         }
     }
 
-    void draw() {
-        ofTranslate(halfw, halfh);
+    void display(float& b) {
+        // ofTranslate(1280*0.5, 800*0.5);
 
         for (int i = 0; i < stars.size(); i++) {
-            stars[i].draw();
+            stars[i]->display();
         }
     }
+
+    void update(glm::vec3 l){}
 };
 
-Starfield mStarField;
-
-void ofApp::setup() {
-    halfw = ofGetWidth() / 2;
-    halfh = ofGetHeight() / 2;
-
-    ofSetBackgroundColor(ofColor::black);
-}
-
-void ofApp::update() {
-}
-
-void ofApp::draw() {
-    speed = 0.025;
-
-    ofSetColor(ofColor(0, 0, 0, 51));
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
-
-    mStarField.draw();
-}
-
-void ofApp::windowResized(int w, int h) {
-    halfw = w / 2;
-    halfh = h / 2;
-}
+#endif

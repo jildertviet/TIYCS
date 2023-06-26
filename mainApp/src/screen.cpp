@@ -22,6 +22,7 @@ void screen::setup(int portNumAdd, glm::vec2 size, int* screenOrder){
     height = size.y;
 
     scene = scenes::Test;
+    // scene = scenes::Bingo;
 
     renderFbo.allocate(width, height);
     mappableFbo.setup(width, height);
@@ -495,14 +496,10 @@ void screen::render(scenes::Scene pseudo, bool bUseFbo){
                 string txt = "Starten automatische piloot...";
                 ofRectangle r = autoPilotFont.getStringBoundingBox(txt, 0, 0);
                 autoPilotFont.drawString(txt, width * 0.5 - (r.getWidth()*0.5), height * 0.625);
-                if(busses[0] <= 10){
-                    string str = " " + ofToString((int)busses[1]) + "%";
-    //                ofRectangle box = autoPilotFont.getStringBoundingBox(str, 0, 0);
-                    autoPilotFont.drawString(str, width * 0.5 - 20, height * 0.85);
-                } else{
-                    string str = ofToString((int)busses[0]) + "%";
-                    autoPilotFont.drawString(ofToString((int)busses[1]) + "%", width * 0.5 - 20, height * 0.85);
-                }
+
+                string str = ofToString((int)busses[1]) + "%";
+                ofRectangle boundingBox = autoPilotFont.getStringBoundingBox(str, 0, 0);
+                autoPilotFont.drawString(str, width * 0.5 - (boundingBox.getWidth()*0.5), height * 0.85);
             }
                 break;
             case scenes::Test:{

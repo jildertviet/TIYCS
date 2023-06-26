@@ -10,24 +10,24 @@
 
 Bingo::Bingo(string prefix, glm::vec2 size){
     this->size = size;
-    
+
     bingoSwirl[0].load(prefix + "bingo_swirl.png");
     bingoSwirl[1].load(prefix + "bingo_swirlMirror.png");
     bingoBase.load(prefix + "bingoWheel.png");
-    
+
     ofLog(OF_LOG_NOTICE, "Loading Helvatica-Bold, 100px");
     countFont.load("fonts/Helvetica-Bold.ttf", 100);
-        
+
     box2d.init();
     box2d.setGravity(0, 10);
     box2d.createGround();
     box2d.setFPS(ofGetTargetFrameRate());
 //    box2d.registerGrabbing();
-    
+
     // make the shape
     edgeLine.setPhysics(0.0, 0.5, 0.5);
     edgeLine.create(box2d.getWorld());
-    
+
     scaling = prefix == "1280/" ? (1280./1920.) : 1;
     glm::vec2 offset = prefix == "1280/" ? glm::vec2(0, 40) : glm::vec2(0);
     glm::vec2 pos;
@@ -37,23 +37,23 @@ Bingo::Bingo(string prefix, glm::vec2 size){
     }
     drawing.setClosed(false);
     drawing.simplify();
-    
+
     edgeLine.addVertexes(drawing);
     //polyLine.simplifyToMaxVerts(); // this is based on the max box2d verts
     edgeLine.setPhysics(0.0, 0.5, 0.5);
     edgeLine.create(box2d.getWorld());
-        
+
     drawing.clear();
-    
+
     bingoFont.load("fonts/Geneva bold.ttf", 40 * scaling);
     ofSetCircleResolution(64);
-    
+
     reInit();
 }
 
 void Bingo::update(){
     box2d.update();
-    
+
     glm::vec2 rolling = glm::vec2(cos(ofGetFrameNum()*0.05) * 30 * ofNoise(ofGetFrameNum()*0.1), sin(ofGetFrameNum() * 0.05) * 50 * ofNoise(ofGetFrameNum()*0.1 + 100));
     glm::vec2 standard = glm::vec2(0, 10);
 //    cout << pct << endl;

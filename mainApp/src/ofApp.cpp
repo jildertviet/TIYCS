@@ -1,6 +1,6 @@
 #include "ofApp.h"
 
-float windowScaler = 0.5;
+float windowScaler = 1.0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -128,10 +128,10 @@ void ofApp::draw(){
             screens[screenOrder[i]].draw(); // Write to FBO
             // ofPopMatrix();
         }
+        piMapper.draw();
     }
   ofSetColor(255);
   ofFill();
-  piMapper.draw();
 }
 
 //--------------------------------------------------------------
