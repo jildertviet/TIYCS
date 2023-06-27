@@ -14,10 +14,10 @@ AccelStepper stepper(AccelStepper::HALF4WIRE, 3, 2, 5, 4); // Defaults to AccelS
 
 CRGB leds[NUM_LEDS];
 CRGB colors[2] = {
-  CRGB(255, 0, 255),
-  CRGB(233, 118, 76)
+  CRGB(255, 0, 255), // Purle
+  CRGB(233, 118, 76) // Organe
 };
-int activeColor = 0;
+int activeColor = 1;
 float range = 2000;
 unsigned long startTimeFadeIn = 0;
 unsigned long startTimeFadeOut = 0;
@@ -85,7 +85,7 @@ void setup(){
   pinMode(5, OUTPUT); // LED
   digitalWrite(5, HIGH);
 
-  delay(2000);
+  delay(1000);
   leds[0] = CRGB::Green;
   FastLED.show();
   delay(500);
@@ -101,7 +101,7 @@ void loop(){
   bool value = digitalRead(33);
   if(value != prevValue && value == LOW){
     bState = !bState;
-    activeColor = (activeColor + 1) % 4; // 0, 1, 2, 3
+    // activeColor = (activeColor + 1) % 4; // 0, 1, 2, 3
     digitalWrite(5, 1-bState);
     if(bState == false){
       startTimeFadeOut = millis();
@@ -140,24 +140,4 @@ void loop(){
   }
   delay(5);
 //  stepper.run();
-}
-
-void fillLed(float r){
-  for(int i=0; i<NUM_LEDS; i++){
-    if(NUM_LEDS / (float)i >= r){
-      leds[i] = CRGB::Black;
-    } else{
-      leds[i] = CRGB(10, 10, 10);
-    }
-  }
-}
-
-void blinkTest(){
-  leds[0] = CRGB::Red;
-  FastLED.show();
-  delay(500);
-  // Now turn the LED off, then pause
-  leds[0] = CRGB::Black;
-  FastLED.show();
-  delay(500);
 }
