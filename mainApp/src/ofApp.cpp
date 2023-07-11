@@ -113,13 +113,13 @@ void ofApp::draw(){
         toReArrange.end();
 
         for(int i=0; i<3; i++){
-            ofPushMatrix();
-// //            ofRotateYDeg(180);
-// //            ofTranslate(1280, 0);
-            ofTranslate(1280 * screenOrder[2-i] * windowScaler, 0); // Reverse screenorder ...
+            // ofPushMatrix();
+            // ofTranslate(1280 * screenOrder[2-i] * windowScaler, 0); // Reverse screenorder ...
+            screens[i].renderFbo.begin();
             toReArrange.getTexture().drawSubsection(0, 0, 1280 * windowScaler, 800 * windowScaler, 1280 * i * windowScaler, 0);
-            ofPopMatrix();
-// //            draw(1280 * screenOrder[i], 0);
+            screens[i].renderFbo.end();
+            piMapper.draw();
+            // ofPopMatrix();
         }
     } else{
         for(int i=0; i<3; i++){

@@ -2,6 +2,19 @@ esp_now_peer_info_t slave;
 
 bool parseOtaMsgAddressed(const uint8_t *data, int data_len, Mode m);
 
+struct EspnowMsgParser{
+public:
+  static void receive(const uint8_t *mac_addr, const uint8_t *data, int data_len){
+    parseMain(mac_addr, data, data_len);
+    parseCustom(mac_addr, data, data_len);
+  };
+  static void parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len);
+  static void parseCustom(const uint8_t *mac_addr, const uint8_t *data, int data_len){};
+  // Change behaviour in sub class
+};
+
+// EspnowMsgParser espnowMsgParser;
+
 bool checkAddressed(const uint8_t* data){
   bool bAddressed = true;
   for(int i=0; i<6; i++){ // Check if this msg is for this ESP32
@@ -12,17 +25,18 @@ bool checkAddressed(const uint8_t* data){
   return bAddressed;
 }
 
-void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
+
+void parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
   char msgType = data[0];
   if(msgType != 'a'){
     lastReceived = millis();
   }
-//  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
+  //  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
 
- // for(int i=0; i<data_len; i++){
+  // for(int i=0; i<data_len; i++){
    // Serial.print((int)data[i]); Serial.print(" ");
- // }
-//  Serial.println();
+  // }
+  //  Serial.println();
   switch(msgType){
     case 0x05:
       memcpy(values, data + 1 + (id*4), 4);
@@ -84,9 +98,9 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     case 0x11:{ // {0x11, a, d, d, r, e, s, 0x05} : set ESP32 with address 'addres' to ID 0x05
       if(checkAddressed(data)){
         uint8_t newMsg[data_len - 6];
-        newMsg[0] == 0x03;
+        newMsg[0] = 0x03;
         memcpy(newMsg+1, data + 7, data_len - 6);
-        OnDataRecv(mac_addr, newMsg, data_len-6); // Recursively call this function to set the ID
+        EspnowMsgParser::receive(mac_addr, newMsg, data_len-6); // Recursively call this function to set the ID
       }
     }
       break;
@@ -102,21 +116,21 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     case 0x13:{
       if(checkAddressed(data)){
         uint8_t newMsg[2] = {0x10, 0x00}; // Deep sleep
-        OnDataRecv(mac_addr, newMsg, 2);
+        EspnowMsgParser::receive(mac_addr, newMsg, 2);
       }
     }
     break;
     case 0x14:{
       if(checkAddressed(data)){
         uint8_t newMsg[2] = {0x08, 0x00}; // Battery
-        OnDataRecv(mac_addr, newMsg, 2);
+        EspnowMsgParser::receive(mac_addr, newMsg, 2);
       }
     }
     break;
     case 0x15:{
       Serial.print("0x15");
       if(checkAddressed(data)){
-        parseOtaMsgAddressed(data, data_len, START_OTA_SERVER);
+        parseOtaMsgAddressed(data, data_len, Mode::START_OTA_SERVER);
       }
     }
     break;
@@ -132,6 +146,7 @@ void initESPNow() {
     Serial.println("ESPNow Init Failed");
     ESP.restart();
   }
+  esp_now_register_recv_cb(EspnowMsgParser::receive);
 }
 
 void addPeer(uint8_t* addr){

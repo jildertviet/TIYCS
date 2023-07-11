@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <AccelStepper.h>
+// #include <AccelStepper.h>
 #include "FastLED.h"
 #include <esp_now.h>
 #include <WiFi.h>
@@ -7,7 +7,7 @@
 #define CHANNEL 1
 #define NUM_LEDS 86
 
-AccelStepper stepper(AccelStepper::HALF4WIRE, 3, 2, 5, 4); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
+// AccelStepper stepper(AccelStepper::HALF4WIRE, 3, 2, 5, 4); // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
 
 #define DATA_PIN_A 16
 #define DATA_PIN_B 17
@@ -17,11 +17,11 @@ CRGB colors[2] = {
   CRGB(255, 0, 255), // Purle
   CRGB(233, 118, 76) // Organe
 };
-int activeColor = 1;
+int activeColor = 2;
 float range = 2000;
 unsigned long startTimeFadeIn = 0;
 unsigned long startTimeFadeOut = 0;
-unsigned int fadeTime = 9000;
+unsigned int fadeTime = 7000;
 bool bState = false;
 
 void initESPNow() {
@@ -60,7 +60,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     break;
     case 0x22:
     // Set door values
-    stepper.moveTo(range * (data[1]/255.));
+    // stepper.moveTo(range * (data[1]/255.));
     break;
   }
 }

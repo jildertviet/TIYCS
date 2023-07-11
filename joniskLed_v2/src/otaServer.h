@@ -2,6 +2,10 @@
 #include "credentials.h"
 #include <ArduinoJson.h>
 
+char* ssid;
+char* password;
+char* url; // Set from MSG
+
 static HttpsOTAStatus_t otastatus;
 
 void HttpEvent(HttpEvent_t *event)
@@ -11,7 +15,7 @@ void HttpEvent(HttpEvent_t *event)
             Serial.println("Http Event Error");
             break;
         case HTTP_EVENT_ON_CONNECTED:
-            Serial.println("Http Event On Connected");
+            Serial.println("Http Event On Connected" );
             break;
         case HTTP_EVENT_HEADER_SENT:
             Serial.println("Http Event Header Sent");

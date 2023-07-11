@@ -5,7 +5,7 @@ t.setBus(13, 0.07);
 t.setBus(14, 10);
 
 
-t.setScreenOrder(0,1,2); // Einde
+t.setScreenOrder(2,1,0); // Einde
 t.clearRoutines
 
 t.mappingGui(0);
@@ -42,6 +42,8 @@ MIDIIn.doNoteOnAction(1, 14, 20, 127); // Commercial 0
 
 MIDIIn.doNoteOnAction(1, 1, 19, 127); // Shopping-txt (when Commercials scene is active)
 
+MIDIIn.doNoteOnAction(1, 14, 96, 127); // FIREBALL
+
 // Set tex via OSC
 (
 var screen = 0;
@@ -57,5 +59,7 @@ t.gui
 
 t.counter.valueAction = 3
 t.valyueById(2, 255);
+
+~licht.sendMsg("/eos/cue/3/fire");
 
 t.getWindowByName("TIYCS - Stars").view.children[1].children[1].valueAction = 0.3

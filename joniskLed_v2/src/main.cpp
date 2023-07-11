@@ -11,10 +11,6 @@
 
 char version[2] = {1, 1}; // A 0 isn't printed in SC, so use 1.1 as first version :)
 
-char* ssid;
-char* password;
-char* url; // Set from MSG
-
 #define CHANNEL 1
 #define IS_JONISK_2022_EXTRA
 #define JONISK_BATTERY_CHECK
@@ -48,13 +44,13 @@ void blinkLed(int channel, int delayTime, int num, int brightness=50);
 void checkPins();
 
 #include "pinMap.h"
+#include "otaServer.h"
 #include "espnowFunctions.h"
 #include "batteryStatus.h"
 
 uint8_t i = 0;
 
 #include "ledFunctions.h"
-#include "otaServer.h"
 #include "arduinoOta.h"
 
 void setup() {
@@ -84,8 +80,6 @@ void setup() {
   WiFi.softAPmacAddress(myAddr);
 
   initESPNow();
-  Serial.println("Register callback");
-  esp_now_register_recv_cb(OnDataRecv);
 
   if (EEPROM.begin(64)){
     id = EEPROM.read(0);
@@ -179,7 +173,6 @@ void loop() {
       Serial.println("Setup ESPNOW");
       initESPNow();
       Serial.println("Register callback");
-      esp_now_register_recv_cb(OnDataRecv);
       mode = modeToReturnTo;
     break;
     }
