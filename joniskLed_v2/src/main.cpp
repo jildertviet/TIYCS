@@ -7,6 +7,8 @@
 #include "EEPROM.h"
 #include "credentials.h"
 #include "lag.h"
+#include "global.h"
+
 #define uS_TO_S_FACTOR 1000000ULL  /* Conversion factor for micro seconds to seconds */
 
 char version[2] = {1, 1}; // A 0 isn't printed in SC, so use 1.1 as first version :)
@@ -17,35 +19,20 @@ char version[2] = {1, 1}; // A 0 isn't printed in SC, so use 1.1 as first versio
 #define   PWM_12_BIT
 
 unsigned char values[4] = {0, 0, 0, 0};
-uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
-uint8_t myAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-enum Mode {
-  NOLAG,
-  LAG,
-  START_WIFI,
-  HANDLE_OTA,
-  SEND_BATTERY,
-  DEEP_SLEEP,
-  HANDLE_OTA_SERVER,
-  START_OTA_SERVER
-};
-
+#include "modes.h"
 Mode mode = NOLAG;
 Mode modeToReturnTo = Mode::NOLAG;
 
-unsigned char id = 0; // Read from EEPROM
-bool bUpdate = false;
-unsigned long lastReceived = 0;
 unsigned long lastCheckedPins = 0;
-unsigned short minutesToSleep = 0;
 
-void blinkLed(int channel, int delayTime, int num, int brightness=50);
 void checkPins();
 
 #include "pinMap.h"
 #include "otaServer.h"
 #include "espnowFunctions.h"
+#include "espnowFunctionsCustom.h"
+
 #include "batteryStatus.h"
 
 uint8_t i = 0;
@@ -105,6 +92,7 @@ void loop() {
   // return;
   sendPing();
   checkPins();
+  handleOtaServer();
   switch(mode){
     case NOLAG:{ // Just set the PWM-channels
       if(bUpdate){
@@ -143,27 +131,6 @@ void loop() {
     case HANDLE_OTA:{
         ArduinoOTA.handle();
         delay(10);
-    }
-    break;
-    case START_OTA_SERVER:{
-      if(startOtaServer()){
-        blinkLed(1, 250, 3);
-        setLED(1, 50);
-      } else{
-        ESP.restart();
-      }
-      mode = HANDLE_OTA_SERVER;
-    }
-    break;
-    case HANDLE_OTA_SERVER:{
-      otastatus = HttpsOTA.status();
-      if(otastatus == HTTPS_OTA_SUCCESS) {
-          Serial.println("Firmware written successfully. To reboot device, call API ESP.restart() or PUSH restart button on device");
-          ESP.restart();
-      } else if(otastatus == HTTPS_OTA_FAIL) {
-          Serial.println("Firmware Upgrade Fail");
-      }
-      delay(1000);
     }
     break;
     case SEND_BATTERY:{

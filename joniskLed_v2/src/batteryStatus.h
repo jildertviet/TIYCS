@@ -12,19 +12,18 @@ int measureBattery(){
 
 void sendBatteryStatus(){
   WiFi.mode(WIFI_OFF);
-  delay(1000);  
+  delay(1000);
   WiFi.mode(WIFI_STA);
   Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
 
   initESPNow();
-  esp_now_register_recv_cb(OnDataRecv);
 
   addPeer(replyAddr);
 
   uint8_t msg[5] = {'b','t', 'e', 's', 't'};
   int v = measureBattery();
   memcpy(msg+1, &v, 4); // Prefix is 'b'
-  
+
   esp_err_t result = esp_now_send(replyAddr, msg, 5);
   if (result == ESP_OK) {
     blinkLed(2, 100, 1);

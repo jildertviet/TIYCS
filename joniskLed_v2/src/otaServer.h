@@ -106,3 +106,30 @@ bool startOtaServer(){
   Serial.println("Please Wait it takes some time ...");
   return true;
 }
+
+void handleOtaServer(){
+  switch(mode){
+    case START_OTA_SERVER:{
+      if(startOtaServer()){
+        blinkLed(1, 250, 3);
+        setLED(1, 50);
+      } else{
+        ESP.restart();
+      }
+      mode = HANDLE_OTA_SERVER;
+    }
+    break;
+    case HANDLE_OTA_SERVER:{
+      otastatus = HttpsOTA.status();
+      if(otastatus == HTTPS_OTA_SUCCESS) {
+          Serial.println("Firmware written successfully. To reboot device, call API ESP.restart() or PUSH restart button on device");
+          ESP.restart();
+      } else if(otastatus == HTTPS_OTA_FAIL) {
+          Serial.println("Firmware Upgrade Fail");
+          ESP.restart();
+      }
+      delay(1000);
+    }
+    break;
+  }
+}

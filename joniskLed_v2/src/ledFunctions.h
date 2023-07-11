@@ -71,7 +71,6 @@ void sendPing(bool bOverride = false){
     // Serial.print("STA MAC: "); Serial.println(WiFi.macAddress());
 
     initESPNow();
-    esp_now_register_recv_cb(OnDataRecv);
     uint8_t broadcastAddr[6] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
     memcpy(replyAddr, &broadcastAddr, 6);
     addPeer(replyAddr);
@@ -96,8 +95,6 @@ void sendPing(bool bOverride = false){
     WiFi.softAP("TIYCS", "nonsense", 1, true);
     Serial.println("Setup ESPNOW");
     initESPNow();
-    Serial.println("Register callback");
-    esp_now_register_recv_cb(OnDataRecv);
     lastReceived = millis();
   }
 }

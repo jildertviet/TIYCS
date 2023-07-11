@@ -2,14 +2,18 @@ esp_now_peer_info_t slave;
 
 bool parseOtaMsgAddressed(const uint8_t *data, int data_len, Mode m);
 
+uint8_t replyAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+uint8_t myAddr[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+
 struct EspnowMsgParser{
 public:
   static void receive(const uint8_t *mac_addr, const uint8_t *data, int data_len){
-    parseMain(mac_addr, data, data_len);
-    parseCustom(mac_addr, data, data_len);
+    if(!parseMain(mac_addr, data, data_len)){
+      parseCustom(mac_addr, data, data_len);
+    }
   };
-  static void parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len);
-  static void parseCustom(const uint8_t *mac_addr, const uint8_t *data, int data_len){};
+  static bool parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len);
+  static void parseCustom(const uint8_t *mac_addr, const uint8_t *data, int data_len);
   // Change behaviour in sub class
 };
 
@@ -26,32 +30,12 @@ bool checkAddressed(const uint8_t* data){
 }
 
 
-void parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
+bool EspnowMsgParser::parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
   char msgType = data[0];
   if(msgType != 'a'){
     lastReceived = millis();
   }
-  //  digitalWrite(5, HIGH); delay(50); digitalWrite(5, LOW);
-
-  // for(int i=0; i<data_len; i++){
-   // Serial.print((int)data[i]); Serial.print(" ");
-  // }
-  //  Serial.println();
   switch(msgType){
-    case 0x05:
-      memcpy(values, data + 1 + (id*4), 4);
-      mode = NOLAG;
-      bUpdate = true;
-      break;
-    case 0x09: // [msgType, lagTime, R, G, B, W, R, G, B, W, etc]
-     mode = LAG;
-     memcpy(&lagTime, data+1, 2); // Copy the last two char's, and write to unsigned short.
-     memcpy(endValues, data + 1 + 2 + (id*4), 4);
-     memcpy(startValues, values, 4);
-     envStartTime = millis();
-     envEndTime = millis() + lagTime;
-     bLagDone = false;
-    break;
     case 0x03:
     Serial.println("Set ID");
       id = data[1];
@@ -59,7 +43,7 @@ void parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       EEPROM.commit();
       Serial.println((int)id);
       break;
-    case 0x07:{
+    case 0x07:{ // Connect with AP
       if(checkAddressed(data)){
         mode = Mode::START_WIFI;
         memcpy(&replyAddr, mac_addr, 6);
@@ -84,11 +68,7 @@ void parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       }
     }
       break;
-    case 0x08: // Reply with battery voltage
-      if(checkAddressed(data)){
-        mode = Mode::SEND_BATTERY;
-      }
-      break;
+
     case 0x10: // [msgType, address[6], minutesToSleep[2]]
       if(checkAddressed(data)){
         memcpy(&minutesToSleep, data+6+1, 2);
@@ -120,13 +100,6 @@ void parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       }
     }
     break;
-    case 0x14:{
-      if(checkAddressed(data)){
-        uint8_t newMsg[2] = {0x08, 0x00}; // Battery
-        EspnowMsgParser::receive(mac_addr, newMsg, 2);
-      }
-    }
-    break;
     case 0x15:{
       Serial.print("0x15");
       if(checkAddressed(data)){
@@ -134,7 +107,11 @@ void parseMain(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
       }
     }
     break;
+    default:
+      return false; // If nothing is found: return false, so parseCustom can be tried
+    break;
   }
+  return true;
 }
 
 void initESPNow() {
