@@ -10,5 +10,6 @@ enum Mode {
   PERLIN,
   TEST,
   TEST2,
-  ONECOLOR
+  ONECOLOR,
+  DRAWTEST
 };
