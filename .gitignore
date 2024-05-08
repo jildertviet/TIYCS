@@ -37,3 +37,4 @@ camera/Makefile
 checklist.txt
 
 **/*.min.js
+*/.pio
